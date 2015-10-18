@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Core", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Shared", "QRyptoWire.Shared\QRyptoWire.Shared.csproj", "{5AB86816-0865-423D-B588-805AFA641CA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QryptoWire.Service.Api2", "QryptoWire.Service.Api2\QryptoWire.Service.Api2.csproj", "{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
