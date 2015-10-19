@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
+﻿using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Cirrious.CrossCore;
+using Cirrious.MvvmCross.ViewModels;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -23,7 +14,7 @@ namespace QRyptoWire.App
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public sealed partial class App : Application
+    public sealed partial class App 
     {
         private TransitionCollection transitions;
 
@@ -33,87 +24,63 @@ namespace QRyptoWire.App
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.Suspending += this.OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
+			RequestedTheme = ApplicationTheme.Dark;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used when the application is launched to open a specific file, to display
-        /// search results, and so forth.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
-        {
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
+		/// <summary>
+		/// Invoked when the application is launched normally by the end user.  Other entry points
+		/// will be used when the application is launched to open a specific file, to display
+		/// search results, and so forth.
+		/// </summary>
+		/// <param name="e">Details about the launch request and process.</param>
+		protected override void OnLaunched(LaunchActivatedEventArgs args)
+		{
+			var rootFrame = Window.Current.Content as Frame;
 
-            Frame rootFrame = Window.Current.Content as Frame;
+			// Do not repeat app initialization when the Window already has content,
+			// just ensure that the window is active
+			if (rootFrame == null)
+			{
+				// Create a Frame to act as the navigation context and navigate to the first page
+				rootFrame = new Frame();
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
-            if (rootFrame == null)
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+				if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
+				{
+					//TODO: Load state from previously suspended application
+				}
 
-                // TODO: change this value to a cache size that is appropriate for your application
-                rootFrame.CacheSize = 1;
+				// Place the frame in the current Window
+				Window.Current.Content = rootFrame;
+			}
 
-                // Set the default language
-                rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
+			if (rootFrame.Content == null)
+			{
+				// When the navigation stack isn't restored navigate to the first page,
+				// configuring the new page by passing required information as a navigation
+				// parameter
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    // TODO: Load state from previously suspended application
-                }
+				var setup = new Setup(rootFrame);
+				setup.Initialize();
 
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
+				var start = Mvx.Resolve<IMvxAppStart>();
+				start.Start();
+			}
+			// Ensure the current window is active
+			Window.Current.Activate();
+		}
 
-            if (rootFrame.Content == null)
-            {
-                // Removes the turnstile navigation for startup.
-                if (rootFrame.ContentTransitions != null)
-                {
-                    this.transitions = new TransitionCollection();
-                    foreach (var c in rootFrame.ContentTransitions)
-                    {
-                        this.transitions.Add(c);
-                    }
-                }
-
-                rootFrame.ContentTransitions = null;
-                rootFrame.Navigated += this.RootFrame_FirstNavigated;
-
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
-                {
-                    throw new Exception("Failed to create initial page");
-                }
-            }
-
-            // Ensure the current window is active
-            Window.Current.Activate();
-        }
-
-        /// <summary>
-        /// Restores the content transitions after the app has launched.
-        /// </summary>
-        /// <param name="sender">The object where the handler is attached.</param>
-        /// <param name="e">Details about the navigation event.</param>
-        private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
+		/// <summary>
+		/// Restores the content transitions after the app has launched.
+		/// </summary>
+		/// <param name="sender">The object where the handler is attached.</param>
+		/// <param name="e">Details about the navigation event.</param>
+		private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
         {
             var rootFrame = sender as Frame;
-            rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection() { new NavigationThemeTransition() };
-            rootFrame.Navigated -= this.RootFrame_FirstNavigated;
+            rootFrame.ContentTransitions = transitions ?? new TransitionCollection { new NavigationThemeTransition() };
+            rootFrame.Navigated -= RootFrame_FirstNavigated;
         }
 
         /// <summary>
