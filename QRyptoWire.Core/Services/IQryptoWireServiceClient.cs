@@ -5,8 +5,8 @@ namespace QRyptoWire.Core.Services
 {
 	public interface IQryptoWireServiceClient
 	{
-		string Login();
-		void Register();
+		bool Login(string deviceId, string password);
+		void Register(string deviceId, string password);
 		void RegisterPushToken();
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();

@@ -2,7 +2,7 @@
 {
 	public interface IUserService
 	{
-		bool Login();
-		bool Register(); //todo return type?
+		bool Login(string password);
+		bool Register(string password); //todo return type?
 	}
 }

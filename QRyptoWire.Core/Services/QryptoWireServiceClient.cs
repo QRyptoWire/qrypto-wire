@@ -1,18 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
+using RestSharp.Portable;
 
 namespace QRyptoWire.Core.Services
 {
-	public class QryptoWireServiceClient : IQryptoWireServiceClient
+	public class QryptoWireServiceClient : ApiClientBase, IQryptoWireServiceClient
 	{
 		private string _sessionId;
 
-		public string Login()
+		public bool Login(string deviceId, string password)
 		{
-			throw new System.NotImplementedException();
+			var request = new RestRequest($"{ApiUris.Login}{deviceId}/{password}/");
+			_sessionId = Execute<string>(request);
+			if (_sessionId == null)
+				return false;
+			return true;
 		}
 
-		public void Register()
+		public void Register(string deviceId, string password)
 		{
 			throw new System.NotImplementedException();
 		}
