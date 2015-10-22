@@ -2,7 +2,7 @@
 {
 	public static class ApiUris
 	{
-		public static readonly string Base = "baseuri/QryptoWireController/";
+		public static readonly string Base = "http://localhost:64433/QryptoWire/";
 
 		public static readonly string Login = "Login/";
 		public static readonly string Register = "Register/";

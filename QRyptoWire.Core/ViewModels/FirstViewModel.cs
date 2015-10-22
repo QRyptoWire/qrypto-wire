@@ -1,19 +1,19 @@
-using System.Diagnostics;
-using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
 {
-    public class FirstViewModel 
-		: MvxViewModel
+    public class FirstViewModel : QryptoViewModel
     {
 	    private readonly IQryptoWireServiceClient _client;
 	    public FirstViewModel(IQryptoWireServiceClient client)
 	    {
 		    _client = client;
-			var test = _client.Login("1", "1");
-			if(test)
-				Debugger.Break();
+			MakeApiCallAsync(() => _client.Login("1", "2"), b =>
+			{
+				if (b)
+					Hello = "topkek";
+			});
+			
 	    }
 
 	    private string _hello = "Hello MvvmCross";
@@ -22,7 +22,8 @@ namespace QRyptoWire.Core.ViewModels
 			get { return _hello; }
             set
             {
-                _hello = value; RaisePropertyChanged();
+                _hello = value;
+	            RaisePropertyChanged();
             }
 		}
     }

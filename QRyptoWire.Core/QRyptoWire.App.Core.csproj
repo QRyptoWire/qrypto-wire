@@ -53,6 +53,7 @@
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\QryptoWireServiceClient.cs" />
     <Compile Include="ViewModels\FirstViewModel.cs" />
+    <Compile Include="ViewModels\QryptoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Cirrious.CrossCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e16445fd9b451819, processorArchitecture=MSIL">
