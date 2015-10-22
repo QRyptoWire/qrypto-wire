@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Api", "QRyptoWire.Service\QRyptoWire.Service.Api.csproj", "{929D2E8F-085F-4C64-B00C-E47A66EE9255}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5AB86816-0865-423D-B588-805AFA641CA7} = {5AB86816-0865-423D-B588-805AFA641CA7}
-		{B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640} = {B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640}
-		{0889FBF7-D8F7-41C0-82E2-074F050D0AE1} = {0889FBF7-D8F7-41C0-82E2-074F050D0AE1}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Data", "QRyptoWire.Data\QRyptoWire.Service.Data.csproj", "{0889FBF7-D8F7-41C0-82E2-074F050D0AE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Core", "QRyptoWire.ApiCore\QRyptoWire.Service.Core.csproj", "{B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640}"
@@ -20,7 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Core", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Shared", "QRyptoWire.Shared\QRyptoWire.Shared.csproj", "{5AB86816-0865-423D-B588-805AFA641CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QryptoWire.Service.Api2", "QryptoWire.Service.Api2\QryptoWire.Service.Api2.csproj", "{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service", "QRyptoWire.Service\QRyptoWire.Service.csproj", "{985FB6BA-F77D-4307-9E0C-90762A7A35C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AB86816-0865-423D-B588-805AFA641CA7} = {5AB86816-0865-423D-B588-805AFA641CA7}
+		{B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640} = {B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640}
+		{0889FBF7-D8F7-41C0-82E2-074F050D0AE1} = {0889FBF7-D8F7-41C0-82E2-074F050D0AE1}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{929D2E8F-085F-4C64-B00C-E47A66EE9255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{929D2E8F-085F-4C64-B00C-E47A66EE9255}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{929D2E8F-085F-4C64-B00C-E47A66EE9255}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{929D2E8F-085F-4C64-B00C-E47A66EE9255}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0889FBF7-D8F7-41C0-82E2-074F050D0AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0889FBF7-D8F7-41C0-82E2-074F050D0AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0889FBF7-D8F7-41C0-82E2-074F050D0AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,10 +38,10 @@ Global
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB86816-0865-423D-B588-805AFA641CA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3F1E29C-1B20-4C1E-90B2-E936311B6B1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{985FB6BA-F77D-4307-9E0C-90762A7A35C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{985FB6BA-F77D-4307-9E0C-90762A7A35C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{985FB6BA-F77D-4307-9E0C-90762A7A35C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{985FB6BA-F77D-4307-9E0C-90762A7A35C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
