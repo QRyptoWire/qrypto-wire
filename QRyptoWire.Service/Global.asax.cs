@@ -7,7 +7,7 @@ using System.Web.Routing;
 
 namespace QRyptoWire.Service.Api3
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         protected void Application_Start()
         {
