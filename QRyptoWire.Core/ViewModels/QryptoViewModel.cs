@@ -7,19 +7,16 @@ namespace QRyptoWire.Core.ViewModels
 {
 	public abstract class QryptoViewModel : MvxViewModel
 	{
-		public ManualResetEvent ResetEvent = new ManualResetEvent(false);
+		protected ManualResetEvent ResetEvent = new ManualResetEvent(false);
 
-		public void MakeApiCallAsync<TResult>(Func<TResult> call, Action<TResult> callback = null)
+		public async void MakeApiCallAsync<TResult>(Func<TResult> call, Action<TResult> callback = null)
 		{
 			ResetEvent.Reset();
 
-			TResult res = default(TResult);
-			Task.Run(async () => await Task.Run(() =>
-			{
-				res = call.Invoke();
-			})).Wait();
+			var res = await Task.Run(call);
 
-			callback?.Invoke(res);
+			if(res != null)
+				callback?.Invoke(res);
 
 			ResetEvent.Set();
 		}

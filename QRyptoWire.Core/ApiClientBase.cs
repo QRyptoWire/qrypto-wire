@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using QRyptoWire.Shared;
 using RestSharp.Portable;
 
@@ -12,7 +13,7 @@ namespace QRyptoWire.Core
 			var client = new RestClient(ApiUris.Base);
 			try
 			{
-				var response = client.Execute(request);
+				var response = Task.Run(async () => await client.Execute(request));
 				response.Wait();
 
 				if (!response.Result.IsSuccess)
@@ -28,7 +29,7 @@ namespace QRyptoWire.Core
 			var client = new RestClient(ApiUris.Base);
 			try
 			{
-				var response = client.Execute<TRet>(request);
+				var response = Task.Run(async () => await client.Execute<TRet>(request));
 				response.Wait();
 
 				if (response.Result.IsSuccess)
