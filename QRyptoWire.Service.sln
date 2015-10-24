@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Core", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Shared", "QRyptoWire.Shared\QRyptoWire.Shared.csproj", "{5AB86816-0865-423D-B588-805AFA641CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service", "QRyptoWire.Service\QRyptoWire.Service.csproj", "{985FB6BA-F77D-4307-9E0C-90762A7A35C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRyptoWire.Service.Api", "QRyptoWire.Service.Api\QRyptoWire.Service.Api.csproj", "{985FB6BA-F77D-4307-9E0C-90762A7A35C6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5AB86816-0865-423D-B588-805AFA641CA7} = {5AB86816-0865-423D-B588-805AFA641CA7}
 		{B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640} = {B5F4AD9D-ECA8-42E8-9C3C-3DF40ECD5640}
