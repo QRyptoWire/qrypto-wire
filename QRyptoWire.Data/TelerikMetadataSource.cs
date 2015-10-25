@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Telerik.OpenAccess.Metadata;
 using Telerik.OpenAccess.Metadata.Fluent;
 
 namespace QRyptoWire.Service.Data
@@ -15,9 +16,14 @@ namespace QRyptoWire.Service.Data
 			{
 				ID = message.Id,
 				message.Content,
-				SenderId = message.Sender,
-				RecipientId = message.Recipient
+				SenderId = message.Sender.Id,
+				RecipientId = message.Recipient.Id
 			}).ToTable("Messages");
+			messageMapping.HasProperty(e => e.Id).IsIdentity(KeyGenerator.Autoinc);
+			messageMapping.HasAssociation(e => e.Sender)
+				.ToColumn("SenderId")
+				.WithOpposite(u => u.ReceivedMessages)
+				.HasConstraint((m, u) => m.Sender.Id == u.Id);
 
 			configurations.Add(messageMapping);
 
