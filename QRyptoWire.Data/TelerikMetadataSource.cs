@@ -20,10 +20,10 @@ namespace QRyptoWire.Service.Data
 				RecipientId = message.Recipient.Id
 			}).ToTable("Messages");
 			messageMapping.HasProperty(e => e.Id).IsIdentity(KeyGenerator.Autoinc);
-			messageMapping.HasAssociation(e => e.Sender)
-				.ToColumn("SenderId")
+			messageMapping.HasAssociation(e => e.Recipient)
+				.ToColumn("ReceipentId")
 				.WithOpposite(u => u.ReceivedMessages)
-				.HasConstraint((m, u) => m.Sender.Id == u.Id);
+				.HasConstraint((m, u) => m.Recipient.Id == u.Id);
 
 			configurations.Add(messageMapping);
 
