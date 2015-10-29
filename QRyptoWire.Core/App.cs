@@ -2,6 +2,7 @@ using Cirrious.CrossCore;
 using Cirrious.CrossCore.IoC;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Services;
+using QRyptoWire.Core.Services.Stubs;
 using QRyptoWire.Core.ViewModels;
 
 namespace QRyptoWire.Core
@@ -14,9 +15,15 @@ namespace QRyptoWire.Core
                 .EndingWith("Service")
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
-			
+	        var useStubs = true;
+
+	        if (useStubs)
+	        {
+				Mvx.RegisterType<IStorageService, StorageServiceStub>();
+				Mvx.RegisterType<IUserService, UserServiceStub>();
+			}
 			Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();
-            RegisterAppStart<FirstViewModel>();
+            RegisterAppStart<LoginViewModel>();
         }
     }
 }

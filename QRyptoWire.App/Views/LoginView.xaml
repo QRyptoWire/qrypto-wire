@@ -1,0 +1,24 @@
+﻿<views1:QryptoWirePage
+    x:Class="QRyptoWire.App.Views.LoginView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views1="using:QRyptoWire.App.Views"
+	xmlns:local="using:QRyptoWire.Core.ViewModels"
+	xmlns:converters="using:QRyptoWire.App.Converters"
+	d:DataContext="{d:DesignInstance Type=local:LoginViewModel}"
+	mc:Ignorable="d">
+    <Page.Resources>
+		<converters:BoolToButtonTextConverter x:Key="BoolToButtonTextConverter"/>
+	</Page.Resources>
+    <StackPanel Margin="40 250 40 0">
+        <TextBox BorderBrush="Red"
+			Text="{Binding Password, Mode=TwoWay}"/>
+        <Button Background="Red"
+			BorderBrush="Red" 
+			Command="{Binding ProceedCommand}"
+			Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
+			HorizontalAlignment="Center"/>
+    </StackPanel>
+</views1:QryptoWirePage>
