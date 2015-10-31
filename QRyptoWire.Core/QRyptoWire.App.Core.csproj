@@ -62,6 +62,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\QryptoViewModel.cs" />
+    <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

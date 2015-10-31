@@ -10,6 +10,7 @@ namespace QRyptoWire.Core.ViewModels
 		private readonly IUserService _userService;
 		private bool _registering;
 		private string _password;
+		private string _errorMessage;
 
 		public LoginViewModel(IStorageService storageService, IUserService userService)
 		{
@@ -51,10 +52,33 @@ namespace QRyptoWire.Core.ViewModels
 			return true;
 		}
 
+		public string ErrorMessage
+		{
+			get { return _errorMessage; }
+			set
+			{
+				_errorMessage = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
-			ShowViewModel<HomeViewModel>();
+			if (Registering)
+				MakeApiCallAsync(() => _userService.Register(Password), b =>
+				{
+					if (b)
+						ShowViewModel<RegistrationViewModel>();
+				});
+			else
+				MakeApiCallAsync(() => _userService.Login(Password), b =>
+				{
+					if (b)
+						ShowViewModel<HomeViewModel>();
+					else
+						ErrorMessage = "Invalid password";
+				});
 		}
 	}
 }

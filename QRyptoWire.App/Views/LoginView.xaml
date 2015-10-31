@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 		<Image Margin="30" Source="../Assets/Logo.png"/>
         <StackPanel HorizontalAlignment="Center" 
-					Grid.Row="1" Width="250">
+				Grid.Row="1" Width="250">
             <TextBox BorderBrush="Red"
 				Text="{Binding Password, Mode=TwoWay}"/>
             <Button Background="Red"
@@ -27,6 +27,9 @@
 				Command="{Binding ProceedCommand}"
 				Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
 				HorizontalAlignment="Center"/>
+			<TextBlock HorizontalAlignment="Center" 
+				FontSize="20"
+				Text="{Binding ErrorMessage}"/>
         </StackPanel>
     </Grid>
 </views1:QryptoWirePage>
