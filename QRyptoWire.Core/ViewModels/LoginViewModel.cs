@@ -1,4 +1,5 @@
 ﻿using Cirrious.MvvmCross.ViewModels;
+using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
@@ -17,9 +18,11 @@ namespace QRyptoWire.Core.ViewModels
 
 			if (!_storageService.PublicKeyExists())
 				Registering = true;
-
+			Menu = new MenuViewModel(MenuMode.AtHome);
 			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
+
+		public MenuViewModel Menu { get; set; }
 
 		public bool Registering
 		{
@@ -51,7 +54,7 @@ namespace QRyptoWire.Core.ViewModels
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
-			Password += Password;
+			ShowViewModel<HomeViewModel>();
 		}
 	}
 }
