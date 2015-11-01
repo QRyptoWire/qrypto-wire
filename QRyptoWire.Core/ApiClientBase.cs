@@ -8,7 +8,7 @@ namespace QRyptoWire.Core
 {
 	public abstract class ApiClientBase
 	{
-		public void Execute(RestRequest request)
+		public void Execute(IRestRequest request)
 		{
 			var client = new RestClient(ApiUris.Base);
 			try
@@ -24,7 +24,7 @@ namespace QRyptoWire.Core
 			}
 		}
 
-		public TRet Execute<TRet>(RestRequest request)
+		public TRet Execute<TRet>(IRestRequest request)
 		{
 			var client = new RestClient(ApiUris.Base);
 			try

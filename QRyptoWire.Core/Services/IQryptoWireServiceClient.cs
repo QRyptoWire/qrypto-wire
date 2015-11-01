@@ -7,7 +7,7 @@ namespace QRyptoWire.Core.Services
 	{
 		bool Login(string deviceId, string password);
 		void Register(string deviceId, string password);
-		void RegisterPushToken();
+		void RegisterPushToken(string channelUri);
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();
 		void AddContact(Contact contact);

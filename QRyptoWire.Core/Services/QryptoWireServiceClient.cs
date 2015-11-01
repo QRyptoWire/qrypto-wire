@@ -24,9 +24,9 @@ namespace QRyptoWire.Core.Services
 			throw new NotImplementedException();
 		}
 
-		public void RegisterPushToken()
+		public void RegisterPushToken(string channelUri)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}").AddBody(channelUri));
 		}
 
 		public IEnumerable<Contact> FetchContacts()

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Cirrious.CrossCore;
 using Cirrious.CrossCore.IoC;
 using Cirrious.MvvmCross.ViewModels;
@@ -15,6 +16,7 @@ namespace QRyptoWire.Core
                 .EndingWith("Service")
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
+			
 	        var useStubs = true;
 
 	        if (useStubs)

@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Converters\BoolToButtonTextConverter.cs" />
     <Compile Include="DebugTrace.cs" />
+    <Compile Include="PhoneImplementations\PushService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="UserControls\ContactControl.xaml.cs">

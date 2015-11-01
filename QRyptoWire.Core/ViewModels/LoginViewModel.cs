@@ -1,4 +1,5 @@
-﻿using Cirrious.MvvmCross.ViewModels;
+﻿using System.Threading.Tasks;
+using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
 
@@ -8,14 +9,16 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IStorageService _storageService;
 		private readonly IUserService _userService;
+		private readonly IPushService _pushService;
 		private bool _registering;
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPushService pushService)
 		{
 			_storageService = storageService;
 			_userService = userService;
+			_pushService = pushService;
 
 			if (!_storageService.PublicKeyExists())
 				Registering = true;
@@ -62,6 +65,11 @@ namespace QRyptoWire.Core.ViewModels
 			}
 		}
 
+		private async void InitSynchronizationTasks()
+		{
+			await Task.Run(() => _pushService.AddPushToken());
+		}
+
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
@@ -75,7 +83,10 @@ namespace QRyptoWire.Core.ViewModels
 				MakeApiCallAsync(() => _userService.Login(Password), b =>
 				{
 					if (b)
+					{	
+						InitSynchronizationTasks();
 						ShowViewModel<HomeViewModel>();
+					}
 					else
 						ErrorMessage = "Invalid password";
 				});
