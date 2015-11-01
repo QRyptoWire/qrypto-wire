@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ApiClientBase.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="CustomExceptions\CameraNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IContactsService.cs" />
     <Compile Include="Services\IEncryptionService.cs" />

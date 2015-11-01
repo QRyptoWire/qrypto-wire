@@ -32,16 +32,27 @@ namespace QRyptoWire.App.UserControls
     public sealed partial class QrCodeScanner : UserControl
     {
         private MediaCapture _mediaCapture;
+        private bool IsCameraInitialized => cameraPreview.Source != null;
+        private const double ScanIntervalMs = 400.0;
 
         public QrCodeScanner()
         {
             this.InitializeComponent();
         }
 
-        public async Task InitializeAsync()
+        public async Task StartQrScanAsync()
         {
-            await InitializeCameraPreviewAsync();
-            await StartCameraPreview();
+            if (!IsCameraInitialized)
+            {
+                await InitializeCameraPreviewAsync();
+            }
+
+            await StartCameraPreviewAsync();
+        }
+
+        public async Task StopQrScanAsync()
+        {
+            await StopCameraPreviewAsync();
         }
 
         private async Task InitializeCameraPreviewAsync()
@@ -68,12 +79,18 @@ namespace QRyptoWire.App.UserControls
             });
 
             await SetCameraToMaxResolution();
+
+            cameraPreview.Source = _mediaCapture;
         }
 
-        private async Task StartCameraPreview()
+        private async Task StartCameraPreviewAsync()
         {
-            cameraPreview.Source = _mediaCapture;
             await _mediaCapture.StartPreviewAsync();
+        }
+
+        private async Task StopCameraPreviewAsync()
+        {
+            await _mediaCapture.StopPreviewAsync();
         }
 
         private async Task<DeviceInformation> GetBackCamera()
