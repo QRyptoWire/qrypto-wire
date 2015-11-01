@@ -20,6 +20,7 @@ using System.Windows;
 using Windows.Devices.Enumeration;
 using Windows.Media;
 using Windows.Media.MediaProperties;
+using Windows.Storage;
 using QRyptoWire.App.Annotations;
 using QRyptoWire.Shared.Dto;
 using QRyptoWire.Core.CustomExceptions;
@@ -32,7 +33,11 @@ namespace QRyptoWire.App.UserControls
     public sealed partial class QrCodeScanner : UserControl
     {
         private MediaCapture _mediaCapture;
+        private DispatcherTimer _timer;
+
+        private bool IsTimerInitialized => _timer != null;
         private bool IsCameraInitialized => cameraPreview.Source != null;
+
         private const double ScanIntervalMs = 400.0;
 
         public QrCodeScanner()
@@ -48,11 +53,33 @@ namespace QRyptoWire.App.UserControls
             }
 
             await StartCameraPreviewAsync();
+
+            if (!IsTimerInitialized)
+            {
+                InitializeTimer();
+            }
+
+            _timer.Start();
         }
 
         public async Task StopQrScanAsync()
         {
+            _timer.Stop();
             await StopCameraPreviewAsync();
+        }
+
+        private void InitializeTimer()
+        {
+            _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
+            _timer.Tick += TimerOnTick;
+        }
+
+        private async void TimerOnTick(object sender, object o)
+        {
+            StorageFile tempFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("temp_photo.jpg", CreationCollisionOption.GenerateUniqueName);
+
+            await _mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), tempFile);
+            await tempFile.DeleteAsync();
         }
 
         private async Task InitializeCameraPreviewAsync()
