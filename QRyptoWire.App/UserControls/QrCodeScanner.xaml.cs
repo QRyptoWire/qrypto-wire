@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Windows;
 using Windows.Devices.Enumeration;
 using Windows.Media;
+using Windows.Media.MediaProperties;
 using QRyptoWire.App.Annotations;
 using QRyptoWire.Shared.Dto;
 using QRyptoWire.Core.CustomExceptions;
@@ -62,10 +63,11 @@ namespace QRyptoWire.App.UserControls
             await _mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
             {
                 VideoDeviceId = cam.Id,
-                AudioDeviceId = "",
                 PhotoCaptureSource = PhotoCaptureSource.VideoPreview,
-                StreamingCaptureMode = StreamingCaptureMode.Video,
+                StreamingCaptureMode = StreamingCaptureMode.Video
             });
+
+            await SetCameraToMaxResolution();
         }
 
         private async Task StartCameraPreview()
@@ -98,5 +100,22 @@ namespace QRyptoWire.App.UserControls
             return await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
         }
 
+        private async Task SetCameraToMaxResolution()
+        {
+            VideoEncodingProperties resolutionMax = null;
+            int currentMax = 0;
+            var availableResolutions = _mediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.Photo);
+
+            foreach (VideoEncodingProperties res in availableResolutions)
+            {
+                if (res.Width*res.Height > currentMax)
+                {
+                    currentMax = Convert.ToInt32(Width*res.Height);
+                    resolutionMax = res;
+                }
+            }
+
+            await _mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.Photo, resolutionMax);
+        }
     }
 }
