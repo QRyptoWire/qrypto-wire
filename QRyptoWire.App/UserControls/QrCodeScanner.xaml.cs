@@ -7,7 +7,10 @@ using Windows.UI.Xaml.Controls;
 using Windows.Devices.Enumeration;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
+using Windows.UI.Xaml.Media.Imaging;
 using QRyptoWire.Core.CustomExceptions;
+using ZXing;
+using ZXing.Common;
 using Panel = Windows.Devices.Enumeration.Panel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -22,7 +25,13 @@ namespace QRyptoWire.App.UserControls
         private bool IsTimerInitialized => _timer != null;
         private bool IsCameraInitialized => cameraPreview.Source != null;
 
+        private int _deviceResolutionWidthPx = 0;
+        private int _deviResolutionHeightPx = 0;
+
         private const double ScanIntervalMs = 400.0;
+
+        public delegate void QrCodeDetectedEventHandler(string text);
+        public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
 
         public QrCodeScanner()
         {
@@ -52,20 +61,6 @@ namespace QRyptoWire.App.UserControls
             await StopCameraPreviewAsync();
         }
 
-        private void InitializeTimer()
-        {
-            _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
-            _timer.Tick += TimerOnTick;
-        }
-
-        private async void TimerOnTick(object sender, object o)
-        {
-            StorageFile tempFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("temp_photo.jpg", CreationCollisionOption.GenerateUniqueName);
-
-            await _mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), tempFile);
-            await tempFile.DeleteAsync();
-        }
-
         private async Task InitializeCameraPreviewAsync()
         {
             var cam = await GetBackCamera();
@@ -92,6 +87,54 @@ namespace QRyptoWire.App.UserControls
             await SetCameraToMaxResolution();
 
             cameraPreview.Source = _mediaCapture;
+        }
+
+        private void InitializeTimer()
+        {
+            _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
+            _timer.Tick += TimerOnTick;
+        }
+
+        private async void TimerOnTick(object sender, object o)
+        {
+            try
+            {
+                StorageFile tmpFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("temp_photo.jpg", CreationCollisionOption.GenerateUniqueName);
+
+                await _mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), tmpFile);
+
+                using (var fileStream = await tmpFile.OpenReadAsync())
+                {
+                    WriteableBitmap bmp = new WriteableBitmap(_deviceResolutionWidthPx, _deviResolutionHeightPx);
+                    await bmp.SetSourceAsync(fileStream);
+
+                    string text = DecodeQrCode(bmp);
+                    if (text != null)
+                    {
+                        QrCodeDetected(text);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+
+        private string DecodeQrCode(WriteableBitmap bmp)
+        {
+            IBarcodeReader reader = new BarcodeReader()
+            {
+                Options =
+                    new DecodingOptions()
+                    {
+                        PossibleFormats = new BarcodeFormat[] { BarcodeFormat.QR_CODE },
+                        PureBarcode = false,
+                        TryHarder = true
+                    }
+            };
+            var result = reader.Decode(bmp);
+            return result?.Text;
         }
 
         private async Task StartCameraPreviewAsync()
@@ -136,9 +179,11 @@ namespace QRyptoWire.App.UserControls
 
             foreach (VideoEncodingProperties res in availableResolutions)
             {
-                if (res.Width*res.Height > currentMax)
+                if (res.Width * res.Height > currentMax)
                 {
-                    currentMax = Convert.ToInt32(Width*res.Height);
+                    _deviceResolutionWidthPx = Convert.ToInt32(res.Width);
+                    _deviResolutionHeightPx = Convert.ToInt32(res.Height);
+                    currentMax = Convert.ToInt32(Width * res.Height);
                     resolutionMax = res;
                 }
             }
