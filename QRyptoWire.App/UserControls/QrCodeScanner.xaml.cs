@@ -21,7 +21,7 @@ using Windows.Devices.Enumeration;
 using Windows.Media;
 using QRyptoWire.App.Annotations;
 using QRyptoWire.Shared.Dto;
-using QRyptoWire.Core.UserExceptions;
+using QRyptoWire.Core.CustomExceptions;
 using Panel = Windows.Devices.Enumeration.Panel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -53,7 +53,7 @@ namespace QRyptoWire.App.UserControls
 
                 if (cam == null)
                 {
-                    throw new Exception();
+                    throw new CameraNotFoundException("No camera is present");
                 }
             }
 
