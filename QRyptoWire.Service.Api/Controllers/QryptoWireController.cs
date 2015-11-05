@@ -42,27 +42,33 @@ namespace QRyptoWire.Service.Api.Controllers
 		[HttpGet]
 		public IHttpActionResult Login(string deviceId, string password)
 		{
-			string sessionKey = SessionService.CreateSession(deviceId, password);
-			if(sessionKey != null)
+			using (var dbContext = new DataModel())
 			{
-				return Ok(sessionKey);
+				var sessionService = new SessionService(dbContext);
+				string sessionKey = sessionService.CreateSession(deviceId, password);
+				if (sessionKey != null)
+				{
+					return Ok(sessionKey);
+				}
+				return NotFound();
 			}
-			return NotFound();
 		}
 
 		[Route("api/SendMessage/{sessionKey}/{msg}")]
 		[HttpGet]
-		public IHttpActionResult SendMessage( string sessionKey, string msg)
+		public IHttpActionResult SendMessage(string sessionKey, string msg)
 		{
 			int recipientId = 1;
-			var user = SessionService.GetUser(sessionKey);
-			if ( user == null)
-			{
-				return NotFound();
-			}
-
 			using (var dbContext = new DataModel())
 			{
+
+				var sessionService = new SessionService(dbContext);
+				var user = sessionService.GetUser(sessionKey);
+				if (user == null)
+				{
+					return NotFound();
+				}
+
 				var recipient =
 					dbContext.Users.Single(u => u.Id == recipientId);
 
@@ -83,16 +89,22 @@ namespace QRyptoWire.Service.Api.Controllers
 		public IHttpActionResult FetchMessages(string sessionKey)
 		{
 			//TODO: delete
-			var user = SessionService.GetUser(sessionKey);
-			if (user != null)
+			using (var dbContext = new DataModel())
 			{
-				IEnumerable<Message> messages;
-                using (var dbContext = new DataModel())
+				var sessionService = new SessionService(dbContext);
+				var user = sessionService.GetUser(sessionKey);
+				if (user != null)
 				{
-					 messages = dbContext.Messages.Where(m => m.RecipientId == user.Id).ToList();
-					//ret = messages.Aggregate(ret, (current, msg) => current + ' ' + msg.Content);
+					var messages = dbContext.Messages
+					.Where(m => m.RecipientId == user.Id)
+					.Select(e => new Shared.Dto.Message
+					{
+						Body = e.Content,
+						ReceiverId = e.RecipientId,
+						SenderId = e.SenderId
+					});
+					return Ok(messages);
 				}
-				return Ok(messages);
 			}
 			return NotFound();
 		}

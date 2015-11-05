@@ -9,49 +9,47 @@ namespace QRyptoWire.Service.Core
 {
 	public class SessionService
 	{
-		public static bool ValidateSession(string sessionKey)
+		private DataModel DbContext { set; get; }
+		 
+		public SessionService(DataModel ctx)
 		{
-			using (var dbContext = new DataModel())
-			{
+			this.DbContext = ctx;
+		}
+
+		public bool ValidateSession(string sessionKey)
+		{
 				DateTime onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
-                if (dbContext.Sessions
+                if (DbContext.Sessions
 					.Count(p
 						=> p.SessionKey == sessionKey) != 1)
 					return false;
 				return true;
-			}
 		}
 
 
-		public static User GetUser(string sessionKey)
+		public User GetUser(string sessionKey)
 		{
-			using (var dbContext = new DataModel())
-			{
 				if (ValidateSession(sessionKey))
 				{
-					var session = dbContext.
+					var session = DbContext.
                     Sessions
 						.Single(p
 							=> p.SessionKey == sessionKey); 
 							return session.User;
 				}
 				return null;
-			}
 		}
 
-		public static string CreateSession(string deviceId, string password)
+		public string CreateSession(string deviceId, string password)
 		{
-
-			using (var dbContext = new DataModel())
-			{
-				if (dbContext.Users
+				if (DbContext.Users
 					.Count(p
 						=> p.PasswordHash == password
 						   && p.DeviceId == deviceId) != 1)
 					return null;
 
 				var user =
-					dbContext.Users.Single(
+					DbContext.Users.Single(
 						p => p.PasswordHash == password
 						     && p.DeviceId == deviceId);
 
@@ -62,11 +60,10 @@ namespace QRyptoWire.Service.Core
 					SessionKey = sessionKey,
 					StarTime = DateTime.Now
 				};
-				dbContext.Add(newSession);
-				dbContext.SaveChanges();
+				DbContext.Add(newSession);
+				DbContext.SaveChanges();
 
 				return sessionKey;
-			}
 		}
 	}
 }
