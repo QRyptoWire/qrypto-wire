@@ -16,11 +16,16 @@ namespace QRyptoWire.App
 
         protected override IMvxApplication CreateApp()
         {
-			Mvx.RegisterType<IPushService, PushService>();
             return new Core.App();
         }
-		
-        protected override IMvxTrace CreateDebugTrace()
+
+	    public override void Initialize()
+	    {
+		    base.Initialize();
+			Mvx.RegisterType<IPushService, PushService>();
+		}
+
+	    protected override IMvxTrace CreateDebugTrace()
         {
             return new DebugTrace();
         }
