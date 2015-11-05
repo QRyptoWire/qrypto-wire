@@ -20,5 +20,15 @@ namespace QRyptoWire.Core.ViewModels
 
 			ResetEvent.Set();
 		}
+
+		public async void MakeApiCallAsync(Action call, Action callback = null)
+		{
+			ResetEvent.Reset();
+
+			await Task.Run(call);
+			callback?.Invoke();
+
+			ResetEvent.Set();
+		}
 	}
 }

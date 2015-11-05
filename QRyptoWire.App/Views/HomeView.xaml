@@ -24,11 +24,14 @@
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Home"/>
 			<ScrollViewer Grid.Row="1">
-                <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single">
-                    <DataTemplate>
-						<userControls:ContactControl 
+                <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single"
+				userControls:ContactControl.Command="{Binding SelectContactCommand}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <userControls:ContactControl 
 							DataContext="{Binding }"/>
-					</DataTemplate>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
 				</ListBox>
 			</ScrollViewer>
         </Grid>

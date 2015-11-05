@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
+using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.ViewModels
 {
@@ -9,15 +10,15 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		public HomeViewModel()
 		{
-			Contacts = new List<int>();
-			Contacts.Add(1);
-			SelectContactCommand = new MvxCommand<int>(SelectContactCommandAction);
+			Contacts = new List<Contact>();
+			Contacts.Add(new Contact {Name = "top kek"});
+			SelectContactCommand = new MvxCommand<Contact>(SelectContactCommandAction);
 		}
 
-		public IList<int> Contacts { get; private set; } 
+		public IList<Contact> Contacts { get; private set; } 
 		public ICommand SelectContactCommand { get; private set; }
 
-		private void SelectContactCommandAction(int val)
+		private void SelectContactCommandAction(Contact param)
 		{
 			ShowViewModel<LoginViewModel>();
 		}

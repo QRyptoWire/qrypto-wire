@@ -1,8 +1,8 @@
 ﻿namespace QRyptoWire.App.Views
 {
-	public sealed partial class HomeView
+	public sealed partial class SettingsView
 	{
-		public HomeView()
+		public SettingsView()
 		{
 			InitializeComponent();
 		}

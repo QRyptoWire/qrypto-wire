@@ -20,10 +20,14 @@ namespace QRyptoWire.Core.ViewModels
 			_userService = userService;
 			_pushService = pushService;
 
+			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
+		}
+
+		public override void Start()
+		{
 			if (!_storageService.PublicKeyExists())
 				Registering = true;
 			Menu = new MenuViewModel(MenuMode.AtHome);
-			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
 
 		public MenuViewModel Menu { get; set; }
