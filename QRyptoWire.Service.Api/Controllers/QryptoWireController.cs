@@ -1,18 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.Http;
+using System.Web.UI;
+using Microsoft.SqlServer.Server;
 using QRyptoWire.Service.Data;
+using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
 {
 	public class QryptoWireController : ApiController
-    {
+	{
 
 		[Route("api/Register/{deviceId}/{password}")]
 		[HttpGet]
 		public IHttpActionResult Register(string deviceId, string password)
 		{
-			//TODO: add user
+			using (var dbContext = new DataModel())
+			{
+				if (dbContext.Users
+						.Any(p
+							=> p.PasswordHash == password
+							   && p.DeviceId == deviceId))
+					return NotFound();
+
+				var newUsr = new User
+				{
+					PasswordHash = password,
+					AllowPush = true,
+					DeviceId = deviceId
+				};
+				dbContext.Add(newUsr);
+				dbContext.SaveChanges();
+			}
 			return Ok();
 		}
 
@@ -20,36 +42,59 @@ namespace QRyptoWire.Service.Api.Controllers
 		[HttpGet]
 		public IHttpActionResult Login(string deviceId, string password)
 		{
-			//TODO: login,  return session key
-			return Ok();
+			string sessionKey = SessionService.CreateSession(deviceId, password);
+			if(sessionKey != null)
+			{
+				return Ok(sessionKey);
+			}
+			return NotFound();
 		}
 
-		[Route("api/SendMessage/{msg}")]
+		[Route("api/SendMessage/{sessionKey}/{msg}")]
 		[HttpGet]
-		public IHttpActionResult SendMessage(string msg)
+		public IHttpActionResult SendMessage( string sessionKey, string msg)
 		{
-			//TODO: verify session key
+			int recipientId = 1;
+			var user = SessionService.GetUser(sessionKey);
+			if ( user == null)
+			{
+				return NotFound();
+			}
+
 			using (var dbContext = new DataModel())
 			{
-				var newMsg = new Message { Content = msg };
+				var recipient =
+					dbContext.Users.Single(u => u.Id == recipientId);
+
+				var newMsg = new Message
+				{
+					Content = msg,
+					Sender = user,
+					Recipient = recipient
+				};
 				dbContext.Add(newMsg);
 				dbContext.SaveChanges();
 			}
 			return Ok("Message " + msg + " added.");
 		}
 
-		[Route("api/FetchMessages")]
+		[Route("api/FetchMessages/{sessionKey}")]
 		[HttpGet]
-		public IHttpActionResult FetchMessages()
+		public IHttpActionResult FetchMessages(string sessionKey)
 		{
-			//TODO: verify session key, send based on uuid, delete
-			var ret = "";
-			using (var dbContext = new DataModel())
+			//TODO: delete
+			var user = SessionService.GetUser(sessionKey);
+			if (user != null)
 			{
-				IEnumerable<Message> messages = dbContext.Messages.ToList();
-				ret = messages.Aggregate(ret, (current, msg) => current + ' ' + msg.Content);
+				IEnumerable<Message> messages;
+                using (var dbContext = new DataModel())
+				{
+					 messages = dbContext.Messages.Where(m => m.RecipientId == user.Id).ToList();
+					//ret = messages.Aggregate(ret, (current, msg) => current + ' ' + msg.Content);
+				}
+				return Ok(messages);
 			}
-			return Ok(ret);
+			return NotFound();
 		}
 
 		[Route("api/AddContact")]
