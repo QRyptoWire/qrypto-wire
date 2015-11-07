@@ -26,11 +26,15 @@ namespace QRyptoWire.App.UserControls
         private bool IsCameraInitialized => cameraPreview.Source != null;
 
         private int _deviceResolutionWidthPx = 0;
-        private int _deviResolutionHeightPx = 0;
+        private int _deviceResolutionHeightPx = 0;
 
         private const double ScanIntervalMs = 400.0;
 
         public delegate void QrCodeDetectedEventHandler(string text);
+
+        /// <summary>
+        /// Event that is fired when QR code is detected by camera.
+        /// </summary>
         public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
 
         public QrCodeScanner()
@@ -38,7 +42,11 @@ namespace QRyptoWire.App.UserControls
             this.InitializeComponent();
         }
 
-        public async Task StartQrScanAsync()
+        /// <summary>
+        /// Start camera preview and QR code scanner.
+        /// </summary>
+        /// <returns>Task</returns>
+        public async Task StartAsync()
         {
             if (!IsCameraInitialized)
             {
@@ -55,7 +63,11 @@ namespace QRyptoWire.App.UserControls
             _timer.Start();
         }
 
-        public async Task StopQrScanAsync()
+        /// <summary>
+        /// Stop camera preview and QR code scanner.
+        /// </summary>
+        /// <returns>Task</returns>
+        public async Task StopAsync()
         {
             _timer.Stop();
             await StopCameraPreviewAsync();
@@ -105,7 +117,7 @@ namespace QRyptoWire.App.UserControls
 
                 using (var fileStream = await tmpFile.OpenReadAsync())
                 {
-                    WriteableBitmap bmp = new WriteableBitmap(_deviceResolutionWidthPx, _deviResolutionHeightPx);
+                    WriteableBitmap bmp = new WriteableBitmap(_deviceResolutionWidthPx, _deviceResolutionHeightPx);
                     await bmp.SetSourceAsync(fileStream);
 
                     string text = DecodeQrCode(bmp);
@@ -182,7 +194,7 @@ namespace QRyptoWire.App.UserControls
                 if (res.Width * res.Height > currentMax)
                 {
                     _deviceResolutionWidthPx = Convert.ToInt32(res.Width);
-                    _deviResolutionHeightPx = Convert.ToInt32(res.Height);
+                    _deviceResolutionHeightPx = Convert.ToInt32(res.Height);
                     currentMax = Convert.ToInt32(Width * res.Height);
                     resolutionMax = res;
                 }
