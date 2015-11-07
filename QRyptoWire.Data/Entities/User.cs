@@ -9,6 +9,7 @@ namespace QRyptoWire.Service.Data
 			ReceivedMessages = new List<Message>();
 		}
 		public int Id { get; set; }
+		public string DeviceId { get; set; }
 		public string PasswordHash { set; get; }
 		public bool AllowPush { set; get; }
 		public IList<Message> ReceivedMessages { get; set; }
