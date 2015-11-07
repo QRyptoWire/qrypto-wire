@@ -17,7 +17,7 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-		<Image Margin="30" Source="../Assets/Logo.png"/>
+		<Image Margin="30" Source="../Assets/QRWireLogo.png"/>
         <StackPanel HorizontalAlignment="Center" 
 				Grid.Row="1" Width="250">
             <TextBox BorderBrush="Red"

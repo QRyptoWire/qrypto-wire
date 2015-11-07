@@ -121,6 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.scale-240.png" />
+    <Content Include="Assets\QRWireLogo-150.png" />
+    <Content Include="Assets\QRWireLogo-44.png" />
+    <Content Include="Assets\QRWireLogo-50.png" />
+    <Content Include="Assets\QRWireLogo-71.png" />
+    <Content Include="Assets\QRWireLogo.png" />
+    <Content Include="Assets\QRWireLogoWide.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square71x71Logo.scale-240.png" />
