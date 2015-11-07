@@ -66,6 +66,10 @@
       <Project>{0889FBF7-D8F7-41C0-82E2-074F050D0AE1}</Project>
       <Name>QRyptoWire.Service.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QRyptoWire.Shared\QRyptoWire.Shared.csproj">
+      <Project>{5ab86816-0865-423d-b588-805afa641ca7}</Project>
+      <Name>QRyptoWire.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
