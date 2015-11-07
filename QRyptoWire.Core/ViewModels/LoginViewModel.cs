@@ -1,4 +1,6 @@
-﻿using Cirrious.MvvmCross.ViewModels;
+﻿using System.Threading.Tasks;
+using Cirrious.MvvmCross.ViewModels;
+using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
@@ -7,19 +9,28 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IStorageService _storageService;
 		private readonly IUserService _userService;
+		private readonly IPushService _pushService;
 		private bool _registering;
 		private string _password;
+		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPushService pushService)
 		{
 			_storageService = storageService;
 			_userService = userService;
-
-			if (!_storageService.PublicKeyExists())
-				Registering = true;
+			_pushService = pushService;
 
 			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
+
+		public override void Start()
+		{
+			if (!_storageService.PublicKeyExists())
+				Registering = true;
+			Menu = new MenuViewModel(MenuMode.AtHome);
+		}
+
+		public MenuViewModel Menu { get; set; }
 
 		public bool Registering
 		{
@@ -48,10 +59,41 @@ namespace QRyptoWire.Core.ViewModels
 			return true;
 		}
 
+		public string ErrorMessage
+		{
+			get { return _errorMessage; }
+			set
+			{
+				_errorMessage = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private async void InitSynchronizationTasks()
+		{
+			await Task.Run(() => _pushService.AddPushToken());
+		}
+
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
-			Password += Password;
+			if (Registering)
+				MakeApiCallAsync(() => _userService.Register(Password), b =>
+				{
+					if (b)
+						ShowViewModel<RegistrationViewModel>();
+				});
+			else
+				MakeApiCallAsync(() => _userService.Login(Password), b =>
+				{
+					if (b)
+					{	
+						InitSynchronizationTasks();
+						ShowViewModel<HomeViewModel>();
+					}
+					else
+						ErrorMessage = "Invalid password";
+				});
 		}
 	}
 }

@@ -1,0 +1,39 @@
+﻿<local:QryptoWirePage
+    x:Class="QRyptoWire.App.Views.HomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:QRyptoWire.App.Views"
+	xmlns:vm="using:QRyptoWire.Core.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="using:QRyptoWire.App.UserControls"
+    d:DataContext="{d:DesignInstance d:Type=vm:HomeViewModel}"
+	mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="Root">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="0.1*"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+        <userControls:MenuBarControl DataContext="{Binding Menu}"/>
+		<Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Center" 
+					 FontSize="30" Text="Home"/>
+			<ScrollViewer Grid.Row="1">
+                <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single"
+				userControls:ContactControl.Command="{Binding SelectContactCommand}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <userControls:ContactControl 
+							DataContext="{Binding }"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+				</ListBox>
+			</ScrollViewer>
+        </Grid>
+    </Grid>
+</local:QryptoWirePage>

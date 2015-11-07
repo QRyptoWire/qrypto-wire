@@ -1,7 +1,10 @@
 using Windows.UI.Xaml.Controls;
+using Cirrious.CrossCore;
 using Cirrious.CrossCore.Platform;
 using Cirrious.MvvmCross.ViewModels;
 using Cirrious.MvvmCross.WindowsCommon.Platform;
+using QRyptoWire.App.PhoneImplementations;
+using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.App
 {
@@ -15,8 +18,14 @@ namespace QRyptoWire.App
         {
             return new Core.App();
         }
-		
-        protected override IMvxTrace CreateDebugTrace()
+
+	    public override void Initialize()
+	    {
+		    base.Initialize();
+			Mvx.RegisterType<IPushService, PushService>();
+		}
+
+	    protected override IMvxTrace CreateDebugTrace()
         {
             return new DebugTrace();
         }

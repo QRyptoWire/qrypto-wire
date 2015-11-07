@@ -21,37 +21,37 @@ namespace QRyptoWire.Core.Services
 
 		public void Register(string deviceId, string password)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public void RegisterPushToken()
+		public void RegisterPushToken(string channelUri)
 		{
-			throw new System.NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}").AddBody(channelUri));
 		}
 
 		public IEnumerable<Contact> FetchContacts()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public void AddContact(Contact contact)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public void SendMessage(Message message)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public int GetUserId()
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -10,15 +10,26 @@
 	d:DataContext="{d:DesignInstance Type=local:LoginViewModel}"
 	mc:Ignorable="d">
     <Page.Resources>
-		<converters:BoolToButtonTextConverter x:Key="BoolToButtonTextConverter"/>
-	</Page.Resources>
-    <StackPanel Margin="40 250 40 0">
-        <TextBox BorderBrush="Red"
-			Text="{Binding Password, Mode=TwoWay}"/>
-        <Button Background="Red"
-			BorderBrush="Red" 
-			Command="{Binding ProceedCommand}"
-			Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
-			HorizontalAlignment="Center"/>
-    </StackPanel>
+        <converters:BoolToButtonTextConverter x:Key="BoolToButtonTextConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+		<Image Margin="30" Source="../Assets/Logo.png"/>
+        <StackPanel HorizontalAlignment="Center" 
+				Grid.Row="1" Width="250">
+            <TextBox BorderBrush="Red"
+				Text="{Binding Password, Mode=TwoWay}"/>
+            <Button Background="Red"
+				BorderBrush="Red" 
+				Command="{Binding ProceedCommand}"
+				Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
+				HorizontalAlignment="Center"/>
+			<TextBlock HorizontalAlignment="Center" 
+				FontSize="20"
+				Text="{Binding ErrorMessage}"/>
+        </StackPanel>
+    </Grid>
 </views1:QryptoWirePage>
