@@ -6,7 +6,7 @@ namespace QRyptoWire.Core.ViewModels
 {
 	public class AddContactViewModel : MvxViewModel
 	{
-		private string _decryptedStuff;
+		private string _contactName;
 
 		public AddContactViewModel()
 		{
@@ -14,21 +14,25 @@ namespace QRyptoWire.Core.ViewModels
 			AddContactCommand = new MvxCommand(AddContactCommandAction, AddContactCanExecute);
 		}
 
-		public string DecryptedStuff
+		public string ContactName
 		{
-			get { return _decryptedStuff; }
+			get { return _contactName; }
 			set
 			{
-				_decryptedStuff = value;
+				_contactName = value;
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool CodeDetected { get; set; }
 
 		public ICommand CodeDetectedCommand { get; private set; }
 
 		private void CodeDetectedCommandAction(string content)
 		{
-			DecryptedStuff = content;
+			CodeDetected = true;
+			RaisePropertyChanged(() => CodeDetected);
+			ContactName = content;
 		}
 
 		public ICommand AddContactCommand { get; private set; }
@@ -40,7 +44,7 @@ namespace QRyptoWire.Core.ViewModels
 
 		private bool AddContactCanExecute()
 		{
-			return string.IsNullOrWhiteSpace(DecryptedStuff);
+			return !string.IsNullOrWhiteSpace(ContactName);
 		}
 
 		public MenuViewModel Menu { get; private set; }

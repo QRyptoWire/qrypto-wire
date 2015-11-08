@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 
 namespace QRyptoWire.App.Views
@@ -14,9 +12,7 @@ namespace QRyptoWire.App.Views
 
 		private async void ConfirmButtonTapped(object sender, TappedRoutedEventArgs e)
 		{
-			var btn = (Button) sender;
 			await Scanner.StopAsync();
-			btn.Command?.Execute(null);
 		}
 
 		protected async override void OnNavigatingFrom(NavigatingCancelEventArgs e)

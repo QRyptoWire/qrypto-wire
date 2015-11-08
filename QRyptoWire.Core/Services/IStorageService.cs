@@ -3,5 +3,6 @@
 	public interface IStorageService
 	{
 		bool PublicKeyExists();
+		void ClearMessages();
 	}
 }

@@ -6,5 +6,9 @@
 		{
 			return true;
 		}
+
+		public void ClearMessages()
+		{
+		}
 	}
 }
