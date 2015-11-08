@@ -13,8 +13,6 @@ using ZXing;
 using ZXing.Common;
 using Panel = Windows.Devices.Enumeration.Panel;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace QRyptoWire.App.UserControls
 {
     public sealed partial class QrCodeScanner
@@ -216,7 +214,7 @@ namespace QRyptoWire.App.UserControls
 			set { SetValue(OnDetectedCommandProperty, value);}
 	    }
 
-	    private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+	    private async static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
 	    {
 		    var sender = obj as QrCodeScanner;
 			if(sender == null)
@@ -226,6 +224,7 @@ namespace QRyptoWire.App.UserControls
 			    var cmd = sender.OnDetectedCommand;
 			    cmd.Execute(text);
 		    };
+		    await sender.StartAsync();
 	    }
 	    #endregion OnDetectedCommand
 	}

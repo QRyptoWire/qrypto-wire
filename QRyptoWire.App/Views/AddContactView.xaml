@@ -28,7 +28,8 @@
                 <!--todo instruction for user?-->
             </StackPanel>
 			<userControls:QrCodeScanner Margin="0 10" x:Name="Scanner" Grid.Row="1"
-				Width="300px" />
+				Width="300px"
+				OnDetectedCommand="{Binding CodeDetectedCommand}"/>
 			<StackPanel Grid.Row="2">
 				<TextBlock HorizontalAlignment="Center" Margin="0 10"
 					FontSize="20" Text="Decrypted stuff"/>
