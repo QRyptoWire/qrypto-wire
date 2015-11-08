@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Media.Capture;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.Devices.Enumeration;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
@@ -17,8 +17,9 @@ using Panel = Windows.Devices.Enumeration.Panel;
 
 namespace QRyptoWire.App.UserControls
 {
-    public sealed partial class QrCodeScanner : UserControl
+    public sealed partial class QrCodeScanner
     {
+		#region ScannerImplementation
         private MediaCapture _mediaCapture;
         private DispatcherTimer _timer;
 
@@ -202,5 +203,30 @@ namespace QRyptoWire.App.UserControls
 
             await _mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.Photo, resolutionMax);
         }
-    }
+		#endregion ScannerImplementation
+
+		#region OnDetectedCommand
+	    public static readonly DependencyProperty OnDetectedCommandProperty =
+		    DependencyProperty.Register("OnDetectedCommand", typeof (ICommand), typeof (QrCodeScanner),
+			    new PropertyMetadata(null, OnDetectedChanged));
+
+	    public ICommand OnDetectedCommand
+	    {
+		    get { return (ICommand) GetValue(OnDetectedCommandProperty); }
+			set { SetValue(OnDetectedCommandProperty, value);}
+	    }
+
+	    private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+	    {
+		    var sender = obj as QrCodeScanner;
+			if(sender == null)
+				return;
+		    sender.QrCodeDetected += text =>
+		    {
+			    var cmd = sender.OnDetectedCommand;
+			    cmd.Execute(text);
+		    };
+	    }
+	    #endregion OnDetectedCommand
+	}
 }
