@@ -68,8 +68,11 @@ namespace QRyptoWire.App.UserControls
         /// <returns>Task</returns>
         public async Task StopAsync()
         {
-            _timer.Stop();
-            await StopCameraPreviewAsync();
+	        if (_timer.IsEnabled)
+	        {
+		        _timer.Stop();
+		        await StopCameraPreviewAsync();
+	        }
         }
 
         private async Task InitializeCameraPreviewAsync()

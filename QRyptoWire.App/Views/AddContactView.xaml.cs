@@ -19,11 +19,10 @@ namespace QRyptoWire.App.Views
 			btn.Command?.Execute(null);
 		}
 
-		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		protected async override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 		{
 			base.OnNavigatingFrom(e);
-			var cancellationTask = Task.Run(async () => await Scanner.StopAsync());
-			cancellationTask.Wait();
+			await Scanner.StopAsync();
 		}
 	}
 }
