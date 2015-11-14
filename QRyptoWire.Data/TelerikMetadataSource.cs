@@ -57,12 +57,20 @@ namespace QRyptoWire.Service.Data
 			}).ToTable("Contacts");
 
 			//set relations
+			contactMapping
+			.HasAssociation(e => e.Sender)
+				.ToColumn("SenderId")
+				.HasConstraint((m, u) => m.SenderId == u.Id);
+			contactMapping
+			.HasAssociation(e => e.Recipient)
+				.ToColumn("RecipientId")
+				.WithOpposite(u => u.ReceivedContacts)
+				.HasConstraint((m, u) => m.RecipientId == u.Id);
+				
 			messageMapping
 			.HasAssociation(e => e.Sender)
 				.ToColumn("SenderId")
 				.HasConstraint((m, u) => m.SenderId == u.Id);
-
-			//set relations
 			messageMapping
 			.HasAssociation(e => e.Recipient)
 				.ToColumn("RecipientId")

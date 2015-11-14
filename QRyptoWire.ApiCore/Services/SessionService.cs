@@ -7,13 +7,13 @@ using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
 {
-	public class SessionService
+	public class SessionService : ISessionService
 	{
-		private DataModel DbContext { set; get; }
+		private DataModel DbContext { get; }
 		 
 		public SessionService(DataModel ctx)
 		{
-			this.DbContext = ctx;
+			DbContext = ctx;
 		}
 
 		public bool ValidateSession(string sessionKey)
@@ -21,7 +21,9 @@ namespace QRyptoWire.Service.Core
 				DateTime onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
                 if (DbContext.Sessions
 					.Count(p
-						=> p.SessionKey == sessionKey) != 1)
+						=> p.SessionKey == sessionKey
+						&& p.StarTime > onHourAgo
+						) != 1)
 					return false;
 				return true;
 		}
