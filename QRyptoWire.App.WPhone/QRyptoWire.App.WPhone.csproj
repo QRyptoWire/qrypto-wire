@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="Bootstrap\MessengerPluginBootstrap.cs" />
     <Compile Include="Converters\BoolToButtonTextConverter.cs" />
+    <Compile Include="Converters\UnreadMessagesToStringConverter.cs" />
     <Compile Include="DebugTrace.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="PhoneImplementations\PushService.cs" />

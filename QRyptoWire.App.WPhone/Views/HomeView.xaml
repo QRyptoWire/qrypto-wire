@@ -27,9 +27,15 @@
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Home"/>
-			<!--<ScrollViewer Grid.Row="1">
+			<ScrollViewer Grid.Row="1" Background="White" Margin="10">
                 <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single"
-				userControls:ContactControl.Command="{Binding SelectContactCommand}">
+				userControls:ContactControl.Command="{Binding SelectContactCommand}"
+				HorizontalContentAlignment="Stretch">
+				<ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <userControls:ContactControl 
@@ -37,7 +43,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
 				</ListBox>
-			</ScrollViewer>-->
+			</ScrollViewer>
         </Grid>
     </Grid>
 </views:QryptoWirePage>

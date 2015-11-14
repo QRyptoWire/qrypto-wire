@@ -10,15 +10,15 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		public HomeViewModel()
 		{
-			Contacts = new List<Contact>();
-			Contacts.Add(new Contact {Name = "top kek"});
-			SelectContactCommand = new MvxCommand<Contact>(SelectContactCommandAction);
+			Contacts = new List<ContactListItem>();
+			Contacts.Add(new ContactListItem { Name = "top kek", UnreadMessages = 1});
+			SelectContactCommand = new MvxCommand<ContactListItem>(SelectContactCommandAction);
 		}
 
-		public IList<Contact> Contacts { get; private set; } 
+		public List<ContactListItem> Contacts { get; private set; } 
 		public ICommand SelectContactCommand { get; private set; }
 
-		private void SelectContactCommandAction(Contact param)
+		private void SelectContactCommandAction(ContactListItem param)
 		{
 			ShowViewModel<LoginViewModel>();
 		}
