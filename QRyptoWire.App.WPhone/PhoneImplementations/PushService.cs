@@ -20,34 +20,60 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
 	    private const string ChannelName = "QryptoWirePushChannel";
 
-	    private string AcquireToken()
+	    private void AcquireToken()
 	    {
 	        var currentChannel = HttpNotificationChannel.Find(ChannelName);
-	        if (currentChannel == null)
-	        {
-	            var channel = new HttpNotificationChannel(ChannelName);
-	            channel.Open();
-	            channel.BindToShellToast();
+		    if (currentChannel == null)
+		    {
+			    currentChannel = new HttpNotificationChannel(ChannelName);
+				currentChannel.Open();
+				currentChannel.BindToShellToast();
+				currentChannel.ChannelUriUpdated += (sender, args) =>
+				{
+					RegisterToken(currentChannel.ChannelUri.AbsoluteUri);
+				};
 
-                channel.HttpNotificationReceived += OnNotificationReceived;
-	            return channel.ChannelUri.ToString();
-	        }
-            currentChannel.Open();
-            currentChannel.BindToShellToast();
-	        return currentChannel.ChannelUri.ToString();
-	    }
+				if (currentChannel.ChannelUri == null)
+				    return;
 
-	    private void OnNotificationReceived(object sender, HttpNotificationEventArgs httpNotificationEventArgs)
+			    RegisterToken(currentChannel.ChannelUri.AbsoluteUri);
+		    }
+		    else
+		    {
+				currentChannel.ChannelUriUpdated += (sender, args) =>
+				{
+					RegisterToken(currentChannel.ChannelUri.AbsoluteUri);
+				};
+			}
+
+			currentChannel.ShellToastNotificationReceived += OnNotificationReceived;
+		}
+
+		private static string _channelUri;
+		private static bool _registered = false;
+		private static readonly object _lockObject = new object();
+
+		private void RegisterToken(string token)
+		{
+			lock (_lockObject)
+			{
+				if(_channelUri != null && _channelUri ==token && _registered)
+					return;
+
+				_serviceClient.RegisterPushToken(token);
+				_channelUri = token;
+				_registered = true;
+			}
+		}
+
+	    private void OnNotificationReceived(object sender, NotificationEventArgs httpNotificationEventArgs)
 	    {
             _messenger.Publish(new NotificationReceivedMessage(this));
         }
 
 	    public void AddPushToken()
 		{
-            _serviceClient.RegisterPushToken(AcquireToken());
-			//var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
-			//channel.PushNotificationReceived += OnNotificationReceived;
-			//_serviceClient.RegisterPushToken(channel.Uri);
+            AcquireToken();
 		}
 	}
 }
