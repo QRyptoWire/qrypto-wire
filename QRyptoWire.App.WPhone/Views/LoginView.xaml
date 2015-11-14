@@ -5,11 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:QRyptoWire.App.WPhone.Views"
+    xmlns:converters="clr-namespace:QRyptoWire.App.WPhone.Converters"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d">
+    <views:QryptoWirePage.Resources>
+        <converters:BoolToButtonTextConverter x:Key="BoolToButtonTextConverter"/>
+    </views:QryptoWirePage.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -23,7 +27,7 @@
             <Button Background="Red"
 				BorderBrush="Red" 
 				Command="{Binding ProceedCommand}"
-				Content="asd"
+				Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
 				HorizontalAlignment="Center"/>
             <TextBlock HorizontalAlignment="Center" 
 				FontSize="20"

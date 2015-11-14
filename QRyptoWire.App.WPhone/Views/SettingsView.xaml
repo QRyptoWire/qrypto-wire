@@ -7,6 +7,7 @@
     xmlns:views="clr-namespace:QRyptoWire.App.WPhone.Views"
     xmlns:viewModels="clr-namespace:QRyptoWire.Core.ViewModels;assembly=QRyptoWire.Core"
     xmlns:userControls="clr-namespace:QRyptoWire.App.WPhone.UserControls"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
 	d:DataContext="{d:DesignInstance d:Type = viewModels:SettingsViewModel}"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -28,15 +29,16 @@
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Settings"/>
             <StackPanel Grid.Row="1" Margin="10">
-                <ToggleButton IsChecked="{Binding AllowPushes, Mode=TwoWay}">
+                <TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Notifications"/>
+                <toolkit:ToggleSwitch IsChecked="{Binding AllowPushes, Mode=TwoWay}">
                     <TextBlock FontSize="20" Text="Allow push notifications" HorizontalAlignment="Left"/>
-                </ToggleButton>
-                <Button Margin="0 10" HorizontalAlignment="Center" 
+                </toolkit:ToggleSwitch>
+                <Button HorizontalAlignment="Center" 
 					Content="Confirm" Command="{Binding ConfirmationCommand}"/>
-				<TextBlock HorizontalAlignment="Center" Margin="0 10"  FontSize="20" Text="Clear all messages"/>
-				<TextBlock Margin="10" FontSize="18" Opacity="0.5" TextWrapping="Wrap"
+				<TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Message data"/>
+				<TextBlock Margin="10" FontSize="18" TextWrapping="Wrap"
 					Text="Warning: by pushing this button you purge all messages from your phone's memory. You won't be able to recover them after clearing."/>
-				<Button HorizontalAlignment="Center" Content="Clear" Command="{Binding ClearCommand}"/>
+                <Button HorizontalAlignment="Center" Content="Clear all messages" Command="{Binding ClearCommand}"/>
             </StackPanel>
 			
         </Grid>

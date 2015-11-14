@@ -13,6 +13,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait">
+
     <Grid x:Name="Root">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0.1*"></RowDefinition>
