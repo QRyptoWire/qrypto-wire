@@ -12,7 +12,7 @@
     <UserControl.Resources>
 		<converters:UnreadMessagesToStringConverter x:Key="UnreadMessagesToStringConverter"/>
 	</UserControl.Resources>
-    <StackPanel x:Name="Root" Margin="5" Background="Black">
+    <StackPanel x:Name="Root" Margin="5" Background="{StaticResource PhoneChromeBrush}">
 		<TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
 		<TextBlock Text="{Binding UnreadMessages, Converter={StaticResource UnreadMessagesToStringConverter}}" 
 			HorizontalAlignment="Right" Margin="0 0 10 0"/>

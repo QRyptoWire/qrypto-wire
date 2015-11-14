@@ -101,7 +101,7 @@
     <Compile Include="Converters\UnreadMessagesToStringConverter.cs" />
     <Compile Include="DebugTrace.cs" />
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="PhoneImplementations\PushService.cs" />
+    <Compile Include="PhoneImplementations\PhoneService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -115,11 +115,17 @@
     <Compile Include="UserControls\MenuBarControl.xaml.cs">
       <DependentUpon>MenuBarControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\MessageControl.xaml.cs">
+      <DependentUpon>MessageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\QrCodeScanner.xaml.cs">
       <DependentUpon>QrCodeScanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ConversationView.xaml.cs">
+      <DependentUpon>ConversationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
@@ -272,6 +278,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\MessageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\QrCodeScanner.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -279,6 +289,10 @@
     <Page Include="Views\AddContactView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConversationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HomeView.xaml">
       <Generator>MSBuild:Compile</Generator>

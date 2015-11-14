@@ -1,18 +1,18 @@
 ﻿using System;
-using Windows.Networking.PushNotifications;
 using Cirrious.MvvmCross.Plugins.Messenger;
+using Microsoft.Phone.Info;
 using Microsoft.Phone.Notification;
 using QRyptoWire.Core.Messages;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.App.WPhone.PhoneImplementations
 {
-	public class PushService : IPushService
+	public class PhoneService : IPhoneService
 	{
 		private readonly IQryptoWireServiceClient _serviceClient;
 		private readonly IMvxMessenger _messenger;
 
-		public PushService(IQryptoWireServiceClient serviceClient, IMvxMessenger messenger)
+		public PhoneService(IQryptoWireServiceClient serviceClient, IMvxMessenger messenger)
 		{
 			_serviceClient = serviceClient;
 			_messenger = messenger;
@@ -74,6 +74,12 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 	    public void AddPushToken()
 		{
             AcquireToken();
+		}
+
+		public void LoadDeviceId()
+		{
+			var id = Convert.ToBase64String((byte[])DeviceExtendedProperties.GetValue("DeviceUniqueId"));
+            _serviceClient.SetDeviceId(id);
 		}
 	}
 }

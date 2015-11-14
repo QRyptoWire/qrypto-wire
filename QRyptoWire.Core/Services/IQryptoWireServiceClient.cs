@@ -5,6 +5,7 @@ namespace QRyptoWire.Core.Services
 {
 	public interface IQryptoWireServiceClient
 	{
+		void SetDeviceId(string id);
 		bool Login(string deviceId, string password);
 		void Register(string deviceId, string password);
 		void RegisterPushToken(string channelUri);

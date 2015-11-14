@@ -9,16 +9,16 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IStorageService _storageService;
 		private readonly IUserService _userService;
-		private readonly IPushService _pushService;
+		private readonly IPhoneService _phoneService;
 		private bool _registering;
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService, IPushService pushService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService)
 		{
 			_storageService = storageService;
 			_userService = userService;
-			_pushService = pushService;
+			_phoneService = phoneService;
 
 			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
@@ -27,6 +27,7 @@ namespace QRyptoWire.Core.ViewModels
 		{
 			if (!_storageService.PublicKeyExists())
 				Registering = true;
+			_phoneService.LoadDeviceId();
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}
 
@@ -71,7 +72,7 @@ namespace QRyptoWire.Core.ViewModels
 
 		private async void InitSynchronizationTasks()
 		{
-			await Task.Run(() => _pushService.AddPushToken());
+			await Task.Run(() => _phoneService.AddPushToken());
 		}
 
 		public IMvxCommand ProceedCommand { get; private set; }

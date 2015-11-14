@@ -22,7 +22,7 @@ namespace QRyptoWire.App.WPhone
         public override void Initialize()
         {
             base.Initialize();
-            Mvx.RegisterType<IPushService, PushService>();
+            Mvx.RegisterType<IPhoneService, PhoneService>();
         }
 
         protected override IMvxTrace CreateDebugTrace()

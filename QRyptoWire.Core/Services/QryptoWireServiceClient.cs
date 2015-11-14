@@ -9,6 +9,14 @@ namespace QRyptoWire.Core.Services
 	public class QryptoWireServiceClient : ApiClientBase, IQryptoWireServiceClient
 	{
 		private string _sessionId;
+		private string _deviceId;
+
+		public void SetDeviceId(string id)
+		{
+			if(!string.IsNullOrWhiteSpace(_deviceId))
+				throw new InvalidOperationException("Device id should be set only on startup!");
+			_deviceId = id;
+		}
 
 		public bool Login(string deviceId, string password)
 		{
@@ -21,7 +29,7 @@ namespace QRyptoWire.Core.Services
 
 		public void Register(string deviceId, string password)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.Register}"));
 		}
 
 		public void RegisterPushToken(string channelUri)
