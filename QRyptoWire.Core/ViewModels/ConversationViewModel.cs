@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -13,19 +14,34 @@ namespace QRyptoWire.Core.ViewModels
 		private readonly IStorageService _storageService;
 		private readonly IMessageService _messageService;
 		private int _contactId;
+		private string _messageBody;
 
 		public ConversationViewModel(IStorageService storageService, IMessageService messageService)
 		{
 			_storageService = storageService;
 			_messageService = messageService;
 
-			SendMessageCommand = new MvxCommand(SendMessageCommandAction, () => !string.IsNullOrEmpty(MessageBody));
+			SendMessageCommand = new MvxCommand(SendMessageCommandAction, SendCommandCanExecute);
+		}
+
+		private bool SendCommandCanExecute()
+		{
+			return !string.IsNullOrEmpty(MessageBody);
 		}
 
 		public string ContactName { get; set; }
-		public string MessageBody { get; set; }
 
-		public void Initialize(int id)
+		public string MessageBody
+		{
+			get { return _messageBody; }
+			set
+			{
+				_messageBody = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public void Init(int id)
 		{
 			_contactId = id;
 			Messages = new ObservableCollection<string>(_storageService.GetMessages(_contactId));
