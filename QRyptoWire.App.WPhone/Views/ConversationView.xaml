@@ -27,7 +27,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-			<TextBlock FontSize="20" Text="{Binding ContactName}"/>
+			<TextBlock Margin="10" FontSize="20" Text="{Binding ContactName}"/>
             <ScrollViewer Grid.Row="1">
                 <ListBox ItemsSource="{Binding Messages}">
 
