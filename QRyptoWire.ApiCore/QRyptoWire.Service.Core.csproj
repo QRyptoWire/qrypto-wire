@@ -46,8 +46,15 @@
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PushSharp.Core">
+      <HintPath>..\packages\PushSharp.2.2.1.0\lib\net40\PushSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PushSharp.WindowsPhone">
+      <HintPath>..\packages\PushSharp.2.2.1.0\lib\net40\PushSharp.WindowsPhone.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,6 +79,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContextFactory.cs" />
+    <Compile Include="PushBrokerFactory.cs" />
     <Compile Include="Services\IContactService.cs" />
     <Compile Include="Services\IMessageService.cs" />
     <Compile Include="Services\ContactService.cs" />
@@ -81,6 +90,7 @@
     <Compile Include="Services\ISessionService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\SessionService.cs" />
+    <Compile Include="SessionKeyGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QRyptoWire.Data\QRyptoWire.Service.Data.csproj">

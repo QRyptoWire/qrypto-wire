@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using QRyptoWire.Service.Core;
+﻿using System.Diagnostics;
+using System.Linq;
 using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
@@ -8,14 +8,13 @@ namespace QRyptoWire.Service.Core
 	{
 		public IQueryable<Shared.Dto.Message> FetchContacts(string sessionKey)
 		{
+			var dbContext = DbContextFactory.GetContext();
 			//TODO: delete
-			using (var dbContext = new DataModel())
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			if (user != null)
 			{
-				var sessionService = new SessionService(dbContext);
-				var user = sessionService.GetUser(sessionKey);
-				if (user != null)
-				{
-					var messages = dbContext.Contacts
+				var messages = dbContext.Contacts
 					.Where(m => m.Recipient.Id == user.Id)
 					.Select(e => new Shared.Dto.Message
 					{
@@ -23,40 +22,36 @@ namespace QRyptoWire.Service.Core
 						ReceiverId = e.Recipient.Id,
 						SenderId = e.Sender.Id
 					});
-					return messages;
-				}
+				return messages;
 			}
 			return null;
 		}
 
-		public bool SendContact(string sessionKey, string msg)
+		public bool SendContact(string sessionKey,int recipientId, string msg)
 		{
+			var dbContext = DbContextFactory.GetContext();
 
-			int recipientId = 1;
-			using (var dbContext = new DataModel())
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			if (user == null)
 			{
-
-				var sessionService = new SessionService(dbContext);
-				var user = sessionService.GetUser(sessionKey);
-				if (user == null)
-				{
-					return false;
-				}
-
-				var recipient =
-					dbContext.Users.Single(u => u.Id == recipientId);
-
-				var newContact = new Contact
-				{
-					Content = msg,
-					Sender = user,
-					Recipient = recipient
-				};
-				dbContext.Add(newContact);
-				dbContext.SaveChanges();
-
-				return true;
+				return false;
 			}
+
+			var recipient =
+				dbContext.Users.Single(u => u.Id == recipientId);
+
+			var newContact = new Contact
+			{
+				Content = msg,
+				Sender = user,
+				Recipient = recipient
+			};
+			dbContext.Add(newContact);
+			dbContext.SaveChanges();
+
+			return true;
+
 		}
-    }
+	}
 }

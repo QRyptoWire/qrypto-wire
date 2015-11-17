@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Web.Http;
-using QRyptoWire.Service.Data;
+﻿using System.Web.Http;
 using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
@@ -25,7 +23,7 @@ namespace QRyptoWire.Service.Api.Controllers
 		public IHttpActionResult Login(string deviceId, string password)
 		{
 			var userService = new UserService();
-			string sessionKey = userService.Login(deviceId, password);
+			var sessionKey = userService.Login(deviceId, password);
 			
 			if (sessionKey != null)
 			{
@@ -34,12 +32,12 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/SendMessage/{sessionKey}/{msg}")]
+		[Route("api/SendMessage/{sessionKey}/{recipientId}/{msg}")]
 		[HttpGet]
-		public IHttpActionResult SendMessage(string sessionKey, string msg)
+		public IHttpActionResult SendMessage(string sessionKey, int recipientId, string msg)
 		{
 			var messageService = new MessageService();
-			if (messageService.SendMessage(sessionKey, msg))
+			if (messageService.SendMessage(sessionKey, recipientId, msg))
 			{
 				return Ok("Message " + msg + " added.");
 			}
@@ -60,12 +58,12 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AddContact/{sessionKey}/{contact}")]
+		[Route("api/AddContact/{sessionKey}/{recipientId}/{contact}")]
 		[HttpGet]
-		public IHttpActionResult AddContact(string sessionKey, string contact)
+		public IHttpActionResult AddContact(string sessionKey, int recipientId, string contact)
 		{
 			var contactService = new ContactService();
-			if (contactService.SendContact(sessionKey, contact))
+			if (contactService.SendContact(sessionKey, recipientId, contact))
 			{
 				return Ok();
 			}
@@ -87,12 +85,32 @@ namespace QRyptoWire.Service.Api.Controllers
 
 		[Route("api/GetUserId/{sessionKey}")]
 		[HttpGet]
-		public IHttpActionResult GetUserId()
+		public IHttpActionResult GetUserId(string sessionKey)
 		{
-			
+			var sessionService = new SessionService();
+            return Ok(sessionService.GetUser(sessionKey).Id);
+		}
+
+		[Route("api/Push/{sessionKey}/{message}")]
+		[HttpGet]
+		public IHttpActionResult Push(string sessionKey, string message)
+		{
+			var userService = new UserService();
+			var sessionService = new SessionService();
+			userService.Push(
+				sessionService.GetUser(sessionKey).Id, 
+				message
+				);
 			return Ok();
 		}
 
-
+		[Route("api/RegisterPushTalken/{sessionKey}/{pushToken}")]
+		[HttpGet]
+		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
+		{
+			var userService = new UserService();
+			userService.RegisterPushToken(sessionKey, pushToken);
+			return Ok();
+		}
 	}
 }

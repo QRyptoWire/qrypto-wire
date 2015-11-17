@@ -1,71 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
 {
 	public class SessionService : ISessionService
 	{
-		private DataModel DbContext { get; }
-		 
-		public SessionService(DataModel ctx)
-		{
-			DbContext = ctx;
-		}
-
 		public bool ValidateSession(string sessionKey)
 		{
-				DateTime onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
-                if (DbContext.Sessions
-					.Count(p
-						=> p.SessionKey == sessionKey
-						&& p.StarTime > onHourAgo
-						) != 1)
-					return false;
-				return true;
+
+			var dbContext = DbContextFactory.GetContext();
+			DateTime onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
+			if (dbContext.Sessions
+				.Count(p
+					=> p.SessionKey == sessionKey
+					&& p.StarTime > onHourAgo
+					) != 1)
+				return false;
+			return true;
 		}
 
 
 		public User GetUser(string sessionKey)
 		{
-				if (ValidateSession(sessionKey))
-				{
-					var session = DbContext.
-                    Sessions
-						.Single(p
-							=> p.SessionKey == sessionKey); 
-							return session.User;
-				}
-				return null;
+
+			var dbContext = DbContextFactory.GetContext();
+			if (ValidateSession(sessionKey))
+			{
+				var session = dbContext.
+				Sessions
+					.Single(p
+						=> p.SessionKey == sessionKey);
+				return session.User;
+			}
+			return null;
 		}
 
 		public string CreateSession(string deviceId, string password)
 		{
-				if (DbContext.Users
+
+			var dbContext = DbContextFactory.GetContext();
+			if (dbContext.Users
 					.Count(p
 						=> p.PasswordHash == password
 						   && p.DeviceId == deviceId) != 1)
-					return null;
+				return null;
 
-				var user =
-					DbContext.Users.Single(
-						p => p.PasswordHash == password
-						     && p.DeviceId == deviceId);
+			var user =
+				dbContext.Users.Single(
+					p => p.PasswordHash == password
+						 && p.DeviceId == deviceId);
 
-				string sessionKey = SessionKeyGenerator.GetUniqueKey();
-				var newSession = new Session
-				{
-					User = user,
-					SessionKey = sessionKey,
-					StarTime = DateTime.Now
-				};
-				DbContext.Add(newSession);
-				DbContext.SaveChanges();
+			string sessionKey = SessionKeyGenerator.GetUniqueKey();
+			var newSession = new Session
+			{
+				User = user,
+				SessionKey = sessionKey,
+				//StarTime = DateTime.Now
+			};
+			dbContext.Add(newSession);
+			dbContext.SaveChanges();
 
-				return sessionKey;
+			return sessionKey;
 		}
 	}
 }

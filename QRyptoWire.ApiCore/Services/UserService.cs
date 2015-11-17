@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
-using QRyptoWire.Service.Core;
+using System.Web;
+using PushSharp;
+using PushSharp.WindowsPhone;
 using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
@@ -19,35 +21,79 @@ namespace QRyptoWire.Service.Core
 			}
 		}
 
-		public string Login(string deviceId, string password)
+		public User GetUserById(int userId)
 		{
-
 			using (var dbContext = new DataModel())
 			{
-				var sessionService = new SessionService(dbContext);
-				return sessionService.CreateSession(deviceId, password);
+				try
+				{
+					var user = dbContext.Users
+						.Single(p
+							=> p.Id == userId);
+					return user;
+				}
+				catch (Exception)
+				{
+					return null;
+				}
 			}
+		}
+
+		public string Login(string deviceId, string password)
+		{
+			var sessionService = new SessionService();
+			return sessionService.CreateSession(deviceId, password);
+
 		}
 
 		public bool Register(string deviceId, string password)
 		{
-			using (var dbContext = new DataModel())
-			{
-				if (dbContext.Users
-						.Any(p
-							=> p.PasswordHash == password
-							   && p.DeviceId == deviceId))
-					return false;
 
-				var newUsr = new User
-				{
-					PasswordHash = password,
-					AllowPush = true,
-					DeviceId = deviceId
-				};
-				dbContext.Add(newUsr);
-				dbContext.SaveChanges();
-			}
+			var dbContext = DbContextFactory.GetContext();
+			if (dbContext.Users
+							.Any(p
+								=> p.PasswordHash == password
+								   && p.DeviceId == deviceId))
+				return false;
+
+			var newUsr = new User
+			{
+				PasswordHash = password,
+				DeviceId = deviceId
+			};
+			dbContext.Add(newUsr);
+			dbContext.SaveChanges();
+
+			return true;
+		}
+
+		public bool RegisterPushToken(string sessionKey, string pushToken)
+		{
+
+			var dbContext = DbContextFactory.GetContext();
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			if (user == null) return false;
+			user.PushToken = pushToken;
+
+			dbContext.SaveChanges();
+
+			return true;
+		}
+
+		public bool Push(int recieverId, string message)
+		{
+			var push = PushBrokerFactory.GetBroker();
+			var user = GetUserById(recieverId);
+			if (user?.PushToken == null) return false;
+			push.QueueNotification(new WindowsPhoneToastNotification()
+				.ForEndpointUri(new Uri(user.PushToken))
+				.ForOSVersion(WindowsPhoneDeviceOSVersion.MangoSevenPointFive)
+				.WithBatchingInterval(BatchingInterval.Immediate)
+				.WithNavigatePath("/LoginView.xaml")
+				.WithText1("PushSharp")
+				.WithText2("message"));
+			push.StopAllServices();
 			return true;
 		}
 	}
