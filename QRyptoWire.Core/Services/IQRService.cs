@@ -4,7 +4,7 @@ namespace QRyptoWire.Core.Services
 {
     public interface IQrService
     {
-        byte[] GenerateQrCode(string contactName);
-        Contact ParseQrCode(string qrData);
+        void GenerateQrCode(string contactName);
+        bool ParseQrCode(string qrData, out Contact contact);
     }
 }
