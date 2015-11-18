@@ -40,11 +40,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             _storageService = storageService;
         }
 
-        public async Task<bool> GenerateQrCode(string contactName)
+        public async Task GenerateQrCode(string contactName)
         {
-            if (contactName == null)
-                return false;
-
             int userId = _storageService.GetUserId();
             string publicKey = _storageService.GetPublicKey();
             Tuple<string, string> pkElements = _encryptionService.DecomposePublicKey(publicKey);
@@ -68,8 +65,6 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             var bmp = writer.Write(matrix);
 
             await SaveWriteableBitmapToPictureLibrary(bmp);
-
-            return true;
         }
 
         public bool ParseQrCode(string qrData, out Contact contact)

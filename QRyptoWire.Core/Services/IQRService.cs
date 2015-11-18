@@ -6,11 +6,11 @@ namespace QRyptoWire.Core.Services
     public interface IQrService
     {
         /// <summary>
-        /// Generate QR code and save it to pictures library.
+        /// Generate QR code and save it to saved pictures folder
         /// </summary>
         /// <param name="contactName">Name of the contact to save into QR code</param>
-        /// /// <returns>Indication whether the QR code generation succeded</returns>
-        Task<bool> GenerateQrCode(string contactName);
+        /// <returns>Task</returns>
+        Task GenerateQrCode(string contactName);
 
         /// <summary>
         /// Parse QR code data into Contact object.
