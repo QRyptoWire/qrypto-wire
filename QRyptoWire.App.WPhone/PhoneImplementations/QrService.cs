@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using Windows.Storage;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
+using ZXing;
+using ZXing.QrCode;
+using ZXing.QrCode.Internal;
 
 namespace QRyptoWire.App.WPhone.PhoneImplementations
 {
@@ -22,16 +25,51 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         private const char DataSeparator = ';';
         private const int ElementsCount = 4;
 
-        private readonly IEncryptionService _encryptionService;
+        private const int QrCodeWidth = 300;
+        private const int QrCodeHeight = 300;
+        private const int QrCodeMargin = 2;
 
-        public QrService(IEncryptionService encryptionService)
+        private const string QrCodeFileName = "QRyptoWire-ContactCard.png";
+
+        private readonly IEncryptionService _encryptionService;
+        private readonly IStorageService _storageService;
+
+        public QrService(IEncryptionService encryptionService, IStorageService storageService)
         {
             _encryptionService = encryptionService;
+            _storageService = storageService;
         }
 
-        public void GenerateQrCode(string contactName)
+        public async Task<bool> GenerateQrCode(string contactName)
         {
-            throw new NotImplementedException();
+            if (contactName == null)
+                return false;
+
+            int userId = _storageService.GetUserId();
+            string publicKey = _storageService.GetPublicKey();
+            Tuple<string, string> pkElements = _encryptionService.DecomposePublicKey(publicKey);
+
+            string contents = ComposeQrData(userId, contactName, pkElements.Item1, pkElements.Item2);
+
+            IBarcodeWriter writer = new BarcodeWriter()
+            {
+                Encoder = new QRCodeWriter(),
+                Options = new QrCodeEncodingOptions()
+                {
+                    Width = QrCodeWidth,
+                    Height = QrCodeHeight,
+                    Margin = QrCodeMargin,
+                    PureBarcode = true,
+                    ErrorCorrection = ErrorCorrectionLevel.M,
+                }
+            };
+
+            var matrix = writer.Encode(contents);
+            var bmp = writer.Write(matrix);
+
+            await SaveWriteableBitmapToPictureLibrary(bmp);
+
+            return true;
         }
 
         public bool ParseQrCode(string qrData, out Contact contact)
@@ -57,6 +95,22 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             contact = new Contact() {Name = name, PublicKey = publicKey, UserId = userId};
             return true;
+        }
+
+        private string ComposeQrData(int id, string name, string modulus, string exponent)
+        {
+            return id + DataSeparator + name + DataSeparator + modulus + DataSeparator + exponent;
+        }
+
+        private async Task SaveWriteableBitmapToPictureLibrary(WriteableBitmap bmp)
+        {
+            var storageFolder = KnownFolders.SavedPictures;
+            var file = await storageFolder.CreateFileAsync(QrCodeFileName, CreationCollisionOption.GenerateUniqueName);
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            {
+                bmp.SaveJpeg(stream, bmp.PixelWidth, bmp.PixelHeight, 0, 100);
+            }
         }
     }
 }

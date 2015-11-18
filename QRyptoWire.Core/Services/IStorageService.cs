@@ -3,6 +3,8 @@
 	public interface IStorageService
 	{
 		bool PublicKeyExists();
-		void ClearMessages();
+        string GetPublicKey();
+	    int GetUserId();
+        void ClearMessages();
 	}
 }

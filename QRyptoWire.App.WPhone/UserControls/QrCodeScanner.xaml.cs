@@ -135,7 +135,7 @@ namespace QRyptoWire.App.WPhone.UserControls
         private string DecodeQrCode(WriteableBitmap bmp)
         {
             IBarcodeReader reader = new BarcodeReader()
-            {
+            {              
                 Options =
                     new DecodingOptions()
                     {

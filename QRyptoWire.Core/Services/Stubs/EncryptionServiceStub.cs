@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QRyptoWire.Core.Services.Stubs
 {
@@ -27,6 +23,11 @@ namespace QRyptoWire.Core.Services.Stubs
         {
             publicKey = String.Empty;
             return true;
+        }
+
+        public Tuple<string, string> DecomposePublicKey(string publicKey)
+        {
+            return new Tuple<string, string>(string.Empty, string.Empty);
         }
     }
 }
