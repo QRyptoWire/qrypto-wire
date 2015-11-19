@@ -15,7 +15,7 @@ namespace QRyptoWire.App.WPhone.Utilities
         {
             return new BarcodeWriter()
             {
-                Encoder = new QRCodeWriter(),
+                Format = BarcodeFormat.QR_CODE,
                 Options = new QrCodeEncodingOptions()
                 {
                     Width = QrCodeWidth,

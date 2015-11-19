@@ -118,6 +118,7 @@
     <Compile Include="UserControls\QrCodeScanner.xaml.cs">
       <DependentUpon>QrCodeScanner.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\PictureLibraryTools.cs" />
     <Compile Include="Utilities\QrTools.cs" />
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
