@@ -11,11 +11,13 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 	{
 		private readonly IQryptoWireServiceClient _serviceClient;
 		private readonly IMvxMessenger _messenger;
+		private readonly IMessageService _messageService;
 
-		public PhoneService(IQryptoWireServiceClient serviceClient, IMvxMessenger messenger)
+		public PhoneService(IQryptoWireServiceClient serviceClient, IMvxMessenger messenger, IMessageService messageService)
 		{
 			_serviceClient = serviceClient;
 			_messenger = messenger;
+			_messageService = messageService;
 		}
 
 	    private const string ChannelName = "QryptoWirePushChannel";
@@ -68,6 +70,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
 	    private void OnNotificationReceived(object sender, NotificationEventArgs httpNotificationEventArgs)
 	    {
+		    _messageService.FetchMessages();
+			_messageService.FetchContacts();
             _messenger.Publish(new NotificationReceivedMessage(this));
         }
 

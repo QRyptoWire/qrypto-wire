@@ -7,13 +7,17 @@
     xmlns:views="clr-namespace:QRyptoWire.App.WPhone.Views"
     xmlns:userControls="clr-namespace:QRyptoWire.App.WPhone.UserControls"
 	xmlns:viewModels="clr-namespace:QRyptoWire.Core.ViewModels;assembly=QRyptoWire.Core"
+	xmlns:converters="clr-namespace:QRyptoWire.App.WPhone.Converters"
 	d:DataContext="{d:DesignInstance d:Type=viewModels:ConversationViewModel}"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d">
-    <Grid>
+    <views:QryptoWirePage.Resources>
+		<converters:BoolToRowConverter x:Key="BoolToRowConverter"/>
+	</views:QryptoWirePage.Resources>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="200"></RowDefinition>
@@ -28,19 +32,30 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 			<TextBlock Margin="10" FontSize="20" Text="{Binding ContactName}"/>
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer Name="ScrollViewer" Grid.Row="1">
                 <ListBox ItemsSource="{Binding Messages}">
-
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
 
+					<ItemsPresenter>
+						
+					</ItemsPresenter>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <userControls:MessageControl
-							DataContext="{Binding }"/>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"></ColumnDefinition>
+									<ColumnDefinition Width="*"></ColumnDefinition>
+								</Grid.ColumnDefinitions>
+
+                                <userControls:MessageControl 
+									Grid.Column="{Binding Sent, 
+										Converter={StaticResource BoolToRowConverter}}"
+									DataContext="{Binding }"/>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

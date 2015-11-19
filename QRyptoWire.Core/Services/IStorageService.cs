@@ -8,8 +8,9 @@ namespace QRyptoWire.Core.Services
 	{
 		bool PublicKeyExists();
 		void ClearMessages();
-		IEnumerable<string> GetMessages(int userId);
+		IEnumerable<StoredMessage> GetMessages(int userId);
 		IEnumerable<ContactListItem> GetContacts();
-		void SaveMessage(Message message);
+		void SaveMessages(IEnumerable<Message> messages);
+		void SaveContacts(IEnumerable<Contact> contacts);
 	}
 }

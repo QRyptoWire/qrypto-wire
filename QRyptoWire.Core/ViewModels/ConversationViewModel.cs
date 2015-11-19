@@ -44,13 +44,13 @@ namespace QRyptoWire.Core.ViewModels
 		public void Init(int id)
 		{
 			_contactId = id;
-			Messages = new ObservableCollection<string>(_storageService.GetMessages(_contactId));
+			Messages = new ObservableCollection<StoredMessage>(_storageService.GetMessages(_contactId));
 			ContactName = _storageService.GetContacts().First(e => e.Id == _contactId).Name;
 			RaisePropertyChanged(() => ContactName);
 			RaisePropertyChanged(() => Messages);
 		}
 
-		public IList<string> Messages { get; set; } 
+		public IList<StoredMessage> Messages { get; set; } 
 
 		public ICommand SendMessageCommand { get; private set; }
 

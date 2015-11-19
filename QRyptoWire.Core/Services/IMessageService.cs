@@ -7,5 +7,6 @@ namespace QRyptoWire.Core.Services
 	{
 		void SendMessage(Message message);
 		IEnumerable<Message> FetchMessages();
+		void FetchContacts();
 	}
 }

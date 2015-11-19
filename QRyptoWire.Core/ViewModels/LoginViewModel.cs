@@ -10,15 +10,17 @@ namespace QRyptoWire.Core.ViewModels
 		private readonly IStorageService _storageService;
 		private readonly IUserService _userService;
 		private readonly IPhoneService _phoneService;
+		private readonly IMessageService _messageService;
 		private bool _registering;
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService, IMessageService messageService)
 		{
 			_storageService = storageService;
 			_userService = userService;
 			_phoneService = phoneService;
+			_messageService = messageService;
 
 			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
@@ -79,16 +81,26 @@ namespace QRyptoWire.Core.ViewModels
 		private void ProceedCommandAction()
 		{
 			if (Registering)
-				MakeApiCallAsync(() => _userService.Register(Password), b =>
-				{
-					if (b)
-						ShowViewModel<RegistrationViewModel>();
-				});
+				MakeApiCallAsync(() => _userService.Register(Password),
+					b =>
+					{
+						if (b)
+							ShowViewModel<RegistrationViewModel>();
+					});
 			else
-				MakeApiCallAsync(() => _userService.Login(Password), b =>
+				MakeApiCallAsync(() =>
+				{
+					var loggedIn = _userService.Login(Password);
+					if (loggedIn)
+					{
+						_messageService.FetchMessages();
+						_messageService.FetchContacts();
+					}
+					return loggedIn;
+				}, b =>
 				{
 					if (b)
-					{	
+					{
 						InitSynchronizationTasks();
 						ShowViewModel<HomeViewModel>();
 					}

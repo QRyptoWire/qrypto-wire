@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services
@@ -16,13 +17,23 @@ namespace QRyptoWire.Core.Services
 
 		public void SendMessage(Message message)
 		{
-			_storageService.SaveMessage(message);
+			_storageService.SaveMessages(new[] {message});
 			_client.SendMessage(message);
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			throw new System.NotImplementedException();
+			var messages = _client.FetchMessages().ToList();
+			if(messages.Any())
+				_storageService.SaveMessages(messages);
+			return messages;
+		}
+
+		public void FetchContacts()
+		{
+			var contacts = _client.FetchContacts().ToList();
+			if(contacts.Any())
+				_storageService.SaveContacts(contacts);
 		}
 	}
 }
