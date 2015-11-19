@@ -134,18 +134,23 @@ namespace QRyptoWire.App.WPhone.UserControls
 
         private string DecodeQrCode(WriteableBitmap bmp)
         {
-            IBarcodeReader reader = new BarcodeReader()
-            {              
-                Options =
-                    new DecodingOptions()
-                    {
-                        PossibleFormats = new[] { BarcodeFormat.QR_CODE },
-                        PureBarcode = false,
-                        TryHarder = true
-                    }
-            };
+            IBarcodeReader reader = GetQrReader();
             var result = reader.Decode(bmp);
             return result?.Text;
+        }
+
+        private IBarcodeReader GetQrReader()
+        {
+            return new BarcodeReader()
+                {
+                    Options =
+                        new DecodingOptions()
+                        {
+                            PossibleFormats = new[] { BarcodeFormat.QR_CODE },
+                            PureBarcode = false,
+                            TryHarder = true
+                        }
+                };
         }
 
         private async Task StartCameraPreviewAsync()
