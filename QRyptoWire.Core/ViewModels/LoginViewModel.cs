@@ -81,7 +81,7 @@ namespace QRyptoWire.Core.ViewModels
 		private void ProceedCommandAction()
 		{
 			if (Registering)
-				MakeApiCallAsync(() => _userService.Register(Password),
+				MakeApiCallAsyncSafe(() => _userService.Register(Password),
 					b =>
 					{
 						if (b)

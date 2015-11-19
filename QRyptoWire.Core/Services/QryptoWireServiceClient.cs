@@ -18,48 +18,58 @@ namespace QRyptoWire.Core.Services
 			_deviceId = id;
 		}
 
-		public bool Login(string deviceId, string password)
+		public bool Login(string password)
 		{
-			var request = new RestRequest($"{ApiUris.Login}{deviceId}/{password}/");
+			var request = new RestRequest($"{ApiUris.Login}{_deviceId}/{password}");
 			_sessionId = Execute<string>(request);
 			if (_sessionId == null)
 				return false;
 			return true;
 		}
 
-		public void Register(string deviceId, string password)
+		public void Register(string password)
 		{
-			Execute(new RestRequest($"{ApiUris.Register}"));
+			Execute(new RestRequest($"{ApiUris.Register}{_deviceId}/{password}"));
 		}
 
 		public void RegisterPushToken(string channelUri)
 		{
-			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}").AddBody(channelUri));
+			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}/").AddBody(channelUri));
 		}
 
 		public IEnumerable<Contact> FetchContacts()
 		{
-			throw new NotImplementedException();
+			return Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}"));
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			throw new NotImplementedException();
+			return Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}"));
 		}
 
 		public void AddContact(Contact contact)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.AddContact}{_sessionId}").AddBody(contact));
 		}
 
 		public void SendMessage(Message message)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.SendMessage}{_sessionId}").AddBody(message));
 		}
 
 		public int GetUserId()
 		{
-			throw new NotImplementedException();
+			return Execute<int>(new RestRequest($"{ApiUris.GetUserId}{_sessionId}"));
+		}
+
+		public bool PushesAllowed()
+		{
+			return Execute<bool>(new RestRequest($"{ApiUris.GetPushesAllowed}{_sessionId}"));
+		}
+
+		public void AllowPushes(bool allow)
+		{
+			Execute(new RestRequest($"{ApiUris.AllowPushes}{_sessionId}").AddBody(allow));
 		}
 	}
 }

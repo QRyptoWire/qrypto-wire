@@ -47,15 +47,15 @@
     <Compile Include="Enums\MenuMode.cs" />
     <Compile Include="Messages\NotificationReceivedMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IContactsService.cs" />
     <Compile Include="Services\IEncryptionService.cs" />
     <Compile Include="Services\IMessageService.cs" />
+    <Compile Include="Services\Implementation\UserService.cs" />
     <Compile Include="Services\IPhoneService.cs" />
     <Compile Include="Services\IQrService.cs" />
     <Compile Include="Services\IQryptoWireServiceClient.cs" />
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IUserService.cs" />
-    <Compile Include="Services\MessageService.cs" />
+    <Compile Include="Services\Implementation\MessageService.cs" />
     <Compile Include="Services\QryptoWireServiceClient.cs" />
     <Compile Include="Services\Stubs\StorageServiceStub.cs" />
     <Compile Include="Services\Stubs\UserServiceStub.cs" />
@@ -122,6 +122,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

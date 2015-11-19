@@ -2,7 +2,7 @@
 using System.Linq;
 using QRyptoWire.Shared.Dto;
 
-namespace QRyptoWire.Core.Services
+namespace QRyptoWire.Core.Services.Implementation
 {
 	public class MessageService : IMessageService
 	{
@@ -27,6 +27,11 @@ namespace QRyptoWire.Core.Services
 			if(messages.Any())
 				_storageService.SaveMessages(messages);
 			return messages;
+		}
+
+		public void AddContact(Contact contact)
+		{
+			_client.AddContact(contact);
 		}
 
 		public void FetchContacts()

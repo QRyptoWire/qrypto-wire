@@ -19,7 +19,7 @@ namespace QRyptoWire.Core
 				if (!response.Result.IsSuccess)
 					throw new HttpRequestException("Request to service failed");
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 			}
 		}
@@ -39,7 +39,7 @@ namespace QRyptoWire.Core
 					throw new HttpRequestException("Request to service failed");
 				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 			}
 

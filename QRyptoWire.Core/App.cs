@@ -16,7 +16,7 @@ namespace QRyptoWire.Core
                 .RegisterAsLazySingleton();
 				
             Mvx.RegisterType<IStorageService, StorageServiceStub>();
-            Mvx.RegisterType<IUserService, UserServiceStub>();
+           // Mvx.RegisterType<IUserService, UserServiceStub>();
 
             Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();
             RegisterAppStart<LoginViewModel>();
