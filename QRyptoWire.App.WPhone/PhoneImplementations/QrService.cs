@@ -5,11 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Windows.Storage;
+using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
 using ZXing;
-using ZXing.QrCode;
-using ZXing.QrCode.Internal;
 
 namespace QRyptoWire.App.WPhone.PhoneImplementations
 {
@@ -24,10 +23,6 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             public const char Separator = ';';
             public const int Count = 4;
         }
-
-        private const int QrCodeWidth = 300;
-        private const int QrCodeHeight = 300;
-        private const int QrCodeMargin = 2;
 
         private const string QrCodeFileName = "QRyptoWire-ContactCard.jpeg";
 
@@ -48,7 +43,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             string contents = ComposeQrData(userId, contactName, pkElements.Item1, pkElements.Item2);
 
-            IBarcodeWriter writer = GetQrWriter();
+            IBarcodeWriter writer = QrTools.GetQrWriter();
 
             var matrix = writer.Encode(contents);
             var bmp = writer.Write(matrix);
@@ -107,22 +102,6 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             {
                 bmp.SaveJpeg(stream, bmp.PixelWidth, bmp.PixelHeight, 0, 100);
             }
-        }
-
-        private IBarcodeWriter GetQrWriter()
-        {
-            return new BarcodeWriter()
-                {
-                    Encoder = new QRCodeWriter(),
-                    Options = new QrCodeEncodingOptions()
-                    {
-                        Width = QrCodeWidth,
-                        Height = QrCodeHeight,
-                        Margin = QrCodeMargin,
-                        PureBarcode = true,
-                        ErrorCorrection = ErrorCorrectionLevel.M,
-                    }
-                };
         }
     }
 }

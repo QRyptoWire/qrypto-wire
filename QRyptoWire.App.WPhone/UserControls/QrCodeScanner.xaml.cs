@@ -11,9 +11,9 @@ using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Microsoft.Devices;
+using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.CustomExceptions;
 using ZXing;
-using ZXing.Common;
 using Panel = Windows.Devices.Enumeration.Panel;
 
 namespace QRyptoWire.App.WPhone.UserControls
@@ -134,23 +134,9 @@ namespace QRyptoWire.App.WPhone.UserControls
 
         private string DecodeQrCode(WriteableBitmap bmp)
         {
-            IBarcodeReader reader = GetQrReader();
+            IBarcodeReader reader = QrTools.GetQrReader();
             var result = reader.Decode(bmp);
             return result?.Text;
-        }
-
-        private IBarcodeReader GetQrReader()
-        {
-            return new BarcodeReader()
-                {
-                    Options =
-                        new DecodingOptions()
-                        {
-                            PossibleFormats = new[] { BarcodeFormat.QR_CODE },
-                            PureBarcode = false,
-                            TryHarder = true
-                        }
-                };
         }
 
         private async Task StartCameraPreviewAsync()
