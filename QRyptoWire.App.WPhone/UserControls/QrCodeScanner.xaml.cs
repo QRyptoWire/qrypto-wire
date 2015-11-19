@@ -115,9 +115,9 @@ namespace QRyptoWire.App.WPhone.UserControls
                 {
                     var bmpImg = new BitmapImage { CreateOptions = BitmapCreateOptions.None };
                     bmpImg.SetSource(fileStream);
-                    WriteableBitmap wbmp = new WriteableBitmap((BitmapSource)bmpImg);
+                    WriteableBitmap wb= new WriteableBitmap((BitmapSource)bmpImg);
 
-                    string text = DecodeQrCode(wbmp);
+                    string text = DecodeQrCode(wb);
                     if (text != null)
                     {
                         QrCodeDetected(text);
@@ -132,10 +132,10 @@ namespace QRyptoWire.App.WPhone.UserControls
             }
         }
 
-        private string DecodeQrCode(WriteableBitmap bmp)
+        private string DecodeQrCode(WriteableBitmap wb)
         {
             IBarcodeReader reader = QrTools.GetQrReader();
-            var result = reader.Decode(bmp);
+            var result = reader.Decode(wb);
             return result?.Text;
         }
 

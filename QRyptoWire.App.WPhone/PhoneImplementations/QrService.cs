@@ -46,9 +46,9 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             IBarcodeWriter writer = QrTools.GetQrWriter();
 
             var matrix = writer.Encode(contents);
-            var bmp = writer.Write(matrix);
+            var wb = writer.Write(matrix);
 
-            await SaveWriteableBitmapToPictureLibrary(bmp);
+            await PictureLibraryTools.SaveWriteableBitmap(wb, QrCodeFileName);
         }
 
         public bool ParseQrCode(string qrData, out Contact contact)
@@ -91,17 +91,6 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         private string[] DecomposeQrData(string qrData)
         {
             return qrData?.Split(QrElements.Separator);
-        }
-
-        private async Task SaveWriteableBitmapToPictureLibrary(WriteableBitmap bmp)
-        {
-            var storageFolder = KnownFolders.SavedPictures;
-            var file = await storageFolder.CreateFileAsync(QrCodeFileName, CreationCollisionOption.GenerateUniqueName);
-
-            using (var stream = await file.OpenStreamForWriteAsync())
-            {
-                bmp.SaveJpeg(stream, bmp.PixelWidth, bmp.PixelHeight, 0, 100);
-            }
         }
     }
 }
