@@ -100,6 +100,9 @@
     <Compile Include="Converters\BoolToButtonTextConverter.cs" />
     <Compile Include="DebugTrace.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Models\ContactItem.cs" />
+    <Compile Include="Models\MessageItem.cs" />
+    <Compile Include="Models\UserItem.cs" />
     <Compile Include="PhoneImplementations\PushService.cs" />
     <Compile Include="PhoneImplementations\QrService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

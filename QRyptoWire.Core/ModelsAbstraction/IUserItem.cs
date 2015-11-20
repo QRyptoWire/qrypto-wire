@@ -3,7 +3,7 @@
     public interface IUserItem
     {
         int Id { get; set; }
-        string PublicKey { get; set; }
+        string KeyPair { get; set; }
         bool IsPushEnabled { get; set; }
     }
 }
