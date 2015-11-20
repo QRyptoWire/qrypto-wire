@@ -9,5 +9,6 @@ namespace QRyptoWire.Core.Services
         string Decrypt(string message, int senderUUID);
         bool ComposePublicKey(string modulus, string exponent, out string publicKey);
         Tuple<string, string> DecomposePublicKey(string publicKey);
+        string ExtractPublicKey(string keyPair);
     }
 }

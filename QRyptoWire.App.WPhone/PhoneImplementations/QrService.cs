@@ -35,7 +35,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         public async Task GenerateQrCode(string contactName)
         {
             int userId = _storageService.GetUserId();
-            string publicKey = _storageService.GetPublicKey();
+            string keyPair = _storageService.GetKeyPair();
+            string publicKey = _encryptionService.ExtractPublicKey(keyPair);
             Tuple<string, string> pkElements = _encryptionService.DecomposePublicKey(publicKey);
 
             string contents = ComposeQrData(userId, contactName, pkElements.Item1, pkElements.Item2);

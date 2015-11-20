@@ -29,5 +29,10 @@ namespace QRyptoWire.Core.Services.Stubs
         {
             return new Tuple<string, string>(string.Empty, string.Empty);
         }
+
+        public string ExtractPublicKey(string keyPair)
+        {
+            return string.Empty;
+        }
     }
 }
