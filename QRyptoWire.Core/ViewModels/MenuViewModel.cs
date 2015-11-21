@@ -11,13 +11,15 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		public MenuViewModel(MenuMode mode)
 		{
-			var messenger = Mvx.Resolve<IMvxMessenger>();
-			messenger.Subscribe<NotificationReceivedMessage>(message =>
+			if(mode != MenuMode.AtHome)
 			{
-				HasReceivedNotifications = true;
-				RaisePropertyChanged(() => HasReceivedNotifications);
-			});
-
+				var messenger = Mvx.Resolve<IMvxMessenger>();
+				messenger.Subscribe<NotificationReceivedMessage>(message =>
+				{
+					HasReceivedNotifications = true;
+					RaisePropertyChanged(() => HasReceivedNotifications);
+				});
+			}
 			HomeCommand = new MvxCommand(HomeCommandAction, () => mode != MenuMode.AtHome);
 			SettingsCommand = new MvxCommand(SettingsCommandAction, () => mode != MenuMode.AtSettings);
 			AddContactCommand = new MvxCommand(AddContactCommandAction, () => mode != MenuMode.AtAddContact);
