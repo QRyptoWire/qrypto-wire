@@ -84,8 +84,6 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 		public void LoadDeviceId()
 		{
 			var id = Convert.ToBase64String((byte[])DeviceExtendedProperties.GetValue("DeviceUniqueId"));
-			var test = new Regex("[+-=]");
-			id = test.Replace(id, "");
             _serviceClient.SetDeviceId(id);
 		}
 	}
