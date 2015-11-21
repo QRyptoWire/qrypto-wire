@@ -44,6 +44,7 @@
     <Compile Include="ApiClientBase.cs" />
     <Compile Include="App.cs" />
     <Compile Include="CustomExceptions\CameraNotFoundException.cs" />
+    <Compile Include="CustomExceptions\UserNotFoundException.cs" />
     <Compile Include="Enums\MenuMode.cs" />
     <Compile Include="Messages\NotificationReceivedMessage.cs" />
     <Compile Include="ModelsAbstraction\IContactItem.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\QryptoWireServiceClient.cs" />
     <Compile Include="Services\Stubs\EncryptionServiceStub.cs" />
-    <Compile Include="Services\Stubs\StorageServiceStub.cs" />
     <Compile Include="Services\Stubs\UserServiceStub.cs" />
     <Compile Include="ViewModels\AddContactViewModel.cs" />
     <Compile Include="ViewModels\ConversationViewModel.cs" />

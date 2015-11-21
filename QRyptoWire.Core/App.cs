@@ -15,7 +15,6 @@ namespace QRyptoWire.Core
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
 				
-            Mvx.RegisterType<IStorageService, StorageServiceStub>();
             Mvx.RegisterType<IUserService, UserServiceStub>();
             Mvx.RegisterType<IEncryptionService, EncryptionServiceStub>();
 

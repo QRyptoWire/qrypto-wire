@@ -6,7 +6,7 @@ using Windows.Storage;
 
 namespace QRyptoWire.App.WPhone.Utilities
 {
-    public class PictureLibraryTools
+    public static class PictureLibraryTools
     {
         public static async Task SaveWriteableBitmap(WriteableBitmap wb, string name)
         {

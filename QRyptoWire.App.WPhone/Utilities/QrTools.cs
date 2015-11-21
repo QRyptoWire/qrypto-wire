@@ -5,7 +5,7 @@ using ZXing.QrCode.Internal;
 
 namespace QRyptoWire.App.WPhone.Utilities
 {
-    public class QrTools
+    public static class QrTools
     {
         private const int QrCodeWidth = 300;
         private const int QrCodeHeight = 300;
