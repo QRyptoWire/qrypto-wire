@@ -10,6 +10,11 @@
     d:DesignWidth="400">
     
     <Grid>
-        <!--<CaptureElement x:Name="cameraPreview" Stretch="Uniform"></CaptureElement>-->
+        <Canvas x:Name="ViewFinderCanvas">
+            <Canvas.Background>
+                <VideoBrush x:Name="ViewFinderBrush" Stretch="Uniform"></VideoBrush>
+            </Canvas.Background>
+        </Canvas>
     </Grid>
+    
 </UserControl>

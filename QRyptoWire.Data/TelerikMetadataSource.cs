@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Telerik.OpenAccess.Metadata;
 using Telerik.OpenAccess.Metadata.Fluent;
 
@@ -31,7 +32,7 @@ namespace QRyptoWire.Service.Data
 			{
 				ID = user.Id,
 				user.PasswordHash,
-				user.AllowPush,
+				user.PushToken,
 				user.DeviceId
 			}).ToTable("Users");
 			userMapping
@@ -44,7 +45,11 @@ namespace QRyptoWire.Service.Data
 			{
 				session.UserId,
 				session.SessionKey,
+				session.StarTime
 			}).ToTable("Sessions");
+
+			var dateTimePropertyConfig = sessionMapping.HasProperty(s=> s.StarTime);
+			dateTimePropertyConfig.IsCalculatedOn(DateTimeAutosetMode.InsertAndUpdate);
 
 			var contactMapping = new MappingConfiguration<Contact>();
 			contactMapping
@@ -52,17 +57,25 @@ namespace QRyptoWire.Service.Data
 			{
 				ID = contact.Id,
 				contact.Content,
-				SenderId = contact.Sender,
-				RecipientId = contact.Recipient
+				contact.SenderId,
+				contact.RecipientId
 			}).ToTable("Contacts");
 
 			//set relations
+			contactMapping
+			.HasAssociation(e => e.Sender)
+				.ToColumn("SenderId")
+				.HasConstraint((m, u) => m.SenderId == u.Id);
+			contactMapping
+			.HasAssociation(e => e.Recipient)
+				.ToColumn("RecipientId")
+				.WithOpposite(u => u.ReceivedContacts)
+				.HasConstraint((m, u) => m.RecipientId == u.Id);
+				
 			messageMapping
 			.HasAssociation(e => e.Sender)
 				.ToColumn("SenderId")
 				.HasConstraint((m, u) => m.SenderId == u.Id);
-
-			//set relations
 			messageMapping
 			.HasAssociation(e => e.Recipient)
 				.ToColumn("RecipientId")

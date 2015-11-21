@@ -104,6 +104,7 @@
     <Compile Include="DebugTrace.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="PhoneImplementations\PhoneService.cs" />
+	<Compile Include="PhoneImplementations\QrService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -123,6 +124,8 @@
     <Compile Include="UserControls\QrCodeScanner.xaml.cs">
       <DependentUpon>QrCodeScanner.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\PictureLibraryTools.cs" />
+    <Compile Include="Utilities\QrTools.cs" />
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
     </Compile>
@@ -257,6 +260,10 @@
     </Reference>
     <Reference Include="System.Net.Http.Primitives, Version=1.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="zxing.wp8.0, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.14.0.1\lib\wp8\zxing.wp8.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

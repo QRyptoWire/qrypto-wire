@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web.Http;
-using System.Web.UI;
-using Microsoft.SqlServer.Server;
-using QRyptoWire.Service.Data;
+﻿using System.Web.Http;
 using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
@@ -18,22 +10,10 @@ namespace QRyptoWire.Service.Api.Controllers
 		[HttpGet]
 		public IHttpActionResult Register(string deviceId, string password)
 		{
-			using (var dbContext = new DataModel())
+			var userService = new UserService();
+			if (userService.Register(deviceId, password))
 			{
-				if (dbContext.Users
-						.Any(p
-							=> p.PasswordHash == password
-							   && p.DeviceId == deviceId))
-					return NotFound();
-
-				var newUsr = new User
-				{
-					PasswordHash = password,
-					AllowPush = true,
-					DeviceId = deviceId
-				};
-				dbContext.Add(newUsr);
-				dbContext.SaveChanges();
+				return NotFound();
 			}
 			return Ok();
 		}
@@ -42,97 +22,95 @@ namespace QRyptoWire.Service.Api.Controllers
 		[HttpGet]
 		public IHttpActionResult Login(string deviceId, string password)
 		{
-			using (var dbContext = new DataModel())
+			var userService = new UserService();
+			var sessionKey = userService.Login(deviceId, password);
+			
+			if (sessionKey != null)
 			{
-				var sessionService = new SessionService(dbContext);
-				string sessionKey = sessionService.CreateSession(deviceId, password);
-				if (sessionKey != null)
-				{
-					return Ok(sessionKey);
-				}
-				return NotFound();
+				return Ok(sessionKey);
 			}
+			return NotFound();
 		}
 
-		[Route("api/SendMessage/{sessionKey}/{msg}")]
+		[Route("api/SendMessage/{sessionKey}/{recipientId}/{msg}")]
 		[HttpGet]
-		public IHttpActionResult SendMessage(string sessionKey, string msg)
+		public IHttpActionResult SendMessage(string sessionKey, int recipientId, string msg)
 		{
-			int recipientId = 1;
-			using (var dbContext = new DataModel())
+			var messageService = new MessageService();
+			if (messageService.SendMessage(sessionKey, recipientId, msg))
 			{
-
-				var sessionService = new SessionService(dbContext);
-				var user = sessionService.GetUser(sessionKey);
-				if (user == null)
-				{
-					return NotFound();
-				}
-
-				var recipient =
-					dbContext.Users.Single(u => u.Id == recipientId);
-
-				var newMsg = new Message
-				{
-					Content = msg,
-					Sender = user,
-					Recipient = recipient
-				};
-				dbContext.Add(newMsg);
-				dbContext.SaveChanges();
+				return Ok("Message " + msg + " added.");
 			}
-			return Ok("Message " + msg + " added.");
+			return NotFound();
 		}
 
 		[Route("api/FetchMessages/{sessionKey}")]
 		[HttpGet]
 		public IHttpActionResult FetchMessages(string sessionKey)
 		{
-			//TODO: delete
-			using (var dbContext = new DataModel())
+
+			var messageService = new MessageService();
+			var messages = messageService.FetchMessages(sessionKey);
+            if ( messages!=null)
 			{
-				var sessionService = new SessionService(dbContext);
-				var user = sessionService.GetUser(sessionKey);
-				if (user != null)
-				{
-					var messages = dbContext.Messages
-					.Where(m => m.RecipientId == user.Id)
-					.Select(e => new Shared.Dto.Message
-					{
-						Body = e.Content,
-						ReceiverId = e.RecipientId,
-						SenderId = e.SenderId
-					});
-					return Ok(messages);
-				}
+				return Ok( messages );
 			}
 			return NotFound();
 		}
 
-		[Route("api/AddContact")]
+		[Route("api/AddContact/{sessionKey}/{recipientId}/{contact}")]
 		[HttpGet]
-		public IHttpActionResult AddContact()
+		public IHttpActionResult AddContact(string sessionKey, int recipientId, string contact)
 		{
-			//TODO: do it
+			var contactService = new ContactService();
+			if (contactService.SendContact(sessionKey, recipientId, contact))
+			{
+				return Ok();
+			}
+			return NotFound();
+		}
+
+		[Route("api/FetchContacts/{sessionKey}")]
+		[HttpGet]
+		public IHttpActionResult FetchContacts(string sessionKey)
+		{
+			var contactService = new ContactService();
+			var contacts = contactService.FetchContacts(sessionKey);
+			if (contacts != null)
+			{
+				return Ok(contacts);
+			}
+			return NotFound();
+		}
+
+		[Route("api/GetUserId/{sessionKey}")]
+		[HttpGet]
+		public IHttpActionResult GetUserId(string sessionKey)
+		{
+			var sessionService = new SessionService();
+            return Ok(sessionService.GetUser(sessionKey).Id);
+		}
+
+		[Route("api/Push/{sessionKey}/{message}")]
+		[HttpGet]
+		public IHttpActionResult Push(string sessionKey, string message)
+		{
+			var userService = new UserService();
+			var sessionService = new SessionService();
+			userService.Push(
+				sessionService.GetUser(sessionKey).Id, 
+				message
+				);
 			return Ok();
 		}
 
-		[Route("api/FetchContacts")]
+		[Route("api/RegisterPushTalken/{sessionKey}/{pushToken}")]
 		[HttpGet]
-		public IHttpActionResult FetchContacts()
+		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
 		{
-			//TODO: do it
+			var userService = new UserService();
+			userService.RegisterPushToken(sessionKey, pushToken);
 			return Ok();
 		}
-
-		[Route("api/GetUserId")]
-		[HttpGet]
-		public IHttpActionResult GetUserId()
-		{
-			//TODO: do it
-			return Ok();
-		}
-
-
 	}
 }

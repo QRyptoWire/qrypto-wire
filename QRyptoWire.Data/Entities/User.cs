@@ -10,8 +10,9 @@ namespace QRyptoWire.Service.Data
 		}
 		public int Id { get; set; }
 		public string DeviceId { get; set; }
+		public string PushToken { get; set; }
 		public string PasswordHash { set; get; }
-		public bool AllowPush { set; get; }
 		public IList<Message> ReceivedMessages { get; set; }
+		public IList<Contact> ReceivedContacts { get; set; }
 	}
 }

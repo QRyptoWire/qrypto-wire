@@ -18,45 +18,23 @@ namespace QRyptoWire.Service.Data
         :base(connectionStringName, backend, metadataSource)
     { }
 
-		public IQueryable<Message> Messages
-		{
-			get
-			{
-				return this.GetAll<Message>();
-			}
-		}
+		public IQueryable<Message> Messages => this.GetAll<Message>();
 
-		public IQueryable<Contact> Contacts
-		{
-			get
-			{
-				return this.GetAll<Contact>();
-			}
-		}
+		public IQueryable<Contact> Contacts => this.GetAll<Contact>();
 
-		public IQueryable<User> Users
-		{
-			get
-			{
-				return this.GetAll<User>();
-			}
-		}
+		public IQueryable<User> Users => this.GetAll<User>();
 
-		public IQueryable<Session> Sessions
-		{
-			get
-			{
-				return this.GetAll<Session>();
-			}
-		}
+		public IQueryable<Session> Sessions => this.GetAll<Session>();
 
 		public static BackendConfiguration GetBackendConfiguration()
 		{
-			BackendConfiguration backend = new BackendConfiguration();
-			backend.Backend = "MySql";
-			backend.ProviderName = "MySql.Data.MySqlClient";
+			var configuration = new BackendConfiguration
+			{
+				Backend = "MySql",
+				ProviderName = "MySql.Data.MySqlClient"
+			};
 
-			return backend;
+			return configuration;
 		}
 	}
 }
