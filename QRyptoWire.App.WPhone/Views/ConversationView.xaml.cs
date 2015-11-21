@@ -5,8 +5,11 @@
 		public ConversationView()
 		{
 			InitializeComponent();
-			ScrollViewer.UpdateLayout();
-			ScrollViewer.ScrollToHorizontalOffset(double.MaxValue);
+			Scroll.SizeChanged += (sender, args) =>
+			{
+				Scroll.UpdateLayout();
+				Scroll.ScrollToVerticalOffset(Scroll.ScrollableHeight);
+			};
 		}
 	}
 }

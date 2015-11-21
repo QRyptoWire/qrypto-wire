@@ -12,7 +12,7 @@
     <UserControl.Resources>
 		<converters:DateTimeToDateStringConverter x:Key="DateStringConverter"/>
 	</UserControl.Resources>
-    <StackPanel MaxWidth="300">
+    <StackPanel MaxWidth="300" Margin="5">
         <Border Padding="5" Background="{StaticResource PhoneChromeBrush}">
 			<TextBlock FontSize="25" Text="{Binding Body}" TextWrapping="Wrap"/>
 		</Border>

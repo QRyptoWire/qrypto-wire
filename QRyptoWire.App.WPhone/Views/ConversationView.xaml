@@ -29,11 +29,18 @@
         <Grid ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 			<TextBlock Margin="10" FontSize="20" Text="{Binding ContactName}"/>
-            <ScrollViewer Name="ScrollViewer" Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Name="Scroll" Grid.Row="1">
                 <ListBox ItemsSource="{Binding Messages}">
+
+					<ListBox.Template>
+						<ControlTemplate>
+							<ItemsPresenter></ItemsPresenter>
+						</ControlTemplate>
+					</ListBox.Template>
+
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -43,11 +50,10 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"></ColumnDefinition>
-									<ColumnDefinition Width="*"></ColumnDefinition>
-								</Grid.ColumnDefinitions>
-
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
                                 <userControls:MessageControl 
 									Grid.Column="{Binding Sent, 
 										Converter={StaticResource BoolToRowConverter}}"
