@@ -21,12 +21,7 @@ namespace QRyptoWire.Core.ViewModels
 			_storageService = storageService;
 			_messageService = messageService;
 
-			SendMessageCommand = new MvxCommand(SendMessageCommandAction, SendCommandCanExecute);
-		}
-
-		private bool SendCommandCanExecute()
-		{
-			return !string.IsNullOrEmpty(MessageBody);
+			SendMessageCommand = new MvxCommand(SendMessageCommandAction, () => !string.IsNullOrWhiteSpace(MessageBody));
 		}
 
 		public string ContactName { get; set; }
@@ -38,6 +33,7 @@ namespace QRyptoWire.Core.ViewModels
 			{
 				_messageBody = value;
 				RaisePropertyChanged();
+				SendMessageCommand.RaiseCanExecuteChanged();
 			}
 		}
 
@@ -52,15 +48,16 @@ namespace QRyptoWire.Core.ViewModels
 
 		public IList<StoredMessage> Messages { get; set; } 
 
-		public ICommand SendMessageCommand { get; private set; }
+		public IMvxCommand SendMessageCommand { get; private set; }
 
 		private void SendMessageCommandAction()
 		{
-			_messageService.SendMessage(new Message
+			var message = new Message
 			{
 				Body = MessageBody,
 				ReceiverId = _contactId
-			});
+			};
+			MakeApiCallAsync(() => _messageService.SendMessage(message), () => MessageBody = string.Empty);
 		}
 
 	}
