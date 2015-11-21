@@ -99,7 +99,7 @@ namespace QRyptoWire.Core.ViewModels
 					return loggedIn;
 				}, b =>
 				{
-					if (b)
+					if (true)
 					{
 						InitSynchronizationTasks();
 						ShowViewModel<HomeViewModel>();
