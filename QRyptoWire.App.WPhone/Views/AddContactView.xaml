@@ -31,18 +31,17 @@
 					 FontSize="30" Text="Add contact"/>
                 <!--todo instruction for user?-->
             </StackPanel>
-			<!--<userControls:QrCodeScanner Margin="0 10" x:Name="Scanner" Grid.Row="1"
-				Width="300px"
-				OnDetectedCommand="{Binding CodeDetectedCommand}"/>-->
+			<userControls:QrCodeScanner Margin="0 10" x:Name="Scanner" Grid.Row="1"
+				Width="300"
+				OnDetectedCommand="{Binding CodeDetectedCommand}"/>
 			<StackPanel Grid.Row="2">
 				<TextBlock HorizontalAlignment="Center" FontSize="20"
 					Text="Contact name"/>
 				<TextBox HorizontalAlignment="Center" Margin="0 10" MinWidth="200"
 					FontSize="20" Text="{Binding ContactName, Mode=TwoWay}"
 					IsEnabled="{Binding CodeDetected}"/>
-				<!--<Button HorizontalAlignment="Center" Content="Confirm"
-					Tapped="ConfirmButtonTapped"
-					Command="{Binding AddContactCommand}"/>-->
+				<Button HorizontalAlignment="Center" Content="Confirm"
+					Command="{Binding AddContactCommand}"/>
 			</StackPanel>
         </Grid>
     </Grid>
