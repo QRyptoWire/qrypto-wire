@@ -11,8 +11,5 @@ namespace QRyptoWire.App.WPhone.Models
 
         [Column(CanBeNull = false)]
         public string KeyPair { get; set; }
-
-        [Column(CanBeNull = false)]
-        public bool IsPushEnabled { get; set; }
     }
 }

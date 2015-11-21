@@ -70,7 +70,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             if (!_encryptionService.ComposePublicKey(modulus, exponent, out publicKey))
                 return false;
 
-            contact = new Contact() { Name = name, PublicKey = publicKey, UserId = userId };
+            contact = new Contact() { Name = name, PublicKey = publicKey, Id = userId };
             return true;
         }
 

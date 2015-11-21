@@ -1,5 +1,4 @@
-﻿using System.Data.Linq;
-using System.Data.Linq.Mapping;
+﻿using System.Data.Linq.Mapping;
 using QRyptoWire.Core.ModelsAbstraction;
 
 namespace QRyptoWire.App.WPhone.Models
@@ -18,8 +17,5 @@ namespace QRyptoWire.App.WPhone.Models
 
         [Column(CanBeNull = false)]
         public bool IsNew { get; set; }
-
-        [Association(ThisKey = "Id", OtherKey = "SenderId")]
-        public EntitySet<MessageItem> Messages { get; set; }
     }
 }
