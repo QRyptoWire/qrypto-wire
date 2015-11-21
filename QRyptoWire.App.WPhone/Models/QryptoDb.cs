@@ -10,7 +10,7 @@ namespace QRyptoWire.App.WPhone.Models
         public Table<MessageItem> Messages;
         public Table<ContactItem> Contacts;
 
-        public const string ConnectionString = "DataSource='QryptoDb.sdf';Password={0};";
+        public const string ConnectionString = "DataSource='isostore:/QryptoDb.sdf';Password={0};";
 
         public QRyptoDb(string connectionString)
             : base(connectionString)
