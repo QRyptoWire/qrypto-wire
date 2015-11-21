@@ -25,7 +25,7 @@ namespace QRyptoWire.Core.ViewModels
 
 		public override void Start()
 		{
-			if (!_storageService.KeyPairExists())
+			if (!_storageService.UserExists())
 				Registering = true;
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}

@@ -5,7 +5,32 @@ namespace QRyptoWire.Core.Services.Stubs
 {
 	public class StorageServiceStub : IStorageService
 	{
-		public bool KeyPairExists()
+	    public bool ArePushNotificationsEnabled()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public void EnablePushNotifications()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public void DisablePushNotifications()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public void CreateUser(IUserItem user)
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public IUserItem GetUser()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public bool UserExists()
 		{
 			return true;
 		}
@@ -26,6 +51,11 @@ namespace QRyptoWire.Core.Services.Stubs
 	    }
 
 	    public IEnumerable<IMessageItem> GetMessages()
+	    {
+	        throw new System.NotImplementedException();
+	    }
+
+	    public IEnumerable<IMessageItem> GetConversation(int contactId)
 	    {
 	        throw new System.NotImplementedException();
 	    }

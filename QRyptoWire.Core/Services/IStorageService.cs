@@ -5,14 +5,19 @@ namespace QRyptoWire.Core.Services
 {
 	public interface IStorageService
 	{
-		bool KeyPairExists();
+        bool ArePushNotificationsEnabled();
+        void EnablePushNotifications();
+        void DisablePushNotifications();
+        void CreateUser(IUserItem user);
+        IUserItem GetUser();
+        bool UserExists();
         string GetKeyPair();
-	    int GetUserId();
-	    IEnumerable<IContactItem> GetContacts();
-	    IEnumerable<IMessageItem> GetMessages();
-	    IEnumerable<IMessageItem> GetMessages(int contactId);
-	    void AddContacts(IEnumerable<IContactItem> contacts);
-	    void AddMessages(IEnumerable<IMessageItem> messages);
+        int GetUserId();
+        IEnumerable<IContactItem> GetContacts();
+        IEnumerable<IMessageItem> GetMessages();
+        IEnumerable<IMessageItem> GetConversation(int contactId);
+        void AddContacts(IEnumerable<IContactItem> contacts);
+        void AddMessages(IEnumerable<IMessageItem> messages);
         void ClearMessages();
     }
 }
