@@ -19,5 +19,7 @@ namespace QRyptoWire.Core.Services
         void AddContacts(IEnumerable<IContactItem> contacts);
         void AddMessages(IEnumerable<IMessageItem> messages);
         void ClearMessages();
-    }
+	    void MarkMessagesAsNotNew(IEnumerable<int> messagesId);
+	    void MarkContactsAsNotNew(IEnumerable<int> contactsId);
+	}
 }

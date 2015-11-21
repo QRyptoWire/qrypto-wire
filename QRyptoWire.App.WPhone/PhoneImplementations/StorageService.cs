@@ -131,16 +131,16 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
         public void AddContacts(IEnumerable<IContactItem> contacts)
         {
+            if (contacts == null) return;
+
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                if (contacts == null) return;
-
                 List<ContactItem> contactsToAdd = contacts.Select(c => new ContactItem()
                 {
                     Id = c.Id,
                     Name = c.Name,
                     PublicKey = c.PublicKey,
-                    IsNew = true
+                    IsNew = c.IsNew
                 }).ToList();
 
                 db.Contacts.InsertAllOnSubmit(contactsToAdd);
@@ -150,16 +150,15 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
         public void AddMessages(IEnumerable<IMessageItem> messages)
         {
+            if (messages == null) return;
+
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                if (messages == null)
-                    return;
-
                 List<MessageItem> messagesToAdd = messages.Select(m => new MessageItem()
                 {
                     SenderId = m.SenderId,
                     ReceiverId = m.ReceiverId,
-                    IsNew = true,
+                    IsNew = m.IsNew,
                     Body = m.Body,
                     Date = m.Date
                 }).ToList();
@@ -174,6 +173,34 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
                 db.Messages.DeleteAllOnSubmit(db.Messages);
+                db.SubmitChanges();
+            }
+        }
+
+        public void MarkMessagesAsNotNew(IEnumerable<int> messagesId)
+        {
+            if (messagesId == null) return;
+
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                foreach (MessageItem message in db.Messages.Where(m => messagesId.Contains(m.Id)))
+                {
+                    message.IsNew = false;
+                }
+                db.SubmitChanges();
+            }
+        }
+
+        public void MarkContactsAsNotNew(IEnumerable<int> contactsId)
+        {
+            if (contactsId == null) return;
+
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                foreach (ContactItem contact in db.Contacts.Where(c => contactsId.Contains(c.Id)))
+                {
+                    contact.IsNew = false;
+                }
                 db.SubmitChanges();
             }
         }
