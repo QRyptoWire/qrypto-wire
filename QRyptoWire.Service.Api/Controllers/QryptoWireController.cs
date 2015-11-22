@@ -13,9 +13,9 @@ namespace QRyptoWire.Service.Api.Controllers
 			var userService = new UserService();
 			if (userService.Register(deviceId, password))
 			{
-				return NotFound();
+				return Ok();
 			}
-			return Ok();
+			return NotFound();
 		}
 
 		[Route("api/Login/{deviceId}/{password}")]
@@ -88,7 +88,9 @@ namespace QRyptoWire.Service.Api.Controllers
 		public IHttpActionResult GetUserId(string sessionKey)
 		{
 			var sessionService = new SessionService();
-            return Ok(sessionService.GetUser(sessionKey).Id);
+			var user = sessionService.GetUser(sessionKey);
+			if (user!=null) return Ok(user.Id);
+			return NotFound();
 		}
 
 		[Route("api/Push/{sessionKey}/{message}")]
@@ -97,11 +99,13 @@ namespace QRyptoWire.Service.Api.Controllers
 		{
 			var userService = new UserService();
 			var sessionService = new SessionService();
-			userService.Push(
+			var ok = userService.Push(
 				sessionService.GetUser(sessionKey).Id, 
 				message
 				);
-			return Ok();
+
+			if (ok) return Ok();
+			return NotFound();
 		}
 
 		[Route("api/RegisterPushTalken/{sessionKey}/{pushToken}")]
@@ -109,8 +113,17 @@ namespace QRyptoWire.Service.Api.Controllers
 		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
 		{
 			var userService = new UserService();
-			userService.RegisterPushToken(sessionKey, pushToken);
-			return Ok();
+			var ok = userService.RegisterPushToken(sessionKey, pushToken);
+			
+			if (ok) return Ok();
+			return NotFound();
+		}
+
+
+		protected override void Dispose(bool disposing)
+		{
+			DbContextFactory.Dispose();
+			base.Dispose(disposing);
 		}
 	}
 }

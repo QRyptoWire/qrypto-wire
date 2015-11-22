@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
@@ -12,19 +11,17 @@ namespace QRyptoWire.Service.Core
 			//TODO: delete
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
-			if (user != null)
-			{
-				var messages = dbContext.Contacts
-					.Where(m => m.Recipient.Id == user.Id)
-					.Select(e => new Shared.Dto.Message
-					{
-						Body = e.Content,
-						ReceiverId = e.Recipient.Id,
-						SenderId = e.Sender.Id
-					});
-				return messages;
-			}
-			return null;
+			if (user == null) return null;
+
+			var messages = dbContext.Contacts
+				.Where(m => m.Recipient.Id == user.Id)
+				.Select(e => new Shared.Dto.Message
+				{
+					Body = e.Content,
+					ReceiverId = e.Recipient.Id,
+					SenderId = e.Sender.Id
+				});
+			return messages;
 		}
 
 		public bool SendContact(string sessionKey,int recipientId, string msg)

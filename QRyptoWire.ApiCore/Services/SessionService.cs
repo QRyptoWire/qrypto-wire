@@ -10,14 +10,14 @@ namespace QRyptoWire.Service.Core
 		{
 
 			var dbContext = DbContextFactory.GetContext();
-			DateTime onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
-			if (dbContext.Sessions
+			var onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
+			return (
+				dbContext.Sessions
 				.Count(p
 					=> p.SessionKey == sessionKey
-					&& p.StarTime > onHourAgo
-					) != 1)
-				return false;
-			return true;
+					   && p.StarTime > onHourAgo
+				) != 1
+			);
 		}
 
 
@@ -25,15 +25,12 @@ namespace QRyptoWire.Service.Core
 		{
 
 			var dbContext = DbContextFactory.GetContext();
-			if (ValidateSession(sessionKey))
-			{
-				var session = dbContext.
+			if (!ValidateSession(sessionKey)) return null;
+			var session = dbContext.
 				Sessions
-					.Single(p
-						=> p.SessionKey == sessionKey);
-				return session.User;
-			}
-			return null;
+				.Single(p
+					=> p.SessionKey == sessionKey);
+			return session.User;
 		}
 
 		public string CreateSession(string deviceId, string password)

@@ -1,26 +1,27 @@
-﻿using System.Security.Cryptography;
+﻿using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
-namespace QRyptoWire.Service.Data
+namespace QRyptoWire.Service.Core
 {
 	public class SessionKeyGenerator
 	{
-		private static readonly int keyLength = 20;
+		private const int KeyLength = 20;
 
-        public static string GetUniqueKey()
+		public static string GetUniqueKey()
 		{
 
-			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-			byte[] buff = new byte[keyLength];
+			var rng = new RNGCryptoServiceProvider();
+			var buff = new byte[KeyLength];
 
 			rng.GetBytes(buff);
 			return BytesToHexString(buff);
 		}
-		private static string BytesToHexString(byte[] bytes)
+		private static string BytesToHexString(IEnumerable<byte> bytes)
 		{
 			var hexString = new StringBuilder(64);
 
-			foreach (byte t in bytes)
+			foreach (var t in bytes)
 			{
 				hexString.Append($"{t:X2}");
 			}

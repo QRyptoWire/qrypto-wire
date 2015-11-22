@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web;
 using PushSharp;
 using PushSharp.WindowsPhone;
 using QRyptoWire.Service.Data;
@@ -83,6 +82,7 @@ namespace QRyptoWire.Service.Core
 
 		public bool Push(int recieverId, string message)
 		{
+			//todo: fix that shit
 			var push = PushBrokerFactory.GetBroker();
 			var user = GetUserById(recieverId);
 			if (user?.PushToken == null) return false;
@@ -92,7 +92,7 @@ namespace QRyptoWire.Service.Core
 				.WithBatchingInterval(BatchingInterval.Immediate)
 				.WithNavigatePath("/LoginView.xaml")
 				.WithText1("PushSharp")
-				.WithText2("message"));
+				.WithText2(message));
 			push.StopAllServices();
 			return true;
 		}

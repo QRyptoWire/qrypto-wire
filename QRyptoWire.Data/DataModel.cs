@@ -8,23 +8,23 @@ namespace QRyptoWire.Service.Data
 	{
 		private static string connectionStringName = @"AzureMySql";
 
-		private static BackendConfiguration backend =
+		private static readonly BackendConfiguration Backend =
 			GetBackendConfiguration();
 
-		private static MetadataSource metadataSource =
+		private static readonly MetadataSource MetadataSource =
 			new TelerikMetadataSource();
 
 		public DataModel()
-        :base(connectionStringName, backend, metadataSource)
+        :base(connectionStringName, Backend, MetadataSource)
     { }
 
-		public IQueryable<Message> Messages => this.GetAll<Message>();
+		public IQueryable<Message> Messages => GetAll<Message>();
 
-		public IQueryable<Contact> Contacts => this.GetAll<Contact>();
+		public IQueryable<Contact> Contacts => GetAll<Contact>();
 
-		public IQueryable<User> Users => this.GetAll<User>();
+		public IQueryable<User> Users => GetAll<User>();
 
-		public IQueryable<Session> Sessions => this.GetAll<Session>();
+		public IQueryable<Session> Sessions => GetAll<Session>();
 
 		public static BackendConfiguration GetBackendConfiguration()
 		{
