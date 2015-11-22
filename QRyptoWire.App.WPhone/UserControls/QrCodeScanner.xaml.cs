@@ -65,8 +65,6 @@ namespace QRyptoWire.App.WPhone.UserControls
 				throw new CameraNotFoundException("No camera is present");
 			}
 
-			SetCameraToMaxResolution();
-
 			_photoCamera.Initialized += PhotoCamera_OnInitialized;
 			_photoCamera.CaptureImageAvailable += PhotoCamera_OnImageAvailable;
 		}
@@ -75,6 +73,7 @@ namespace QRyptoWire.App.WPhone.UserControls
 		{
 			if (e.Succeeded)
 			{
+				SetCameraToMaxResolution();
 				ViewFinderBrush.SetSource(_photoCamera);
 				InitializeTimer();
 				StartTimer();
@@ -152,7 +151,6 @@ namespace QRyptoWire.App.WPhone.UserControls
 			cmd.Execute(text);
 		};
 			sender.Start();
-		//	await sender.StartAsync();
 		}
 		#endregion OnDetectedCommand
 	}
