@@ -1,216 +1,159 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Windows.Devices.Enumeration;
-using Windows.Media.Capture;
-using Windows.Media.MediaProperties;
-using Windows.Storage;
 using Microsoft.Devices;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.CustomExceptions;
 using ZXing;
-using Panel = Windows.Devices.Enumeration.Panel;
 
 namespace QRyptoWire.App.WPhone.UserControls
 {
-    public sealed partial class QrCodeScanner
-    {
-        #region ScannerImplementation
-        private MediaCapture _mediaCapture;
-        private DispatcherTimer _timer;
-        private bool IsTimerInitialized => _timer != null;
-        private const double ScanIntervalMs = 400.0;
+	public sealed partial class QrCodeScanner
+	{
+		#region ScannerImplementation
+		private PhotoCamera _photoCamera;
+		private DispatcherTimer _timer;
+		private const double ScanIntervalMs = 400.0;
 
-        public delegate void QrCodeDetectedEventHandler(string text);
+		public delegate void QrCodeDetectedEventHandler(string text);
 
-        /// <summary>
-        /// Event that is fired when QR code is detected by camera.
-        /// </summary>
-        public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
+		/// <summary>
+		/// Event that is fired when QR code is detected by camera.
+		/// </summary>
+		public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
 
-        public QrCodeScanner()
-        {
-            this.InitializeComponent();
-        }
+		public QrCodeScanner()
+		{
+			this.InitializeComponent();
+		}
 
-        /// <summary>
-        /// Start camera preview and QR code scanner.
-        /// </summary>
-        /// <returns>Task</returns>
-        public async Task StartAsync()
-        {
-            await InitializeCameraPreviewAsync();
-            await StartCameraPreviewAsync();
+		/// <summary>
+		/// Start camera preview and QR code scanner.
+		/// </summary>
+		public void Start()
+		{
+			InitializeCameraPreview();
+		}
 
-            if (!IsTimerInitialized)
-            {
-                InitializeTimer();
-            }
+		/// <summary>
+		/// Stop camera preview and QR code scanner.
+		/// </summary>
+		public void Stop()
+		{
+			if (_timer.IsEnabled)
+			{
+				_timer.Stop();
+			}
+			_photoCamera?.Dispose();
+		}
 
-            _timer.Start();
-        }
+		private void InitializeCameraPreview()
+		{
+			if (PhotoCamera.IsCameraTypeSupported(CameraType.Primary))
+			{
+				_photoCamera = new Microsoft.Devices.PhotoCamera(CameraType.Primary);
+			}
+			else if (PhotoCamera.IsCameraTypeSupported(CameraType.FrontFacing))
+			{
+				_photoCamera = new Microsoft.Devices.PhotoCamera(CameraType.Primary);
+			}
+			else
+			{
+				throw new CameraNotFoundException("No camera is present");
+			}
 
-        /// <summary>
-        /// Stop camera preview and QR code scanner.
-        /// </summary>
-        /// <returns>Task</returns>
-        public async Task StopAsync()
-        {
-            if (_timer.IsEnabled)
-            {
-                _timer.Stop();
-                await StopCameraPreviewAsync();
-            }
-           _mediaCapture?.Dispose();
-        }
+			SetCameraToMaxResolution();
 
-        private async Task InitializeCameraPreviewAsync()
-        {
-            var cam = await GetBackCamera();
+			_photoCamera.Initialized += PhotoCamera_OnInitialized;
+			_photoCamera.CaptureImageAvailable += PhotoCamera_OnImageAvailable;
+		}
 
-            if (cam == null)
-            {
-                cam = await GetFrontCamera();
+		void PhotoCamera_OnInitialized(object sender, CameraOperationCompletedEventArgs e)
+		{
+			if (e.Succeeded)
+			{
+				ViewFinderBrush.SetSource(_photoCamera);
+				InitializeTimer();
+				StartTimer();
+			}
+		}
 
-                if (cam == null)
-                {
-                    throw new CameraNotFoundException("No camera is present");
-                }
-            }
+		void PhotoCamera_OnImageAvailable(object sender, ContentReadyEventArgs e)
+		{
+			BitmapImage bmpImg = new BitmapImage();
+			bmpImg.SetSource(e.ImageStream);
+			WriteableBitmap wb = new WriteableBitmap(bmpImg);
 
-            _mediaCapture = new MediaCapture();
+			string text = DecodeQrCode(wb);
+			if (text != null)
+			{
+				QrCodeDetected(text);
+			}
+		}
 
-            await _mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
-            {
-                VideoDeviceId = cam.Id,
-                PhotoCaptureSource = PhotoCaptureSource.VideoPreview,
-                StreamingCaptureMode = StreamingCaptureMode.Video
-            });
+		private void InitializeTimer()
+		{
+			_timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
+			_timer.Tick += TimerOnTick;
+		}
 
-            await SetCameraToMaxResolution();
+		private void StartTimer()
+		{
+			if (!_timer.IsEnabled)
+			{
+				_timer.Start();
+			}
+		}
 
-            ViewFinderBrush.SetSource(_mediaCapture);
-        }
+		private void TimerOnTick(object sender, object o)
+		{
+			_photoCamera.CaptureImage();
+		}
 
-        private void InitializeTimer()
-        {
-            _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
-            _timer.Tick += TimerOnTick;
-        }
+		private string DecodeQrCode(WriteableBitmap wb)
+		{
+			IBarcodeReader reader = QrTools.GetQrReader();
+			var result = reader.Decode(wb);
+			return result?.Text;
+		}
 
-        private async void TimerOnTick(object sender, object o)
-        {
-            try
-            {
-                StorageFile tmpFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("temp_photo.jpg", CreationCollisionOption.GenerateUniqueName);
+		private void SetCameraToMaxResolution()
+		{
+			_photoCamera.Resolution = GetMaxCameraResolution();
+		}
 
-                await _mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), tmpFile);
-
-                using (var fileStream = await tmpFile.OpenStreamForReadAsync())
-                {
-                    var bmpImg = new BitmapImage { CreateOptions = BitmapCreateOptions.None };
-                    bmpImg.SetSource(fileStream);
-                    WriteableBitmap wb= new WriteableBitmap((BitmapSource)bmpImg);
-
-                    string text = DecodeQrCode(wb);
-                    if (text != null)
-                    {
-                        QrCodeDetected(text);
-                    }
-                }
-
-                await tmpFile.DeleteAsync();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-
-        private string DecodeQrCode(WriteableBitmap wb)
-        {
-            IBarcodeReader reader = QrTools.GetQrReader();
-            var result = reader.Decode(wb);
-            return result?.Text;
-        }
-
-        private async Task StartCameraPreviewAsync()
-        {
-            await _mediaCapture.StartPreviewAsync();
-        }
-
-        private async Task StopCameraPreviewAsync()
-        {
-            await _mediaCapture.StopPreviewAsync();
-        }
-
-        private async Task<DeviceInformation> GetBackCamera()
-        {
-            var camList = await GetCameraDevices();
-
-            return (from cam in camList
-                    where cam.EnclosureLocation != null && cam.EnclosureLocation.Panel == Panel.Back
-                    select cam).FirstOrDefault();
-
-        }
-
-        private async Task<DeviceInformation> GetFrontCamera()
-        {
-            var camList = await GetCameraDevices();
-
-            return (from cam in camList
-                    where cam.EnclosureLocation != null && cam.EnclosureLocation.Panel == Panel.Front
-                    select cam).FirstOrDefault();
-        }
-
-        private async Task<DeviceInformationCollection> GetCameraDevices()
-        {
-            return await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
-        }
-
-        private async Task SetCameraToMaxResolution()
-        {
-            var availableResolutions = _mediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.Photo);
-
-            var resolutionMax = (VideoEncodingProperties)
-                availableResolutions.OrderByDescending(
-                    r => ((VideoEncodingProperties) r).Width*((VideoEncodingProperties) r).Height).FirstOrDefault();
-
-            if (resolutionMax == null) return;
-
-            await _mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.Photo, resolutionMax);
-        }
-        #endregion ScannerImplementation
+		private System.Windows.Size GetMaxCameraResolution()
+		{
+			return _photoCamera.AvailableResolutions.OrderByDescending(size => size.Height * size.Width).First();
+		}
+		#endregion ScannerImplementation
 
 
-        #region OnDetectedCommand
-        public static readonly DependencyProperty OnDetectedCommandProperty =
-         DependencyProperty.Register("OnDetectedCommand", typeof(ICommand), typeof(QrCodeScanner),
-             new PropertyMetadata(null, OnDetectedChanged));
+		#region OnDetectedCommand
+		public static readonly DependencyProperty OnDetectedCommandProperty = DependencyProperty.Register("OnDetectedCommand", typeof(ICommand), typeof(QrCodeScanner), new PropertyMetadata(null, OnDetectedChanged));
 
-        public ICommand OnDetectedCommand
-        {
-            get { return (ICommand)GetValue(OnDetectedCommandProperty); }
-            set { SetValue(OnDetectedCommandProperty, value); }
-        }
+		public ICommand OnDetectedCommand
+		{
+			get { return (ICommand)GetValue(OnDetectedCommandProperty); }
+			set { SetValue(OnDetectedCommandProperty, value); }
+		}
 
-        private async static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-        {
-            var sender = obj as QrCodeScanner;
-            if (sender == null)
-                return;
-            sender.QrCodeDetected += text =>
-            {
-                var cmd = sender.OnDetectedCommand;
-                cmd.Execute(text);
-            };
-            await sender.StartAsync();
-        }
-        #endregion OnDetectedCommand
-    }
+		private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			var sender = obj as QrCodeScanner;
+			if (sender == null)
+				return;
+			sender.QrCodeDetected += text =>
+		{
+			var cmd = sender.OnDetectedCommand;
+			cmd.Execute(text);
+		};
+			sender.Start();
+		//	await sender.StartAsync();
+		}
+		#endregion OnDetectedCommand
+	}
 }
