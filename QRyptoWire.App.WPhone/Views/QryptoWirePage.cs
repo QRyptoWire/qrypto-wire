@@ -26,20 +26,12 @@ namespace QRyptoWire.App.WPhone.Views
 
 					var rootGrid = new Grid
 					{
-						RowDefinitions = { new RowDefinition { Height = GridLength.Auto } }
+						RowDefinitions = { new RowDefinition { Height = new GridLength(1, GridUnitType.Star) } }
 					};
-
-					//var binding = new Binding()
-					//{
-					//	Source = dc.Working,
-					//	Converter = new BoolToVisibilityConverter(),
-					//	FallbackValue = false
-					//};
 
 					var overlay = new WorkingOverlay();
 					Grid.SetRow(overlay, 1);
 					Grid.SetRow(pageContent, 1);
-					//BindingOperations.SetBinding(overlay, VisibilityProperty, binding);
 
 					Content = rootGrid;
 
