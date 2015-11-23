@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Windows.UI.Notifications;
 using Cirrious.MvvmCross.Plugins.Messenger;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Notification;
@@ -69,10 +71,13 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 			}
 		}
 
-	    private void OnNotificationReceived(object sender, NotificationEventArgs httpNotificationEventArgs)
+	    private async void OnNotificationReceived(object sender, NotificationEventArgs httpNotificationEventArgs)
 	    {
-		    _messageService.FetchMessages();
-			_messageService.FetchContacts();
+		    await Task.Run(() =>
+		    {
+			    _messageService.FetchMessages();
+				_messageService.FetchContacts();
+			});
             _messenger.Publish(new NotificationReceivedMessage(this));
         }
 

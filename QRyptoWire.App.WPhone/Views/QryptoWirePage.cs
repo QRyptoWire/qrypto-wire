@@ -1,9 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Cirrious.MvvmCross.WindowsPhone.Views;
 using Microsoft.Phone.Shell;
-using QRyptoWire.App.WPhone.Converters;
 using QRyptoWire.Core.ViewModels;
 
 namespace QRyptoWire.App.WPhone.Views
