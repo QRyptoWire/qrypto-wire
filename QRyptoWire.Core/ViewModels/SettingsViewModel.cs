@@ -9,36 +9,35 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IUserService _userService;
 		private readonly IStorageService _storageService;
+		private bool _allowPushes;
 
 		public SettingsViewModel(IUserService userService, IStorageService storageService)
 		{
 			_userService = userService;
 			_storageService = storageService;
 
-			ConfirmationCommand = new MvxCommand(ConfirmationCommandAction);
 			ClearCommand = new MvxCommand(ClearCommandAction);
 		}
 
-		public bool AllowPushes { get; set; }
+		public bool AllowPushes
+		{
+			get { return _allowPushes; }
+			set
+			{
+				_allowPushes = value;
+				RaisePropertyChanged();
+				MakeApiCallAsync(() => _userService.SetPushSettings(AllowPushes));
+			}
+		}
+
 		public MenuViewModel Menu { get; private set; }
 		public override void Start()
 		{
-			MakeApiCallAsync(() => _userService.GetPushSettings(), b =>
-			{
-				AllowPushes = b;
-				RaisePropertyChanged(() => AllowPushes);
-			});
-			Menu =new MenuViewModel(MenuMode.AtSettings);
+			MakeApiCallAsync(() => _userService.GetPushSettings(), b => AllowPushes = b);
+			Menu = new MenuViewModel(MenuMode.AtSettings);
 		}
 
 		public ICommand ClearCommand { get; private set; }
-
-		private void ConfirmationCommandAction()
-		{
-			MakeApiCallAsync(() => _userService.SetPushSettings(AllowPushes));
-		}
-
-		public ICommand ConfirmationCommand { get; private set; }
 
 		private void ClearCommandAction()
 		{
