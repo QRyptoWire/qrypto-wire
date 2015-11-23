@@ -10,5 +10,7 @@ namespace QRyptoWire.Shared
 		{
 			CurrentLogic = () => DateTime.UtcNow;
 		}
+
+		public static DateTime GetTime => CurrentLogic.Invoke();
 	}
 }

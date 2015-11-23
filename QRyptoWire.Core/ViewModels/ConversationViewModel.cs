@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Services;
+using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.ViewModels
@@ -55,9 +56,19 @@ namespace QRyptoWire.Core.ViewModels
 			var message = new Message
 			{
 				Body = MessageBody,
-				ReceiverId = _contactId
+				ReceiverId = _contactId,
+				DateSent = QryptoTime.GetTime
 			};
-			MakeApiCallAsync(() => _messageService.SendMessage(message), () => MessageBody = string.Empty);
+			MakeApiCallAsync(() => _messageService.SendMessage(message), () =>
+			{
+				MessageBody = string.Empty;
+				Messages.Add(new StoredMessage
+				{
+					Body = message.Body,
+					Date =  message.DateSent,
+					Sent = true
+				});
+			});
 		}
 
 	}
