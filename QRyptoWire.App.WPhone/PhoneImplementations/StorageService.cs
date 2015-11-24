@@ -6,6 +6,7 @@ using System.Linq;
 using QRyptoWire.App.WPhone.Models;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.CustomExceptions;
+using QRyptoWire.Core.DbItems;
 using QRyptoWire.Core.ModelsAbstraction;
 using QRyptoWire.Core.Services;
 

@@ -4,7 +4,7 @@ using QRyptoWire.Core.ModelsAbstraction;
 namespace QRyptoWire.App.WPhone.Models
 {
     [Table(Name = "User")]
-    public class UserItem : IUserItem
+    public class UserModel : IUserModel
     {
         [Column(IsPrimaryKey = true, IsDbGenerated = false, CanBeNull = false)]
         public int Id { get; set; }

@@ -5,7 +5,7 @@ using QRyptoWire.Core.ModelsAbstraction;
 namespace QRyptoWire.App.WPhone.Models
 {
     [Table(Name = "Message")]
-    public class MessageItem : IMessageItem
+    public class MessageModel : IMessageModel
     {
         [Column(IsPrimaryKey = true, IsDbGenerated = true, CanBeNull = false)]
         public int Id { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QRyptoWire.Core.DbItems;
 using QRyptoWire.Core.ModelsAbstraction;
 
 namespace QRyptoWire.Core.Services
