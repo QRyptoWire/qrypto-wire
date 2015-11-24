@@ -112,8 +112,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IEnumerable<ContactModel> contacts = db.Contacts;
-                return contacts;
+                return db.Contacts.ToList();
             }
         }
 
@@ -121,10 +120,11 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IEnumerable<Tuple<IContactModel, int>> contacts =
-                    db.Contacts.Select(c => new Tuple<IContactModel, int>(c, c.MessagesSentToUser.Count(mm => mm.IsNew) + c.MessagesSentByUser.Count(mm => mm.IsNew)));
-
-                return contacts;
+                return db.Contacts.Select(
+                        c =>
+                            new Tuple<IContactModel, int>(c,
+                                c.MessagesSentToUser.Count(mm => mm.IsNew) + c.MessagesSentByUser.Count(mm => mm.IsNew)))
+                        .ToList();
             }
         }
 
@@ -132,16 +132,15 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IEnumerable<MessageModel> messages = db.Messages;
-                return messages;
+                return db.Messages.ToList();
             }
-        } 
+        }
 
         public IEnumerable<IMessageModel> GetMessages(int contactId)
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                ContactModel contact  = db.Contacts.FirstOrDefault();
+                ContactModel contact = db.Contacts.FirstOrDefault(c => c.Id == contactId);
                 if (contact == null)
                 {
                     throw new ArgumentException("Contact does not exist");
