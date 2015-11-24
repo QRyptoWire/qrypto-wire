@@ -2,7 +2,7 @@
 
 namespace QRyptoWire.Core.ModelsAbstraction
 {
-    public interface IMessageItem
+    public interface IMessageModel
     {
         int Id { get; set; }
         int SenderId { get; set; }

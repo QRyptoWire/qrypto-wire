@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using QRyptoWire.Core.ModelsAbstraction;
 
 namespace QRyptoWire.Core.Services
@@ -8,16 +9,17 @@ namespace QRyptoWire.Core.Services
         bool ArePushNotificationsEnabled();
         void EnablePushNotifications();
         void DisablePushNotifications();
-        void CreateUser(IUserItem user);
-        IUserItem GetUser();
+	    void SaveUser(UserItem user);
+        IUserModel GetUser();
         bool UserExists();
         string GetKeyPair();
         int GetUserId();
-        IEnumerable<IContactItem> GetContacts();
-        IEnumerable<IMessageItem> GetMessages();
-        IEnumerable<IMessageItem> GetConversation(int contactId);
-        void AddContacts(IEnumerable<IContactItem> contacts);
-        void AddMessages(IEnumerable<IMessageItem> messages);
+        IEnumerable<IContactModel> GetContacts();
+        IEnumerable<Tuple<IContactModel, int>> GetContactsWithNewMessageCount();
+        IEnumerable<IMessageModel> GetMessages();
+	    IEnumerable<IMessageModel> GetMessages(int contactId);
+        void SaveContacts(IEnumerable<ContactItem> contacts);
+        void SaveMessages(IEnumerable<MessageItem> messages);
         void ClearMessages();
 	    void MarkMessagesAsNotNew(IEnumerable<int> messagesId);
 	    void MarkContactsAsNotNew(IEnumerable<int> contactsId);

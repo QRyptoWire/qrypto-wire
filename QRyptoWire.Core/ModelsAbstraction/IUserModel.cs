@@ -1,6 +1,6 @@
 ﻿namespace QRyptoWire.Core.ModelsAbstraction
 {
-    public interface IUserItem
+    public interface IUserModel
     {
         int Id { get; set; }
         string KeyPair { get; set; }

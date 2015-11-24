@@ -1,6 +1,6 @@
 ﻿namespace QRyptoWire.Core.ModelsAbstraction
 {
-    public interface IContactItem
+    public interface IContactModel
     {
         int Id { get; set; }
         string Name { get; set; }

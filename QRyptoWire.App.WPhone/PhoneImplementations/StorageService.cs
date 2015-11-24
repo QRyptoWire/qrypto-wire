@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using QRyptoWire.App.WPhone.Models;
@@ -27,18 +28,22 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             IsolatedStorageSettings.ApplicationSettings["PushNotifications"] = false;
         }
 
-        public void CreateUser(IUserItem user)
+        public void SaveUser(UserItem user)
         {
+            if (user == null)
+            {
+                throw new ArgumentException("User can't be null");
+            }
+            if (user.KeyPair == null)
+            {
+                throw new ArgumentException("KeyPair can't be null");
+            }
+
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                if (user == null || db.Users.Count() == 1) return;
+                if (db.Users.Count() == 1) return;
 
-                if (user.KeyPair == null)
-                {
-                    throw new ArgumentException("KeyPair can't be null");
-                }
-
-                db.Users.InsertOnSubmit(new UserItem()
+                db.Users.InsertOnSubmit(new UserModel()
                 {
                     Id = user.Id,
                     KeyPair = user.KeyPair
@@ -48,11 +53,11 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
         }
 
-        public IUserItem GetUser()
+        public IUserModel GetUser()
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IUserItem user = db.Users.FirstOrDefault();
+                UserModel user = db.Users.FirstOrDefault();
 
                 if (user == null)
                 {
@@ -67,7 +72,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                bool userExists = db.Users.FirstOrDefault() != null;
+                bool userExists = db.Users.Any();
                 return userExists;
             }
         }
@@ -76,7 +81,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IUserItem user = db.Users.FirstOrDefault();
+                UserModel user = db.Users.FirstOrDefault();
 
                 if (user == null)
                 {
@@ -91,7 +96,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                IUserItem user = db.Users.FirstOrDefault();
+                UserModel user = db.Users.FirstOrDefault();
 
                 if (user == null)
                 {
@@ -102,68 +107,85 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
         }
 
-        public IEnumerable<IContactItem> GetContacts()
+        public IEnumerable<IContactModel> GetContacts()
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                List<ContactItem> contacts = db.Contacts.ToList();
+                IEnumerable<ContactModel> contacts = db.Contacts;
                 return contacts;
             }
         }
 
-        public IEnumerable<IMessageItem> GetMessages()
+        public IEnumerable<Tuple<IContactModel, int>> GetContactsWithNewMessageCount()
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                List<MessageItem> messages = db.Messages.ToList();
+                IEnumerable<Tuple<IContactModel, int>> contacts =
+                    db.Contacts.Select(c => new Tuple<IContactModel, int>(c, c.MessagesSentToUser.Count(mm => mm.IsNew) + c.MessagesSentByUser.Count(mm => mm.IsNew)));
+
+                return contacts;
+            }
+        }
+
+        public IEnumerable<IMessageModel> GetMessages()
+        {
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                IEnumerable<MessageModel> messages = db.Messages;
+                return messages;
+            }
+        } 
+
+        public IEnumerable<IMessageModel> GetMessages(int contactId)
+        {
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                ContactModel contact  = db.Contacts.FirstOrDefault();
+                if (contact == null)
+                {
+                    throw new ArgumentException("Contact does not exist");
+                }
+
+                List<MessageModel> messages = contact.MessagesSentByUser.ToList();
+                messages.AddRange(contact.MessagesSentToUser);
+
                 return messages;
             }
         }
 
-        public IEnumerable<IMessageItem> GetConversation(int contactId)
-        {
-            using (QRyptoDb db = QryptoDbFactory.GetDb())
-            {
-                List<MessageItem> messages = db.Messages.Where(msg => msg.SenderId == contactId || msg.ReceiverId == contactId).ToList();
-                return messages;
-            }
-        }
-
-        public void AddContacts(IEnumerable<IContactItem> contacts)
+        public void SaveContacts(IEnumerable<ContactItem> contacts)
         {
             if (contacts == null) return;
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                List<ContactItem> contactsToAdd = contacts.Select(c => new ContactItem()
+                db.Contacts.InsertAllOnSubmit(contacts.Select(c => new ContactModel()
                 {
                     Id = c.Id,
                     Name = c.Name,
                     PublicKey = c.PublicKey,
-                    IsNew = c.IsNew
-                }).ToList();
-
-                db.Contacts.InsertAllOnSubmit(contactsToAdd);
+                    IsNew = c.IsNew,
+                    MessagesSentByUser = new EntitySet<MessageModel>(),
+                    MessagesSentToUser = new EntitySet<MessageModel>()
+                }));
                 db.SubmitChanges();
             }
         }
 
-        public void AddMessages(IEnumerable<IMessageItem> messages)
+        public void SaveMessages(IEnumerable<MessageItem> messages)
         {
             if (messages == null) return;
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                List<MessageItem> messagesToAdd = messages.Select(m => new MessageItem()
+                db.Messages.InsertAllOnSubmit(messages.Select(m => new MessageModel()
                 {
                     SenderId = m.SenderId,
                     ReceiverId = m.ReceiverId,
                     IsNew = m.IsNew,
                     Body = m.Body,
                     Date = m.Date
-                }).ToList();
-
-                db.Messages.InsertAllOnSubmit(messagesToAdd);
+                }));
                 db.SubmitChanges();
             }
         }
@@ -183,7 +205,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                foreach (MessageItem message in db.Messages.Where(m => messagesId.Contains(m.Id)))
+                foreach (var message in db.Messages.Where(m => messagesId.Contains(m.Id)))
                 {
                     message.IsNew = false;
                 }
@@ -197,7 +219,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                foreach (ContactItem contact in db.Contacts.Where(c => contactsId.Contains(c.Id)))
+                foreach (var contact in db.Contacts.Where(c => contactsId.Contains(c.Id)))
                 {
                     contact.IsNew = false;
                 }
