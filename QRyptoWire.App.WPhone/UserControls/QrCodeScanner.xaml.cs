@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Devices;
@@ -26,8 +27,9 @@ namespace QRyptoWire.App.WPhone.UserControls
         public QrCodeScanner()
         {
             InitializeComponent();
+            ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = 90, CenterX = 0.5, CenterY = 0.5 };
             _scanningInterval = TimeSpan.FromMilliseconds(400);
-            _focusingInterval = TimeSpan.FromMilliseconds(40);
+            _focusingInterval = TimeSpan.FromMilliseconds(20);
         }
 
         public void Start()
@@ -50,8 +52,8 @@ namespace QRyptoWire.App.WPhone.UserControls
                 throw new CameraNotFoundException("Camera device not available");
 
             _cam = new PhotoCamera(GetAvailableCameraType());
-            _cam.Initialized += CamOnInitialized;
             ViewFinderBrush.SetSource(_cam);
+            _cam.Initialized += CamOnInitialized;
         }
 
         private void StopCamera()
@@ -78,10 +80,16 @@ namespace QRyptoWire.App.WPhone.UserControls
             {
                 if (eventArgs.Succeeded)
                 {
+                    TurnOffFlash();
                     StartFocusing();
                     StartScanning();
                 }
             });
+        }
+
+        private void TurnOffFlash()
+        {
+            _cam.FlashMode = FlashMode.Off;;
         }
 
         private void StartScanning()
@@ -99,16 +107,23 @@ namespace QRyptoWire.App.WPhone.UserControls
 
         private void ScanningForQrCode(object sender, EventArgs eventArgs)
         {
-            // get camera preview
-            byte[] pixelData = new byte[(int)_cam.PreviewResolution.Width * (int)_cam.PreviewResolution.Height];
-            _cam.GetPreviewBufferY(pixelData);
-            WriteableBitmap wb = new WriteableBitmap((int)_cam.PreviewResolution.Width, (int)_cam.PreviewResolution.Height);
-            wb.FromByteArray(pixelData);
+            try
+            {
+                // get camera preview
+                int[] previewBuffer = new int[(int)_cam.PreviewResolution.Width * (int)_cam.PreviewResolution.Height];
+                _cam.GetPreviewBufferArgb32(previewBuffer);
+                WriteableBitmap wb = new WriteableBitmap((int)_cam.PreviewResolution.Width, (int)_cam.PreviewResolution.Height);
+                previewBuffer.CopyTo(wb.Pixels, 0);
 
-            // process image
-            string text = DecodeQrCode(wb);
-            if (text != null)
-                QrCodeDetected?.Invoke(text);
+                // process image
+                string text = DecodeQrCode(wb);
+                if (text != null)
+                    QrCodeDetected?.Invoke(text);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         private string DecodeQrCode(WriteableBitmap wb)

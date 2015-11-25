@@ -11,7 +11,7 @@
     <Grid>
         <Canvas x:Name="ViewFinderCanvas">
             <Canvas.Background>
-                <VideoBrush x:Name="ViewFinderBrush" Stretch="Uniform"></VideoBrush>
+                <VideoBrush x:Name="ViewFinderBrush" Stretch="UniformToFill"></VideoBrush>
             </Canvas.Background>
         </Canvas>
     </Grid>
