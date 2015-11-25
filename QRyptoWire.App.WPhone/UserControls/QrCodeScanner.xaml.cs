@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -11,147 +10,155 @@ using ZXing;
 
 namespace QRyptoWire.App.WPhone.UserControls
 {
-	public sealed partial class QrCodeScanner
-	{
-		#region ScannerImplementation
-		private PhotoCamera _photoCamera;
-		private DispatcherTimer _timer;
-		private const double ScanIntervalMs = 400.0;
+    public sealed partial class QrCodeScanner
+    {
+        #region ScannerImplementation
+        private PhotoCamera _cam;
+        private DispatcherTimer _scanningTimer;
+        private DispatcherTimer _focusingTimer;
+        private readonly TimeSpan _scanningInterval;
+        private readonly TimeSpan _focusingInterval;
 
-		public delegate void QrCodeDetectedEventHandler(string text);
+        public delegate void QrCodeDetectedEventHandler(string text);
 
-		/// <summary>
-		/// Event that is fired when QR code is detected by camera.
-		/// </summary>
-		public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
+        public event QrCodeDetectedEventHandler QrCodeDetected;
 
-		public QrCodeScanner()
-		{
-			this.InitializeComponent();
-		}
+        public QrCodeScanner()
+        {
+            InitializeComponent();
+            _scanningInterval = TimeSpan.FromMilliseconds(400);
+            _focusingInterval = TimeSpan.FromMilliseconds(40);
+        }
 
-		/// <summary>
-		/// Start camera preview and QR code scanner.
-		/// </summary>
-		public void Start()
-		{
-			InitializeCameraPreview();
-		}
+        public void Start()
+        {
+            // after the camera is initialized it will automatically start focusing and scanning tasks
+            StartCamera();
+        }
 
-		/// <summary>
-		/// Stop camera preview and QR code scanner.
-		/// </summary>
-		public void Stop()
-		{
-			if (_timer.IsEnabled)
-			{
-				_timer.Stop();
-			}
-			_photoCamera?.Dispose();
-		}
-
-		private void InitializeCameraPreview()
-		{
-			if (PhotoCamera.IsCameraTypeSupported(CameraType.Primary))
-			{
-				_photoCamera = new Microsoft.Devices.PhotoCamera(CameraType.Primary);
-			}
-			else if (PhotoCamera.IsCameraTypeSupported(CameraType.FrontFacing))
-			{
-				_photoCamera = new Microsoft.Devices.PhotoCamera(CameraType.Primary);
-			}
-			else
-			{
-				throw new CameraNotFoundException("No camera is present");
-			}
-
-			_photoCamera.Initialized += PhotoCamera_OnInitialized;
-			_photoCamera.CaptureImageAvailable += PhotoCamera_OnImageAvailable;
-		}
-
-		void PhotoCamera_OnInitialized(object sender, CameraOperationCompletedEventArgs e)
-		{
-			if (e.Succeeded)
-			{
-				SetCameraToMaxResolution();
-				ViewFinderBrush.SetSource(_photoCamera);
-				InitializeTimer();
-				StartTimer();
-			}
-		}
-
-		void PhotoCamera_OnImageAvailable(object sender, ContentReadyEventArgs e)
-		{
-			BitmapImage bmpImg = new BitmapImage();
-			bmpImg.SetSource(e.ImageStream);
-			WriteableBitmap wb = new WriteableBitmap(bmpImg);
-
-			string text = DecodeQrCode(wb);
-			if (text != null)
-			{
-				QrCodeDetected(text);
-			}
-		}
-
-		private void InitializeTimer()
-		{
-			_timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
-			_timer.Tick += TimerOnTick;
-		}
-
-		private void StartTimer()
-		{
-			if (!_timer.IsEnabled)
-			{
-				_timer.Start();
-			}
-		}
-
-		private void TimerOnTick(object sender, object o)
-		{
-			_photoCamera.CaptureImage();
-		}
-
-		private string DecodeQrCode(WriteableBitmap wb)
-		{
-			IBarcodeReader reader = QrTools.GetQrReader();
-			var result = reader.Decode(wb);
-			return result?.Text;
-		}
-
-		private void SetCameraToMaxResolution()
-		{
-			_photoCamera.Resolution = GetMaxCameraResolution();
-		}
-
-		private System.Windows.Size GetMaxCameraResolution()
-		{
-			return _photoCamera.AvailableResolutions.OrderByDescending(size => size.Height * size.Width).First();
-		}
-		#endregion ScannerImplementation
+        public void Stop()
+        {
+            StopScanning();
+            StopFocusing();
+            StopCamera();
+        }
 
 
-		#region OnDetectedCommand
-		public static readonly DependencyProperty OnDetectedCommandProperty = DependencyProperty.Register("OnDetectedCommand", typeof(ICommand), typeof(QrCodeScanner), new PropertyMetadata(null, OnDetectedChanged));
+        private void StartCamera()
+        {
+            if (!IsCameraAvailable())
+                throw new CameraNotFoundException("Camera device not available");
 
-		public ICommand OnDetectedCommand
-		{
-			get { return (ICommand)GetValue(OnDetectedCommandProperty); }
-			set { SetValue(OnDetectedCommandProperty, value); }
-		}
+            _cam = new PhotoCamera(GetAvailableCameraType());
+            _cam.Initialized += CamOnInitialized;
+            ViewFinderBrush.SetSource(_cam);
+        }
 
-		private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-		{
-			var sender = obj as QrCodeScanner;
-			if (sender == null)
-				return;
-			sender.QrCodeDetected += text =>
-		{
-			var cmd = sender.OnDetectedCommand;
-			cmd.Execute(text);
-		};
-			sender.Start();
-		}
-		#endregion OnDetectedCommand
-	}
+        private void StopCamera()
+        {
+            _cam.Initialized -= CamOnInitialized;
+            _cam.Dispose();
+        }
+
+        private bool IsCameraAvailable()
+        {
+            return Camera.IsCameraTypeSupported(CameraType.Primary) || Camera.IsCameraTypeSupported(CameraType.FrontFacing);
+        }
+
+        private CameraType GetAvailableCameraType()
+        {
+            if (Camera.IsCameraTypeSupported(CameraType.Primary))
+                return CameraType.Primary;
+            return CameraType.FrontFacing;
+        }
+
+        private void CamOnInitialized(object sender, CameraOperationCompletedEventArgs eventArgs)
+        {
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (eventArgs.Succeeded)
+                {
+                    StartFocusing();
+                    StartScanning();
+                }
+            });
+        }
+
+        private void StartScanning()
+        {
+            _scanningTimer = new DispatcherTimer() { Interval = _scanningInterval };
+            _scanningTimer.Tick += ScanningForQrCode;
+            _scanningTimer.Start();
+        }
+
+        private void StopScanning()
+        {
+            _scanningTimer.Tick -= ScanningForQrCode;
+            _scanningTimer.Stop();
+        }
+
+        private void ScanningForQrCode(object sender, EventArgs eventArgs)
+        {
+            // get camera preview
+            byte[] pixelData = new byte[(int)_cam.PreviewResolution.Width * (int)_cam.PreviewResolution.Height];
+            _cam.GetPreviewBufferY(pixelData);
+            WriteableBitmap wb = new WriteableBitmap((int)_cam.PreviewResolution.Width, (int)_cam.PreviewResolution.Height);
+            wb.FromByteArray(pixelData);
+
+            // process image
+            string text = DecodeQrCode(wb);
+            if (text != null)
+                QrCodeDetected?.Invoke(text);
+        }
+
+        private string DecodeQrCode(WriteableBitmap wb)
+        {
+            IBarcodeReader reader = QrTools.GetQrReader();
+            var result = reader.Decode(wb);
+            return result?.Text;
+        }
+
+        private void StartFocusing()
+        {
+            _focusingTimer = new DispatcherTimer() { Interval = _focusingInterval };
+            _focusingTimer.Tick += FocusingCamera;
+            _focusingTimer.Start();
+        }
+
+        private void StopFocusing()
+        {
+            _focusingTimer.Tick -= FocusingCamera;
+            _focusingTimer.Stop();
+        }
+
+        private void FocusingCamera(object sender, EventArgs eventArgs)
+        {
+            if (_cam.IsFocusSupported)
+                _cam.Focus();
+        }
+        #endregion ScannerImplementation
+
+        #region OnDetectedCommand
+        public static readonly DependencyProperty OnDetectedCommandProperty = DependencyProperty.Register("OnDetectedCommand", typeof(ICommand), typeof(QrCodeScanner), new PropertyMetadata(null, OnDetectedChanged));
+
+        public ICommand OnDetectedCommand
+        {
+            get { return (ICommand)GetValue(OnDetectedCommandProperty); }
+            set { SetValue(OnDetectedCommandProperty, value); }
+        }
+
+        private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        {
+            var sender = obj as QrCodeScanner;
+            if (sender == null)
+                return;
+            sender.QrCodeDetected += text =>
+            {
+                var cmd = sender.OnDetectedCommand;
+                cmd.Execute(text);
+            };
+            sender.Start();
+        }
+        #endregion OnDetectedCommand
+    }
 }
