@@ -24,7 +24,7 @@ namespace QRyptoWire.Service.Core
 			return messages;
 		}
 
-		public bool SendMessage(string sessionKey, int recipientId, string msg)
+		public bool SendMessage(string sessionKey, Shared.Dto.Message msg)
 		{
 			var dbContext = DbContextFactory.GetContext();
 
@@ -36,13 +36,15 @@ namespace QRyptoWire.Service.Core
 			}
 
 			var recipient =
-				dbContext.Users.Single(u => u.Id == recipientId);
+				dbContext.Users.Single(u => u.Id == msg.ReceiverId);
 
 			var newMsg = new Message
 			{
-				Content = msg,
+				Content = msg.Body,
 				Sender = user,
-				Recipient = recipient
+				Recipient = recipient,
+				SentTime = msg.Time,
+				Signature = msg.Signature
 			};
 			dbContext.Add(newMsg);
 			dbContext.SaveChanges();

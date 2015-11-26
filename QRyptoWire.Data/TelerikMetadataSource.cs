@@ -20,7 +20,9 @@ namespace QRyptoWire.Service.Data
 				ID = message.Id,
 				message.Content,
 				message.SenderId,
-				message.RecipientId
+				message.RecipientId,
+				message.Signature,
+				message.SentTime
 			}).ToTable("Messages");
 			messageMapping
 			.HasProperty(e => e.Id)

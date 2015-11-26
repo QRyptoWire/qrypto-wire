@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
@@ -32,14 +33,14 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/SendMessage/{sessionKey}/{recipientId}/{msg}")]
-		[HttpGet]
-		public IHttpActionResult SendMessage(string sessionKey, int recipientId, string msg)
+		[Route("api/SendMessage/{sessionKey}/{recipientId}/")]
+		[HttpGet, HttpPost]
+		public IHttpActionResult SendMessage(string sessionKey, int recipientId, Shared.Dto.Message msg)
 		{
 			var messageService = new MessageService();
-			if (messageService.SendMessage(sessionKey, recipientId, msg))
+			if (messageService.SendMessage(sessionKey, msg))
 			{
-				return Ok("Message " + msg + " added.");
+				return Ok("Message " + msg.Body + " added.");
 			}
 			return NotFound();
 		}
@@ -108,8 +109,8 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/RegisterPushTalken/{sessionKey}/{pushToken}")]
-		[HttpGet]
+		[Route("api/RegisterPushTalken/{sessionKey}")]
+		[HttpGet, HttpPost]
 		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
 		{
 			var userService = new UserService();
