@@ -9,12 +9,13 @@ namespace QRyptoWire.Core.ViewModels
 {
 	public class MenuViewModel : MvxNavigatingObject
 	{
+		private MvxSubscriptionToken _token;
 		public MenuViewModel(MenuMode mode)
 		{
 			if(mode != MenuMode.AtHome)
 			{
 				var messenger = Mvx.Resolve<IMvxMessenger>();
-				messenger.Subscribe<NotificationReceivedMessage>(message =>
+				_token = messenger.Subscribe<NotificationReceivedMessage>(message =>
 				{
 					HasReceivedNotifications = true;
 					RaisePropertyChanged(() => HasReceivedNotifications);

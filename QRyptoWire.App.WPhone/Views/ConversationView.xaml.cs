@@ -1,15 +1,20 @@
-﻿namespace QRyptoWire.App.WPhone.Views
+﻿using System.Windows;
+
+namespace QRyptoWire.App.WPhone.Views
 {
 	public partial class ConversationView
 	{
 		public ConversationView()
 		{
 			InitializeComponent();
-			Scroll.SizeChanged += (sender, args) =>
+			SizeChangedEventHandler scrollToBottomHandler = null;
+			scrollToBottomHandler = delegate
 			{
 				Scroll.UpdateLayout();
 				Scroll.ScrollToVerticalOffset(Scroll.ScrollableHeight);
+				Scroll.SizeChanged -= scrollToBottomHandler;
 			};
+			Scroll.SizeChanged += scrollToBottomHandler;
 		}
 	}
 }

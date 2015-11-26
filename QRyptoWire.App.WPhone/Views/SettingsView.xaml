@@ -33,9 +33,7 @@
                 <toolkit:ToggleSwitch IsChecked="{Binding AllowPushes, Mode=TwoWay}">
                     <TextBlock FontSize="20" Text="Allow push notifications" HorizontalAlignment="Left"/>
                 </toolkit:ToggleSwitch>
-                <Button HorizontalAlignment="Center" 
-					Content="Confirm" Command="{Binding ConfirmationCommand}"/>
-				<TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Message data"/>
+                <TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Message data"/>
 				<TextBlock Margin="10" FontSize="18" TextWrapping="Wrap"
 					Text="Warning: by pushing this button you purge all messages from your phone's memory. You won't be able to recover them after clearing."/>
                 <Button HorizontalAlignment="Center" Content="Clear all messages" Command="{Binding ClearCommand}"/>
