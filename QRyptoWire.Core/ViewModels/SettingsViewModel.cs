@@ -9,14 +9,29 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IUserService _userService;
 		private readonly IStorageService _storageService;
+		private readonly IQrService _qrService;
 		private bool _allowPushes;
+		private string _contactName;
 
-		public SettingsViewModel(IUserService userService, IStorageService storageService)
+		public SettingsViewModel(IUserService userService, IStorageService storageService, IQrService qrService)
 		{
 			_userService = userService;
 			_storageService = storageService;
+			_qrService = qrService;
 
+			GenerateCodeCommand = new MvxCommand(GenerateCodeAction, () => !string.IsNullOrWhiteSpace(ContactName));
 			ClearCommand = new MvxCommand(ClearCommandAction);
+		}
+
+		public string ContactName
+		{
+			get { return _contactName; }
+			set
+			{
+				_contactName = value;
+				RaisePropertyChanged();
+				GenerateCodeCommand.RaiseCanExecuteChanged();
+			}
 		}
 
 		public bool AllowPushes
@@ -35,6 +50,13 @@ namespace QRyptoWire.Core.ViewModels
 		{
 			MakeApiCallAsync(() => _userService.GetPushSettings(), b => AllowPushes = b);
 			Menu = new MenuViewModel(MenuMode.AtSettings);
+		}
+
+		public IMvxCommand GenerateCodeCommand { get; private set; }
+
+		private void GenerateCodeAction()
+		{
+			_qrService.GenerateQrCode(ContactName);
 		}
 
 		public ICommand ClearCommand { get; private set; }

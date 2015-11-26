@@ -29,9 +29,13 @@
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Settings"/>
             <StackPanel Grid.Row="1" Margin="10">
+                <TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="My QR code"/>
+                <TextBlock HorizontalAlignment="Center" Margin="10" FontSize="20" Text="Contact name"/>
+				<TextBox Margin="20,10,20,0" Text="{Binding ContactName, Mode=TwoWay}"/>
+                <Button HorizontalAlignment="Center" Content="Generate code" Command="{Binding GenerateCodeCommand}"/>
                 <TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Notifications"/>
                 <toolkit:ToggleSwitch IsChecked="{Binding AllowPushes, Mode=TwoWay}">
-                    <TextBlock FontSize="20" Text="Allow push notifications" HorizontalAlignment="Left"/>
+                <TextBlock FontSize="20" Text="Allow push notifications" HorizontalAlignment="Left"/>
                 </toolkit:ToggleSwitch>
                 <TextBlock Opacity="0.5" HorizontalAlignment="left" Margin="10" FontSize="20" Text="Message data"/>
 				<TextBlock Margin="10" FontSize="18" TextWrapping="Wrap"

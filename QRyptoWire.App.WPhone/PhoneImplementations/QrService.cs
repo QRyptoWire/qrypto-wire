@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using Windows.Storage;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
@@ -12,7 +9,7 @@ using ZXing;
 
 namespace QRyptoWire.App.WPhone.PhoneImplementations
 {
-    class QrService : IQrService
+	public class QrService : IQrService
     {
         private static class QrElements
         {
