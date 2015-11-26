@@ -17,7 +17,6 @@ namespace QRyptoWire.App.WPhone.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            //await Scanner.StopAsync();
             Scanner.Stop();
         }
     }

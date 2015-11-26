@@ -27,9 +27,9 @@ namespace QRyptoWire.App.WPhone.UserControls
         public QrCodeScanner()
         {
             InitializeComponent();
-            ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = 90, CenterX = 0.5, CenterY = 0.5 };
+
             _scanningInterval = TimeSpan.FromMilliseconds(400);
-            _focusingInterval = TimeSpan.FromMilliseconds(20);
+            _focusingInterval = TimeSpan.FromMilliseconds(200);
         }
 
         public void Start()
@@ -52,8 +52,18 @@ namespace QRyptoWire.App.WPhone.UserControls
                 throw new CameraNotFoundException("Camera device not available");
 
             _cam = new PhotoCamera(GetAvailableCameraType());
-            ViewFinderBrush.SetSource(_cam);
+            InitializeView();
             _cam.Initialized += CamOnInitialized;
+        }
+
+        private void InitializeView()
+        {
+            if(_cam.CameraType == CameraType.Primary)
+                ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = 90, CenterX = 0.5, CenterY = 0.5 };
+            else if(_cam.CameraType == CameraType.FrontFacing)
+                ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = -90, CenterX = 0.5, CenterY = 0.5 };
+
+            ViewFinderBrush.SetSource(_cam);
         }
 
         private void StopCamera()

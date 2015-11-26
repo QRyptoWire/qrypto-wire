@@ -9,11 +9,13 @@
     d:DesignWidth="400">
 
     <Grid>
-        <Canvas x:Name="ViewFinderCanvas">
-            <Canvas.Background>
-                <VideoBrush x:Name="ViewFinderBrush" Stretch="UniformToFill"></VideoBrush>
-            </Canvas.Background>
-        </Canvas>
+        <Border BorderBrush="{Binding BorderBrush}" BorderThickness="{Binding BorderThickness}">
+            <Canvas x:Name="ViewFinderCanvas">
+                <Canvas.Background>
+                    <VideoBrush x:Name="ViewFinderBrush" Stretch="UniformToFill"></VideoBrush>
+                </Canvas.Background>
+            </Canvas>
+        </Border>
     </Grid>
     
 </UserControl>
