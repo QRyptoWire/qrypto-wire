@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:QRyptoWire.App.WPhone.Views"
     xmlns:userControls="clr-namespace:QRyptoWire.App.WPhone.UserControls"
+    xmlns:utilities="clr-namespace:QRyptoWire.App.WPhone.Utilities"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -31,18 +32,19 @@
 					 FontSize="30" Text="Add contact"/>
                 <!--todo instruction for user?-->
             </StackPanel>
-			<!--<userControls:QrCodeScanner Margin="0 10" x:Name="Scanner" Grid.Row="1"
-				Width="300px"
-				OnDetectedCommand="{Binding CodeDetectedCommand}"/>-->
+            <Border BorderBrush="White" BorderThickness="3" Grid.Row="1" Width="400" Height="400" Margin="0 10">
+                <userControls:QrCodeScanner x:Name="Scanner"
+				OnDetectedCommand="{Binding CodeDetectedCommand}"/>
+            </Border>
 			<StackPanel Grid.Row="2">
 				<TextBlock HorizontalAlignment="Center" FontSize="20"
 					Text="Contact name"/>
 				<TextBox HorizontalAlignment="Center" Margin="0 10" MinWidth="200"
 					FontSize="20" Text="{Binding ContactName, Mode=TwoWay}"
-					IsEnabled="{Binding CodeDetected}"/>
-				<!--<Button HorizontalAlignment="Center" Content="Confirm"
-					Tapped="ConfirmButtonTapped"
-					Command="{Binding AddContactCommand}"/>-->
+					IsEnabled="{Binding CodeDetected}"
+					utilities:Helpers.DynamicTextBox="true"/>
+				<Button HorizontalAlignment="Center" Content="Confirm"
+					Command="{Binding AddContactCommand}"/>
 			</StackPanel>
         </Grid>
     </Grid>

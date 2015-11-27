@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 using RestSharp.Portable;
@@ -9,49 +10,70 @@ namespace QRyptoWire.Core.Services
 	public class QryptoWireServiceClient : ApiClientBase, IQryptoWireServiceClient
 	{
 		private string _sessionId;
+		private string _deviceId;
 
-		public bool Login(string deviceId, string password)
+		public void SetDeviceId(string id)
 		{
-			var request = new RestRequest($"{ApiUris.Login}{deviceId}/{password}/");
+			if(!string.IsNullOrWhiteSpace(_deviceId))
+				throw new InvalidOperationException("Device id should be set only on startup!");
+			_deviceId = id;
+		}
+
+		public bool Login(string password)
+		{
+			var request = new RestRequest($"{ApiUris.Login}{password}").AddBody(_deviceId);
+			request.Method = HttpMethod.Post;
 			_sessionId = Execute<string>(request);
 			if (_sessionId == null)
 				return false;
 			return true;
 		}
 
-		public void Register(string deviceId, string password)
+		public void Register(string password)
 		{
-			throw new NotImplementedException();
+			var request = new RestRequest($"{ApiUris.Register}{password}").AddBody(_deviceId);
+			request.Method = HttpMethod.Post;
+			Execute(request);
 		}
 
 		public void RegisterPushToken(string channelUri)
 		{
-			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}").AddBody(channelUri));
+			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}/").AddBody(channelUri));
 		}
 
 		public IEnumerable<Contact> FetchContacts()
 		{
-			throw new NotImplementedException();
+			return Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}"));
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			throw new NotImplementedException();
+			return Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}"));
 		}
 
 		public void AddContact(Contact contact)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.AddContact}{_sessionId}").AddBody(contact));
 		}
 
 		public void SendMessage(Message message)
 		{
-			throw new NotImplementedException();
+			Execute(new RestRequest($"{ApiUris.SendMessage}{_sessionId}").AddBody(message));
 		}
 
 		public int GetUserId()
 		{
-			throw new NotImplementedException();
+			return Execute<int>(new RestRequest($"{ApiUris.GetUserId}{_sessionId}"));
+		}
+
+		public bool PushesAllowed()
+		{
+			return Execute<bool>(new RestRequest($"{ApiUris.GetPushesAllowed}{_sessionId}"));
+		}
+
+		public void AllowPushes(bool allow)
+		{
+			Execute(new RestRequest($"{ApiUris.AllowPushes}{_sessionId}").AddBody(allow));
 		}
 	}
 }

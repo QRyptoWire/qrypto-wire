@@ -19,6 +19,8 @@ namespace QRyptoWire.App.WPhone.UserControls
 			var list = (ListBox)obj;
 			list.SelectionChanged += (sender, eventArgs) =>
 			{
+				if(list.SelectedItem == null)
+					return;
 				var cmd = (ICommand)args.NewValue;
 				cmd.Execute(list.SelectedItem);
 			};

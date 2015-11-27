@@ -1,233 +1,189 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Windows.Devices.Enumeration;
-using Windows.Media.Capture;
-using Windows.Media.MediaProperties;
-using Windows.Storage;
+using Microsoft.Devices;
+using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.CustomExceptions;
-using Panel = Windows.Devices.Enumeration.Panel;
+using ZXing;
 
 namespace QRyptoWire.App.WPhone.UserControls
 {
     public sealed partial class QrCodeScanner
     {
-		//#region ScannerImplementation
-  //      private MediaCapture _mediaCapture;
-  //      private DispatcherTimer _timer;
+        #region ScannerImplementation
+        private PhotoCamera _cam;
+        private DispatcherTimer _scanningTimer;
+        private DispatcherTimer _focusingTimer;
+        private readonly TimeSpan _scanningInterval;
+        private readonly TimeSpan _focusingInterval;
 
-  //      private bool IsTimerInitialized => _timer != null;
-  //      private bool IsCameraInitialized => cameraPreview.Source != null;
+        public delegate void QrCodeDetectedEventHandler(string text);
 
-  //      private int _deviceResolutionWidthPx = 0;
-  //      private int _deviceResolutionHeightPx = 0;
+        public event QrCodeDetectedEventHandler QrCodeDetected;
 
-  //      private const double ScanIntervalMs = 400.0;
+        public QrCodeScanner()
+        {
+            InitializeComponent();
 
-  //      public delegate void QrCodeDetectedEventHandler(string text);
+            _scanningInterval = TimeSpan.FromMilliseconds(400);
+            _focusingInterval = TimeSpan.FromMilliseconds(200);
+        }
 
-  //      /// <summary>
-  //      /// Event that is fired when QR code is detected by camera.
-  //      /// </summary>
-  //      public event QrCodeDetectedEventHandler QrCodeDetected = delegate { };
+        public void Start()
+        {
+            // after the camera is initialized it will automatically start focusing and scanning tasks
+            StartCamera();
+        }
 
-  //      public QrCodeScanner()
-  //      {
-  //          this.InitializeComponent();
-  //      }
+        public void Stop()
+        {
+            StopScanning();
+            StopFocusing();
+            StopCamera();
+        }
 
-  //      /// <summary>
-  //      /// Start camera preview and QR code scanner.
-  //      /// </summary>
-  //      /// <returns>Task</returns>
-  //      public async Task StartAsync()
-  //      {
-  //          if (!IsCameraInitialized)
-  //          {
-  //              await InitializeCameraPreviewAsync();
-  //          }
 
-  //          await StartCameraPreviewAsync();
+        private void StartCamera()
+        {
+            if (!IsCameraAvailable())
+                throw new CameraNotFoundException("Camera device not available");
 
-  //          if (!IsTimerInitialized)
-  //          {
-  //              InitializeTimer();
-  //          }
+            _cam = new PhotoCamera(GetAvailableCameraType());
+            InitializeView();
+            _cam.Initialized += CamOnInitialized;
+        }
 
-  //          _timer.Start();
-  //      }
+        private void InitializeView()
+        {
+            if(_cam.CameraType == CameraType.Primary)
+                ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = 90, CenterX = 0.5, CenterY = 0.5 };
+            else if(_cam.CameraType == CameraType.FrontFacing)
+                ViewFinderBrush.RelativeTransform = new RotateTransform() { Angle = -90, CenterX = 0.5, CenterY = 0.5 };
 
-  //      /// <summary>
-  //      /// Stop camera preview and QR code scanner.
-  //      /// </summary>
-  //      /// <returns>Task</returns>
-  //      public async Task StopAsync()
-  //      {
-	 //       if (_timer.IsEnabled)
-	 //       {
-		//        _timer.Stop();
-		//        await StopCameraPreviewAsync();
-	 //       }
-  //      }
+            ViewFinderBrush.SetSource(_cam);
+        }
 
-  //      private async Task InitializeCameraPreviewAsync()
-  //      {
-  //          var cam = await GetBackCamera();
+        private void StopCamera()
+        {
+            _cam.Initialized -= CamOnInitialized;
+            _cam.Dispose();
+        }
 
-  //          if (cam == null)
-  //          {
-  //              cam = await GetFrontCamera();
+        private bool IsCameraAvailable()
+        {
+            return Camera.IsCameraTypeSupported(CameraType.Primary) || Camera.IsCameraTypeSupported(CameraType.FrontFacing);
+        }
 
-  //              if (cam == null)
-  //              {
-  //                  throw new CameraNotFoundException("No camera is present");
-  //              }
-  //          }
+        private CameraType GetAvailableCameraType()
+        {
+            if (Camera.IsCameraTypeSupported(CameraType.Primary))
+                return CameraType.Primary;
+            return CameraType.FrontFacing;
+        }
 
-  //          _mediaCapture = new MediaCapture();
+        private void CamOnInitialized(object sender, CameraOperationCompletedEventArgs eventArgs)
+        {
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (eventArgs.Succeeded)
+                {
+                    TurnOffFlash();
+                    StartFocusing();
+                    StartScanning();
+                }
+            });
+        }
 
-  //          await _mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
-  //          {
-  //              VideoDeviceId = cam.Id,
-  //              PhotoCaptureSource = PhotoCaptureSource.VideoPreview,
-  //              StreamingCaptureMode = StreamingCaptureMode.Video
-  //          });
+        private void TurnOffFlash()
+        {
+            _cam.FlashMode = FlashMode.Off;;
+        }
 
-  //          await SetCameraToMaxResolution();
+        private void StartScanning()
+        {
+            _scanningTimer = new DispatcherTimer() { Interval = _scanningInterval };
+            _scanningTimer.Tick += ScanningForQrCode;
+            _scanningTimer.Start();
+        }
 
-  //          cameraPreview.Source = _mediaCapture;
-  //      }
+        private void StopScanning()
+        {
+            _scanningTimer.Tick -= ScanningForQrCode;
+            _scanningTimer.Stop();
+        }
 
-  //      private void InitializeTimer()
-  //      {
-  //          _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(ScanIntervalMs) };
-  //          _timer.Tick += TimerOnTick;
-  //      }
+        private void ScanningForQrCode(object sender, EventArgs eventArgs)
+        {
+            try
+            {
+                // get camera preview
+                int[] previewBuffer = new int[(int)_cam.PreviewResolution.Width * (int)_cam.PreviewResolution.Height];
+                _cam.GetPreviewBufferArgb32(previewBuffer);
+                WriteableBitmap wb = new WriteableBitmap((int)_cam.PreviewResolution.Width, (int)_cam.PreviewResolution.Height);
+                previewBuffer.CopyTo(wb.Pixels, 0);
 
-  //      private async void TimerOnTick(object sender, object o)
-  //      {
-  //          try
-  //          {
-  //              StorageFile tmpFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("temp_photo.jpg", CreationCollisionOption.GenerateUniqueName);
+                // process image
+                string text = DecodeQrCode(wb);
+                if (text != null)
+                    QrCodeDetected?.Invoke(text);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
 
-  //              await _mediaCapture.CapturePhotoToStorageFileAsync(ImageEncodingProperties.CreateJpeg(), tmpFile);
+        private string DecodeQrCode(WriteableBitmap wb)
+        {
+            IBarcodeReader reader = QrTools.GetQrReader();
+            var result = reader.Decode(wb);
+            return result?.Text;
+        }
 
-  //              using (var fileStream = await tmpFile.OpenReadAsync())
-  //              {
-  //                  WriteableBitmap bmp = new WriteableBitmap(_deviceResolutionWidthPx, _deviceResolutionHeightPx);
-  //                  await bmp.SetSourceAsync(fileStream);
+        private void StartFocusing()
+        {
+            _focusingTimer = new DispatcherTimer() { Interval = _focusingInterval };
+            _focusingTimer.Tick += FocusingCamera;
+            _focusingTimer.Start();
+        }
 
-  //                  string text = DecodeQrCode(bmp);
-  //                  if (text != null)
-  //                  {
-  //                      QrCodeDetected(text);
-  //                  }
-  //              }
-  //          }
-  //          catch (Exception)
-  //          {
-  //              // ignored
-  //          }
-  //      }
+        private void StopFocusing()
+        {
+            _focusingTimer.Tick -= FocusingCamera;
+            _focusingTimer.Stop();
+        }
 
-  //      private string DecodeQrCode(WriteableBitmap bmp)
-  //      {
-  //          IBarcodeReader reader = new BarcodeReader()
-  //          {
-  //              Options =
-  //                  new DecodingOptions()
-  //                  {
-  //                      PossibleFormats = new BarcodeFormat[] { BarcodeFormat.QR_CODE },
-  //                      PureBarcode = false,
-  //                      TryHarder = true
-  //                  }
-  //          };
-  //          var result = reader.Decode(bmp);
-  //          return result?.Text;
-  //      }
+        private void FocusingCamera(object sender, EventArgs eventArgs)
+        {
+            if (_cam.IsFocusSupported)
+                _cam.Focus();
+        }
+        #endregion ScannerImplementation
 
-  //      private async Task StartCameraPreviewAsync()
-  //      {
-  //          await _mediaCapture.StartPreviewAsync();
-  //      }
+        #region OnDetectedCommand
+        public static readonly DependencyProperty OnDetectedCommandProperty = DependencyProperty.Register("OnDetectedCommand", typeof(ICommand), typeof(QrCodeScanner), new PropertyMetadata(null, OnDetectedChanged));
 
-  //      private async Task StopCameraPreviewAsync()
-  //      {
-  //          await _mediaCapture.StopPreviewAsync();
-  //      }
+        public ICommand OnDetectedCommand
+        {
+            get { return (ICommand)GetValue(OnDetectedCommandProperty); }
+            set { SetValue(OnDetectedCommandProperty, value); }
+        }
 
-  //      private async Task<DeviceInformation> GetBackCamera()
-  //      {
-  //          var camList = await GetCameraDevices();
-
-  //          return (from cam in camList
-  //                  where cam.EnclosureLocation != null && cam.EnclosureLocation.Panel == Panel.Back
-  //                  select cam).FirstOrDefault();
-
-  //      }
-
-  //      private async Task<DeviceInformation> GetFrontCamera()
-  //      {
-  //          var camList = await GetCameraDevices();
-
-  //          return (from cam in camList
-  //                  where cam.EnclosureLocation != null && cam.EnclosureLocation.Panel == Panel.Front
-  //                  select cam).FirstOrDefault();
-  //      }
-
-  //      private async Task<DeviceInformationCollection> GetCameraDevices()
-  //      {
-  //          return await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
-  //      }
-
-  //      private async Task SetCameraToMaxResolution()
-  //      {
-  //          VideoEncodingProperties resolutionMax = null;
-  //          int currentMax = 0;
-  //          var availableResolutions = _mediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.Photo);
-
-  //          foreach (VideoEncodingProperties res in availableResolutions)
-  //          {
-  //              if (res.Width * res.Height > currentMax)
-  //              {
-  //                  _deviceResolutionWidthPx = Convert.ToInt32(res.Width);
-  //                  _deviceResolutionHeightPx = Convert.ToInt32(res.Height);
-  //                  currentMax = Convert.ToInt32(Width * res.Height);
-  //                  resolutionMax = res;
-  //              }
-  //          }
-
-  //          await _mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.Photo, resolutionMax);
-  //      }
-		//#endregion ScannerImplementation
-
-		//#region OnDetectedCommand
-	 //   public static readonly DependencyProperty OnDetectedCommandProperty =
-		//    DependencyProperty.Register("OnDetectedCommand", typeof (ICommand), typeof (QrCodeScanner),
-		//	    new PropertyMetadata(null, OnDetectedChanged));
-
-	 //   public ICommand OnDetectedCommand
-	 //   {
-		//    get { return (ICommand) GetValue(OnDetectedCommandProperty); }
-		//	set { SetValue(OnDetectedCommandProperty, value);}
-	 //   }
-
-	 //   private async static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-	 //   {
-		//    var sender = obj as QrCodeScanner;
-		//	if(sender == null)
-		//		return;
-		//    sender.QrCodeDetected += text =>
-		//    {
-		//	    var cmd = sender.OnDetectedCommand;
-		//	    cmd.Execute(text);
-		//    };
-		//    await sender.StartAsync();
-	 //   }
-	 //   #endregion OnDetectedCommand
-	}
+        private static void OnDetectedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        {
+            var sender = obj as QrCodeScanner;
+            if (sender == null)
+                return;
+            sender.QrCodeDetected += text =>
+            {
+                var cmd = sender.OnDetectedCommand;
+                cmd.Execute(text);
+            };
+            sender.Start();
+        }
+        #endregion OnDetectedCommand
+    }
 }

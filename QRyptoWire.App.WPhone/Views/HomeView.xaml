@@ -13,6 +13,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait">
+
     <Grid x:Name="Root">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="0.1*"></RowDefinition>
@@ -26,17 +27,25 @@
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Home"/>
-			<!--<ScrollViewer Grid.Row="1">
-                <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single"
+			<ScrollViewer Grid.Row="1" Background="White" Margin="10">
+                <ListBox Name="ContactList" ItemsSource="{Binding Contacts}" SelectionMode="Single"
 				userControls:ContactControl.Command="{Binding SelectContactCommand}">
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <userControls:ContactControl 
 							DataContext="{Binding }"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+
 				</ListBox>
-			</ScrollViewer>-->
+			</ScrollViewer>
         </Grid>
     </Grid>
 </views:QryptoWirePage>

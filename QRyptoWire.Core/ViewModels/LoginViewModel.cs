@@ -9,24 +9,28 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IStorageService _storageService;
 		private readonly IUserService _userService;
-		private readonly IPushService _pushService;
+		private readonly IPhoneService _phoneService;
+		private readonly IMessageService _messageService;
 		private bool _registering;
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService, IPushService pushService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService, IMessageService messageService)
 		{
 			_storageService = storageService;
 			_userService = userService;
-			_pushService = pushService;
+			_phoneService = phoneService;
+			_messageService = messageService;
 
 			ProceedCommand = new MvxCommand(ProceedCommandAction, ValidatePassword);
 		}
 
 		public override void Start()
 		{
-			if (!_storageService.PublicKeyExists())
-				Registering = true;
+			//if (!_storageService.PublicKeyExists())
+			//	Registering = true;
+			Registering = false;
+			_phoneService.LoadDeviceId();
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}
 
@@ -71,23 +75,34 @@ namespace QRyptoWire.Core.ViewModels
 
 		private async void InitSynchronizationTasks()
 		{
-			await Task.Run(() => _pushService.AddPushToken());
+			await Task.Run(() => _phoneService.AddPushToken());
 		}
 
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
 			if (Registering)
-				MakeApiCallAsync(() => _userService.Register(Password), b =>
-				{
-					if (b)
-						ShowViewModel<RegistrationViewModel>();
-				});
+				MakeApiCallAsyncSafe(() => _userService.Register(Password),
+					b =>
+					{
+						if (b)
+							ShowViewModel<RegistrationViewModel>();
+					});
 			else
-				MakeApiCallAsync(() => _userService.Login(Password), b =>
+				MakeApiCallAsync(() =>
 				{
-					if (b)
-					{	
+					//var loggedIn = _userService.Login(Password);
+					//if (loggedIn)
+					//{
+					//	_messageService.FetchMessages();
+					//	_messageService.FetchContacts();
+					//}
+					//return loggedIn;
+					return true;
+				}, b =>
+				{
+					if (true)
+					{
 						InitSynchronizationTasks();
 						ShowViewModel<HomeViewModel>();
 					}

@@ -1,10 +1,23 @@
-﻿using QRyptoWire.Shared.Dto;
+﻿using System.Threading.Tasks;
+using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services
 {
     public interface IQrService
     {
-        byte[] GenerateQrCode(string contactName);
-        Contact ParseQrCode(string qrData);
+        /// <summary>
+        /// Generate QR code and save it to saved pictures folder
+        /// </summary>
+        /// <param name="contactName">Name of the contact to save into QR code</param>
+        /// <returns>Task</returns>
+        Task GenerateQrCode(string contactName);
+
+        /// <summary>
+        /// Parse QR code data into Contact object.
+        /// </summary>
+        /// <param name="qrData">QR code content</param>
+        /// <param name="contact">Contact object to load parsed data into</param>
+        /// <returns>Indication whether the parse succeded</returns>
+        bool ParseQrCode(string qrData, out Contact contact);
     }
 }

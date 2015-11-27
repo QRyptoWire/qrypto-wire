@@ -1,31 +1,34 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
-using QRyptoWire.Shared.Dto;
+using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
 {
 	public class HomeViewModel : MvxViewModel
 	{
-		public HomeViewModel()
+		private readonly IStorageService _storageService;
+
+		public HomeViewModel(IStorageService storageService)
 		{
-			Contacts = new List<Contact>();
-			Contacts.Add(new Contact {Name = "top kek"});
-			SelectContactCommand = new MvxCommand<Contact>(SelectContactCommandAction);
+			_storageService = storageService;
+			SelectContactCommand = new MvxCommand<ContactListItem>(SelectContactCommandAction);
 		}
 
-		public IList<Contact> Contacts { get; private set; } 
+		public List<ContactListItem> Contacts { get; private set; } 
 		public ICommand SelectContactCommand { get; private set; }
 
-		private void SelectContactCommandAction(Contact param)
+		private void SelectContactCommandAction(ContactListItem param)
 		{
-			ShowViewModel<LoginViewModel>();
+			ShowViewModel<ConversationViewModel>(new {id = param.Id});
 		}
 		public MenuViewModel Menu { get; private set; }
 
 		public override void Start()
 		{
+			Contacts = _storageService.GetContacts().ToList();
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}
 	}

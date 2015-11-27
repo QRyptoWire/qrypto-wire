@@ -8,7 +8,7 @@
 			return true;
 		}
 
-		public bool Register(string password)
+		public void Register(string password)
 		{
 			throw new System.NotImplementedException();
 		}

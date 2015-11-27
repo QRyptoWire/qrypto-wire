@@ -33,6 +33,7 @@
   <Capabilities>
     <Capability Name="internetClientServer" />
     <Capability Name="picturesLibrary" />
+    <Capability Name="removableStorage" />
     <DeviceCapability Name="webcam" />
   </Capabilities>
   <Extensions>
