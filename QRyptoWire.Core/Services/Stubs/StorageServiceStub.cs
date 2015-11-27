@@ -14,7 +14,7 @@ namespace QRyptoWire.Core.Services.Stubs
 
 	    public string GetPublicKey()
 	    {
-	        return string.Empty;
+	        return "qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty";
 	    }
 
 	    public int GetUserId()

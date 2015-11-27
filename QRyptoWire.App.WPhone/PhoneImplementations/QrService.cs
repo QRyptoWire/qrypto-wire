@@ -21,7 +21,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             public const int Count = 4;
         }
 
-        private const string QrCodeFileName = "QRyptoWire-ContactCard.jpeg";
+        private const string QrCodeFileName = "{0}.jpeg";
 
         private readonly IEncryptionService _encryptionService;
         private readonly IStorageService _storageService;
@@ -45,7 +45,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             var matrix = writer.Encode(contents);
             var wb = writer.Write(matrix);
 
-            await PictureLibraryTools.SaveWriteableBitmap(wb, QrCodeFileName);
+            await PictureLibraryTools.SaveWriteableBitmap(wb, string.Format(QrCodeFileName, contactName));
         }
 
         public bool ParseQrCode(string qrData, out Contact contact)

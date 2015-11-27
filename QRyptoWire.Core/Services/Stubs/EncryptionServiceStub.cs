@@ -27,7 +27,7 @@ namespace QRyptoWire.Core.Services.Stubs
 
         public Tuple<string, string> DecomposePublicKey(string publicKey)
         {
-            return new Tuple<string, string>(string.Empty, string.Empty);
+            return new Tuple<string, string>("qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty", "ABCD");
         }
     }
 }
