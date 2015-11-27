@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:QRyptoWire.App.WPhone.Views"
     xmlns:converters="clr-namespace:QRyptoWire.App.WPhone.Converters"
+    xmlns:utilities="clr-namespace:QRyptoWire.App.WPhone.Utilities"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -22,8 +23,9 @@
         <Image Margin="30" Source="../Assets/QRWireLogo.png"/>
         <StackPanel HorizontalAlignment="Center" 
 				Grid.Row="1" Width="250">
-            <TextBox BorderBrush="Red"
-				Text="{Binding Password, Mode=TwoWay}"/>
+            <PasswordBox BorderBrush="Red" 
+				Password="{Binding Password, Mode=TwoWay}"
+				utilities:Helpers.DynamicPasswordBox="true"/>
             <Button Background="Red"
 				BorderBrush="Red" 
 				Command="{Binding ProceedCommand}"
