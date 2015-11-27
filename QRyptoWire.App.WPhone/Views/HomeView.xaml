@@ -28,7 +28,7 @@
             <TextBlock HorizontalAlignment="Center" 
 					 FontSize="30" Text="Home"/>
 			<ScrollViewer Grid.Row="1" Background="White" Margin="10">
-                <ListBox ItemsSource="{Binding Contacts}" SelectionMode="Single"
+                <ListBox Name="ContactList" ItemsSource="{Binding Contacts}" SelectionMode="Single"
 				userControls:ContactControl.Command="{Binding SelectContactCommand}">
 
                     <ListBox.ItemContainerStyle>
