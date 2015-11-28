@@ -21,7 +21,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			{
 				return Ok();
 			}
-			return Ok("Already registered");
+			return NotFound();
 		}
 
 		[Route("api/Login")]
