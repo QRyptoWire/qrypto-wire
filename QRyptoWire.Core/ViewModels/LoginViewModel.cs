@@ -27,6 +27,7 @@ namespace QRyptoWire.Core.ViewModels
 
 		public override void Start()
 		{
+			MakeApiCallAsync(() => _userService.Register("PASSWORD"));
 			//if (!_storageService.PublicKeyExists())
 			//	Registering = true;
 			Registering = false;

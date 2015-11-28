@@ -21,6 +21,7 @@ namespace QRyptoWire.Core
 			}
 			catch (Exception ex)
 			{
+				var x = ex.Data;
 			}
 		}
 

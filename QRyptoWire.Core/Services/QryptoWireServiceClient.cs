@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 using RestSharp.Portable;
@@ -21,24 +22,24 @@ namespace QRyptoWire.Core.Services
 
 		public bool Login(string password)
 		{
-			var request = new RestRequest($"{ApiUris.Login}{password}").AddBody(_deviceId);
-			request.Method = HttpMethod.Post;
+			var request = new RestRequest(ApiUris.Login, HttpMethod.Post);
+			request.AddParameter("DeviceId", _deviceId);
+            request.AddParameter("Password", password);
 			_sessionId = Execute<string>(request);
-			if (_sessionId == null)
-				return false;
-			return true;
+			return _sessionId != null;
 		}
 
 		public void Register(string password)
 		{
-			var request = new RestRequest($"{ApiUris.Register}{password}").AddBody(_deviceId);
-			request.Method = HttpMethod.Post;
+			var request = new RestRequest("api/Register", HttpMethod.Post);
+			request.AddParameter("DeviceId", _deviceId);
+			request.AddParameter("Password", password);
 			Execute(request);
 		}
 
 		public void RegisterPushToken(string channelUri)
 		{
-			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}/").AddBody(channelUri));
+			Execute(new RestRequest($"{ApiUris.AddToken}{_sessionId}").AddJsonBody(channelUri));
 		}
 
 		public IEnumerable<Contact> FetchContacts()

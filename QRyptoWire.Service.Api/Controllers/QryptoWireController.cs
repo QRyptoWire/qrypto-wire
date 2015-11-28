@@ -1,30 +1,35 @@
-﻿using System;
-using System.Web.Http;
+﻿using System.Web.Http;
 using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
 {
 	public class QryptoWireController : ApiController
 	{
+		public class PasswordRequest
+		{
+			public string DeviceId { get; set; }
+			public string Password { get; set; }
+		}
 
-		[Route("api/Register/{deviceId}/{password}")]
-		[HttpGet]
-		public IHttpActionResult Register(string deviceId, string password)
+
+		[Route("api/Register")]
+		[HttpPost]
+		public IHttpActionResult Register(PasswordRequest req)
 		{
 			var userService = new UserService();
-			if (userService.Register(deviceId, password))
+			if (userService.Register(req.DeviceId, req.Password))
 			{
 				return Ok();
 			}
 			return NotFound();
 		}
 
-		[Route("api/Login/{deviceId}/{password}")]
-		[HttpGet]
-		public IHttpActionResult Login(string deviceId, string password)
+		[Route("api/Login")]
+		[HttpPost]
+		public IHttpActionResult Login(PasswordRequest req)
 		{
 			var userService = new UserService();
-			var sessionKey = userService.Login(deviceId, password);
+			var sessionKey = userService.Login(req.DeviceId, req.Password);
 			
 			if (sessionKey != null)
 			{
@@ -33,9 +38,9 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/SendMessage/{sessionKey}/{recipientId}/")]
+		[Route("api/SendMessage/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult SendMessage(string sessionKey, int recipientId, Shared.Dto.Message msg)
+		public IHttpActionResult SendMessage(string sessionKey, Shared.Dto.Message msg)
 		{
 			var messageService = new MessageService();
 			if (messageService.SendMessage(sessionKey, msg))
@@ -59,10 +64,11 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AddContact/{sessionKey}/{recipientId}/{contact}")]
-		[HttpGet]
+		[Route("api/AddContact/{sessionKey}/{recipientId}")]
+		[HttpGet, HttpPost]
 		public IHttpActionResult AddContact(string sessionKey, int recipientId, string contact)
 		{
+		//TODO: dto.contact
 			var contactService = new ContactService();
 			if (contactService.SendContact(sessionKey, recipientId, contact))
 			{
@@ -115,15 +121,33 @@ namespace QRyptoWire.Service.Api.Controllers
 		{
 			var userService = new UserService();
 			var ok = userService.RegisterPushToken(sessionKey, pushToken);
-			
+
 			if (ok) return Ok();
 			return NotFound();
+		}
+
+		[Route("api/AllowPushes/{sessionKey}")]
+		[HttpGet, HttpPost]
+		public IHttpActionResult UnRegisterPush(string sessionKey, bool unregister)
+		{
+			var userService = new UserService();
+			//var ok = userService.UnRegisterPushToken(sessionKey, unregister);
+
+			//if (ok) return Ok();
+			return NotFound();
+		}
+
+		[Route("api/test")]
+		[HttpGet, HttpPost]
+		public IHttpActionResult Test([FromBody]string deviceId)
+		{
+			 return Ok("Supcio!" + deviceId + " : " );
 		}
 
 
 		protected override void Dispose(bool disposing)
 		{
-			DbContextFactory.Dispose();
+			//DbContextFactory.Dispose();
 			base.Dispose(disposing);
 		}
 	}

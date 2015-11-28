@@ -5,18 +5,18 @@
 		#if LOCAL
 		public static readonly string Base = "http://localhost:64433/QryptoWire/";
 		#else
-		public static readonly string Base = "http://qryptowire.azurewebsites.net/api/";
+		public static readonly string Base = "http://qryptowire.azurewebsites.net";
 		#endif
 
-		public static readonly string Login = "Login/";
-		public static readonly string Register = "Register/";
-		public static readonly string SendMessage = "AddMessage/";
-		public static readonly string FetchMessages = "FetchMessages/";
-		public static readonly string AddContact = "AddContact/";
-		public static readonly string FetchContacts = "FetchContacts/";
-		public static readonly string AddToken = "AddPushToken/";
-		public static readonly string GetUserId = "GetUserId/";
-		public static readonly string GetPushesAllowed = "PushesAllowed/";
-		public static readonly string AllowPushes = "AllowPushes/";
+		public static readonly string Login = "api/Login";
+		public static readonly string Register = "api/Register";
+		public static readonly string SendMessage = "api/AddMessage/";
+		public static readonly string FetchMessages = "api/FetchMessages/";
+		public static readonly string AddContact = "api/AddContact/";
+		public static readonly string FetchContacts = "api/FetchContacts/";
+		public static readonly string AddToken = "api/AddPushToken/";
+		public static readonly string GetUserId = "api/GetUserId/";
+		public static readonly string GetPushesAllowed = "api/PushesAllowed/";
+		public static readonly string AllowPushes = "api/AllowPushes/";
 	}
 }
