@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using QRyptoWire.Shared;
@@ -16,12 +17,19 @@ namespace QRyptoWire.Core
 				var response = Task.Run(async () => await client.Execute(request));
 				response.Wait();
 
-				if (!response.Result.IsSuccess)
-					throw new HttpRequestException("Request to service failed");
+				if (response.Result.IsSuccess)
+				{
+					return;
+				}
+				if (response.Result.StatusCode == HttpStatusCode.NotFound)
+				{
+					throw new HttpRequestException("404");
+				}
+				throw new HttpRequestException("Something went terribly wrong");
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				var x = ex.Data;
+				// ignored
 			}
 		}
 
@@ -34,14 +42,18 @@ namespace QRyptoWire.Core
 				response.Wait();
 
 				if (response.Result.IsSuccess)
-					return response.Result.Data;
-				else
 				{
-					throw new HttpRequestException("Request to service failed");
+					return response.Result.Data;
 				}
+				if (response.Result.StatusCode == HttpStatusCode.NotFound)
+				{
+					throw new HttpRequestException("404");
+				}
+				throw new HttpRequestException("Request to service failed");
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
+				// ignored
 			}
 
 			return default(TRet);
