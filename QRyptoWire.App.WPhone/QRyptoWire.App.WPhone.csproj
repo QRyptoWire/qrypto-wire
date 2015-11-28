@@ -105,8 +105,13 @@
     <Compile Include="Converters\UnreadMessagesToStringConverter.cs" />
     <Compile Include="DebugTrace.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Models\ContactModel.cs" />
+    <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="Utilities\QryptoDb.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="PhoneImplementations\PhoneService.cs" />
     <Compile Include="PhoneImplementations\QrService.cs" />
+    <Compile Include="PhoneImplementations\StorageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,8 +132,11 @@
       <DependentUpon>QrCodeScanner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\Helpers.cs" />
+    <Compile Include="Utilities\PasswordGenerator.cs" />
     <Compile Include="Utilities\PictureLibraryTools.cs" />
     <Compile Include="Utilities\QrTools.cs" />
+    <Compile Include="Utilities\QryptoDbFactory.cs" />
+    <Compile Include="Utilities\QryptoDbSecurity.cs" />
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
     </Compile>

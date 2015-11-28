@@ -11,11 +11,21 @@
     d:DesignWidth="400">
     <UserControl.Resources>
 		<converters:UnreadMessagesToStringConverter x:Key="UnreadMessagesToStringConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 	</UserControl.Resources>
-    <StackPanel x:Name="Root" Margin="5" Background="{StaticResource PhoneChromeBrush}">
-		<TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
-		<TextBlock Text="{Binding UnreadMessages, Converter={StaticResource UnreadMessagesToStringConverter}}" 
-			HorizontalAlignment="Right" Margin="0 0 10 0"/>
-		<Rectangle Height="5" Opacity="0.7" Fill="Red"/>
-    </StackPanel>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Rectangle Fill="OrangeRed" Width="10"
+            Visibility="{Binding NewContact, 
+            Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <StackPanel Grid.Column="1" x:Name="Root" Background="{StaticResource PhoneChromeBrush}">
+		    <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
+		    <TextBlock Text="{Binding UnreadMessages, Converter={StaticResource UnreadMessagesToStringConverter}}" 
+			    HorizontalAlignment="Right" Margin="0 0 10 0"/>
+		    <Rectangle Height="5" Opacity="0.7" Fill="Red"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

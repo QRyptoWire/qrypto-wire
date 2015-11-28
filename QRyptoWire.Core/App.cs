@@ -15,11 +15,11 @@ namespace QRyptoWire.Core
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
 				
-            Mvx.RegisterType<IStorageService, StorageServiceStub>();
-			// Mvx.RegisterType<IUserService, UserServiceStub>();
-			Mvx.RegisterType<IEncryptionService, EncryptionServiceStub>();
+            //Mvx.RegisterType<IStorageService, StorageServiceStub>();
+            //Mvx.RegisterType<IUserService, UserServiceStub>();
+            Mvx.RegisterType<IEncryptionService, EncryptionServiceStub>();
 
-			Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();
+            Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();
             RegisterAppStart<LoginViewModel>();
         }
     }

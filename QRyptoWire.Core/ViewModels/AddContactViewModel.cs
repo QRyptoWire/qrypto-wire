@@ -9,12 +9,15 @@ namespace QRyptoWire.Core.ViewModels
     public class AddContactViewModel : MvxViewModel
     {
         private readonly IQrService _qrService;
-        private string _contactName;
+	    private readonly IMessageService _messageService;
+	    private string _contactName;
+	    private Contact _contact;
 
-        public AddContactViewModel(IQrService qrService)
+        public AddContactViewModel(IQrService qrService, IMessageService messageService)
         {
             _qrService = qrService;
-            CodeDetectedCommand = new MvxCommand<string>(CodeDetectedCommandAction);
+	        _messageService = messageService;
+	        CodeDetectedCommand = new MvxCommand<string>(CodeDetectedCommandAction);
             AddContactCommand = new MvxCommand(AddContactCommandAction, AddContactCanExecute);
         }
 
@@ -23,10 +26,9 @@ namespace QRyptoWire.Core.ViewModels
             get { return _contactName; }
             set
             {
-                Contact contact;
-                if (_qrService.ParseQrCode(value, out contact))
+                if (_qrService.ParseQrCode(value, out _contact))
                 {
-                    _contactName = contact.Name;
+                    _contactName = _contact.Name;
                     RaisePropertyChanged();
                 }
             }
@@ -47,7 +49,7 @@ namespace QRyptoWire.Core.ViewModels
 
         private void AddContactCommandAction()
         {
-            ShowViewModel<HomeViewModel>();
+            _messageService.AddContact(_contact);
         }
 
         private bool AddContactCanExecute()

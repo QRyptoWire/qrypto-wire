@@ -27,11 +27,8 @@ namespace QRyptoWire.Core.ViewModels
 
 		public override void Start()
 		{
-			MakeApiCallAsync(() => _userService.Register("PASSWORD"));
-			MakeApiCallAsync(() => _userService.Login("PASSWORD"));
-			//if (!_storageService.PublicKeyExists())
-			//	Registering = true;
-			Registering = false;
+			if (!_storageService.UserExists())
+				Registering = true;
 			_phoneService.LoadDeviceId();
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}
@@ -86,25 +83,24 @@ namespace QRyptoWire.Core.ViewModels
 			if (Registering)
 				MakeApiCallAsyncSafe(() => _userService.Register(Password),
 					b =>
-					{
-						if (b)
-							ShowViewModel<RegistrationViewModel>();
-					});
+				{
+					if (b)
+						ShowViewModel<RegistrationViewModel>();
+				});
 			else
 				MakeApiCallAsync(() =>
 				{
-					//var loggedIn = _userService.Login(Password);
-					//if (loggedIn)
-					//{
-					//	_messageService.FetchMessages();
-					//	_messageService.FetchContacts();
-					//}
-					//return loggedIn;
-					return true;
+					var loggedIn = _userService.Login(Password);
+					if (loggedIn)
+					{
+						_messageService.FetchMessages();
+						_messageService.FetchContacts();
+					}
+					return loggedIn;
 				}, b =>
 				{
-					if (true)
-					{
+					if (b)
+					{	
 						InitSynchronizationTasks();
 						ShowViewModel<HomeViewModel>();
 					}

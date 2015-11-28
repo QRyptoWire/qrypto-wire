@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using QRyptoWire.Core.DbItems;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services.Implementation
@@ -17,7 +18,13 @@ namespace QRyptoWire.Core.Services.Implementation
 
 		public void SendMessage(Message message)
 		{
-			_storageService.SaveMessages(new[] {message});
+			_storageService.SaveMessages(new[] {new MessageItem
+			{
+				Body = message.Body,
+				Date = message.Time,
+				ReceiverId = message.ReceiverId,
+				SenderId = message.SenderId
+			} });
 			_client.SendMessage(message);
 		}
 
@@ -25,12 +32,26 @@ namespace QRyptoWire.Core.Services.Implementation
 		{
 			var messages = _client.FetchMessages().ToList();
 			if(messages.Any())
-				_storageService.SaveMessages(messages);
+				_storageService.SaveMessages(messages.Select(e => new MessageItem
+				{
+					Body = e.Body,
+					Date = e.Time,
+					ReceiverId = e.ReceiverId,
+					SenderId = e.SenderId,
+					IsNew = true
+				}).ToList());
 			return messages;
 		}
 
 		public void AddContact(Contact contact)
 		{
+			_storageService.SaveContacts(new[] { new ContactItem
+			{
+				Id = contact.Id,
+				PublicKey = contact.PublicKey,
+				IsNew = true,
+				Name = contact.Name
+			} });
 			_client.AddContact(contact);
 		}
 
@@ -38,7 +59,13 @@ namespace QRyptoWire.Core.Services.Implementation
 		{
 			var contacts = _client.FetchContacts().ToList();
 			if(contacts.Any())
-				_storageService.SaveContacts(contacts);
+				_storageService.SaveContacts(contacts.Select(e => new ContactItem
+				{
+					Id = e.Id,
+					IsNew = true,
+					Name = e.Name,
+					PublicKey = e.PublicKey
+				}).ToList());
 		}
 	}
 }

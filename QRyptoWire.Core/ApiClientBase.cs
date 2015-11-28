@@ -27,7 +27,7 @@ namespace QRyptoWire.Core
 				}
 				throw new HttpRequestException("Something went terribly wrong");
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				// ignored
 			}
@@ -51,7 +51,7 @@ namespace QRyptoWire.Core
 				}
 				throw new HttpRequestException("Request to service failed");
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				// ignored
 			}

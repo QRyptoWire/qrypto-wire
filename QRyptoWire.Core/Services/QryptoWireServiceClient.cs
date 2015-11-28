@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using QRyptoWire.Shared;
@@ -44,12 +45,14 @@ namespace QRyptoWire.Core.Services
 
 		public IEnumerable<Contact> FetchContacts()
 		{
-			return Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}"));
+			var res = Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}"));
+			return res ?? Enumerable.Empty<Contact>();
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			return Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}"));
+			var res = Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}"));
+			return res ?? Enumerable.Empty<Message>();
 		}
 
 		public void AddContact(Contact contact)

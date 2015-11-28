@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 using Cirrious.MvvmCross.ViewModels;
+using QRyptoWire.Core.DbItems;
 using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
 
@@ -28,7 +29,14 @@ namespace QRyptoWire.Core.ViewModels
 
 		public override void Start()
 		{
-			Contacts = _storageService.GetContacts().ToList();
+			Contacts = _storageService.GetContactsWithNewMessageCount().Select(e => new ContactListItem
+			{
+				Id = e.Item1.Id,
+				Name = e.Item1.Name,
+				NewContact = e.Item1.IsNew,
+				UnreadMessages = e.Item2
+			}).ToList();
+			_storageService.MarkContactsAsNotNew(Contacts.Select(e => e.Id).ToList());
 			Menu = new MenuViewModel(MenuMode.AtHome);
 		}
 	}

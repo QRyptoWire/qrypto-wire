@@ -67,8 +67,13 @@ namespace QRyptoWire.Core.ViewModels
 		public void Init(int id)
 		{
 			_contactId = id;
-			Messages = new ObservableCollection<StoredMessage>(_storageService.GetMessages(_contactId));
-			ContactName = _storageService.GetContacts().First(e => e.Id == _contactId).Name;
+			Messages = new ObservableCollection<StoredMessage>(_storageService.GetMessages(_contactId).Select(e => new StoredMessage
+			{
+				Body = e.Body,
+				Date = e.Date,
+				Sent = e.SenderId != _contactId
+			}));
+			ContactName = _storageService.GetContactsWithNewMessageCount().First(e => e.Item1.Id == _contactId).Item1.Name;
 			RaisePropertyChanged(() => ContactName);
 			RaisePropertyChanged(() => Messages);
 		}

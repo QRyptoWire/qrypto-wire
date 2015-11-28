@@ -3,10 +3,12 @@
 	public class UserService : IUserService
 	{
 		private readonly IQryptoWireServiceClient _serviceClient;
+		private readonly IStorageService _storageService;
 
-		public UserService(IQryptoWireServiceClient serviceClient)
+		public UserService(IQryptoWireServiceClient serviceClient, IStorageService storageService)
 		{
 			_serviceClient = serviceClient;
+			_storageService = storageService;
 		}
 
 		public bool Login(string password)
@@ -26,6 +28,7 @@
 
 		public void SetPushSettings(bool pushesAllowed)
 		{
+			_storageService.SetPushSettings(pushesAllowed);
 			_serviceClient.AllowPushes(pushesAllowed);
 		}
 	}

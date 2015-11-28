@@ -4,19 +4,14 @@ namespace QRyptoWire.Core.Services.Stubs
 {
     class EncryptionServiceStub : IEncryptionService
     {
-        public bool IsLazyMotherfucker()
-        {
-            throw new NotImplementedException();
-        }
-
         public string Encrypt(string message, int recieverUUID)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         public string Decrypt(string message, int senderUUID)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
 
         public bool ComposePublicKey(string modulus, string exponent, out string publicKey)
@@ -28,6 +23,11 @@ namespace QRyptoWire.Core.Services.Stubs
         public Tuple<string, string> DecomposePublicKey(string publicKey)
         {
             return new Tuple<string, string>("qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty", "ABCD");
+        }
+
+        public string ExtractPublicKey(string keyPair)
+        {
+            return string.Empty;
         }
     }
 }
