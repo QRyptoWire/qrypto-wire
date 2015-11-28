@@ -51,42 +51,27 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
         }
 
+        public IUserModel GetUser()
+        {
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                UserModel user = db.Users.FirstOrDefault();
+
+                if (user == null)
+                {
+                    throw new UserNotFoundException("User does not exist");
+                }
+
+                return user;
+            }
+        }
+
         public bool UserExists()
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
                 bool userExists = db.Users.Any();
                 return userExists;
-            }
-        }
-
-        public string GetKeyPair()
-        {
-            using (QRyptoDb db = QryptoDbFactory.GetDb())
-            {
-                UserModel user = db.Users.FirstOrDefault();
-
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User does not exist");
-                }
-
-                return user.KeyPair;
-            }
-        }
-
-        public int GetUserId()
-        {
-            using (QRyptoDb db = QryptoDbFactory.GetDb())
-            {
-                UserModel user = db.Users.FirstOrDefault();
-
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User does not exist");
-                }
-
-                return user.Id;
             }
         }
 
@@ -115,6 +100,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 List<MessageModel> messages = contact.MessagesSentByUser.ToList();
                 messages.AddRange(contact.MessagesSentToUser);
 
+                // mark messages as already seen
 	            foreach (MessageModel msg in messages)
 	            {
 		            msg.IsNew = false;

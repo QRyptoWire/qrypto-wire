@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using QRyptoWire.App.WPhone.Utilities;
+using QRyptoWire.Core.ModelsAbstraction;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
 using ZXing;
@@ -34,12 +35,11 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
         public async Task GenerateQrCode(string contactName)
         {
-            int userId = _storageService.GetUserId();
-            string keyPair = _storageService.GetKeyPair();
-            string publicKey = _encryptionService.ExtractPublicKey(keyPair);
+            IUserModel user = _storageService.GetUser();
+            string publicKey = _encryptionService.ExtractPublicKey(user.KeyPair);
             Tuple<string, string> pkElements = _encryptionService.DecomposePublicKey(publicKey);
 
-            string contents = ComposeQrData(userId, contactName, pkElements.Item1, pkElements.Item2);
+            string contents = ComposeQrData(user.Id, contactName, pkElements.Item1, pkElements.Item2);
 
             IBarcodeWriter writer = QrTools.GetQrWriter();
 

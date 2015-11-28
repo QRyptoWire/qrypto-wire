@@ -8,11 +8,10 @@ namespace QRyptoWire.Core.Services
 	public interface IStorageService
 	{
         bool IsPushEnabled();
-		void SetPushSettings(bool allow);
+		void SetPushSettings(bool enable);
 	    void SaveUser(UserItem user);
+	    IUserModel GetUser();
         bool UserExists();
-        string GetKeyPair();
-	    int GetUserId();
         IEnumerable<Tuple<IContactModel, int>> GetContactsWithNewMessageCount();
 	    IEnumerable<IMessageModel> GetMessages(int contactId);
         void SaveContacts(IEnumerable<ContactItem> contacts);
