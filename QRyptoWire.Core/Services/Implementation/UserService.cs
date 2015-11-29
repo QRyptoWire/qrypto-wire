@@ -28,8 +28,9 @@
 
 		public void SetPushSettings(bool pushesAllowed)
 		{
-			_storageService.SetPushSettings(pushesAllowed);
-			_serviceClient.AllowPushes(pushesAllowed);
+			var result = _serviceClient.AllowPushes(pushesAllowed);
+			if(result)
+				_storageService.SetPushSettings(pushesAllowed);
 		}
 	}
 }

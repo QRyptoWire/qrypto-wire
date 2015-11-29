@@ -50,7 +50,8 @@ namespace QRyptoWire.Core.ViewModels
 		public MenuViewModel Menu { get; private set; }
 		public override void Start()
 		{			
-			AllowPushes = _storageService.IsPushEnabled();
+			_allowPushes = _storageService.IsPushEnabled();
+			RaisePropertyChanged(() => AllowPushes);
 			Menu = new MenuViewModel(MenuMode.AtSettings);
 		}
 

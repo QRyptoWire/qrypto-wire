@@ -15,6 +15,6 @@ namespace QRyptoWire.Core.Services
 		void SendMessage(Message message);
 		int GetUserId();
 		bool PushesAllowed();
-		void AllowPushes(bool allow);
+		bool AllowPushes(bool allow);
 	}
 }
