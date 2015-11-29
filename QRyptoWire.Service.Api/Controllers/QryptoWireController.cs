@@ -40,7 +40,7 @@ namespace QRyptoWire.Service.Api.Controllers
 
 		[Route("api/SendMessage/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult SendMessage(string sessionKey, Shared.Dto.Message msg)
+		public IHttpActionResult SendMessage([FromUri]string sessionKey, Shared.Dto.Message msg)
 		{
 			var messageService = new MessageService();
 			if (messageService.SendMessage(sessionKey, msg))
@@ -64,13 +64,12 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AddContact/{sessionKey}/{recipientId}")]
+		[Route("api/AddContact/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult AddContact(string sessionKey, int recipientId, string contact)
+		public IHttpActionResult AddContact([FromUri]string sessionKey,Shared.Dto.Contact contact)
 		{
-		//TODO: dto.contact
 			var contactService = new ContactService();
-			if (contactService.SendContact(sessionKey, recipientId, contact))
+			if (contactService.SendContact(sessionKey, contact))
 			{
 				return Ok();
 			}
@@ -83,11 +82,7 @@ namespace QRyptoWire.Service.Api.Controllers
 		{
 			var contactService = new ContactService();
 			var contacts = contactService.FetchContacts(sessionKey);
-			if (contacts != null)
-			{
-				return Ok(contacts);
-			}
-			return NotFound();
+			return Ok(contacts);
 		}
 
 		[Route("api/GetUserId/{sessionKey}")]

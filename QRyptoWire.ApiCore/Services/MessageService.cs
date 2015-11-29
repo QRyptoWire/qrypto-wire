@@ -1,27 +1,37 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QRyptoWire.Service.Data;
+using Telerik.OpenAccess;
 
 namespace QRyptoWire.Service.Core
 {
 	public class MessageService : IMessageService
 	{
-		public IQueryable<Shared.Dto.Message> FetchMessages(string sessionKey)
+		public List<Shared.Dto.Message> FetchMessages(string sessionKey)
 		{
-			//TODO: delete
-
 			var dbContext = DbContextFactory.GetContext();
+
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
 			if (user == null) return null;
+
 			var messages = dbContext.Messages
-				.Where(m => m.RecipientId == user.Id)
-				.Select(e => new Shared.Dto.Message
-				{
-					Body = e.Content,
-					ReceiverId = e.RecipientId,
-					SenderId = e.SenderId
-				});
-			return messages;
+				.Where(m => m.RecipientId == user.Id);
+
+			var dtoMessages = messages.Select(e => new Shared.Dto.Message
+			{
+				Body = e.Content,
+				ReceiverId = e.RecipientId,
+				SenderId = e.SenderId,
+				DateSent = e.SentTime,
+				SessionKey = e.SessionKey,
+				Signature = e.Signature,
+				Time = e.SentTime
+			}).ToList();
+			messages.DeleteAll();
+			dbContext.SaveChanges();
+			return dtoMessages;
 		}
 
 		public bool SendMessage(string sessionKey, Shared.Dto.Message msg)
@@ -35,16 +45,25 @@ namespace QRyptoWire.Service.Core
 				return false;
 			}
 
-			var recipient =
-				dbContext.Users.Single(u => u.Id == msg.ReceiverId);
+			User recipient;
+			try
+			{
+				recipient =
+					dbContext.Users.Single(u => u.Id == msg.ReceiverId);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 
 			var newMsg = new Message
 			{
 				Content = msg.Body,
 				Sender = user,
 				Recipient = recipient,
-				SentTime = msg.Time,
-				Signature = msg.Signature
+				SentTime = msg.DateSent,
+				Signature = msg.Signature,
+				SessionKey = msg.SessionKey
 			};
 			dbContext.Add(newMsg);
 			dbContext.SaveChanges();

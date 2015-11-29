@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Service.Core
 {
 	internal interface IContactService
 	{
-		IQueryable<Shared.Dto.Message> FetchContacts(string sessionKey);
-		bool SendContact(string sessionKey, int recipientId, string msg);
+		List<Contact> FetchContacts(string sessionKey);
+		bool SendContact(string sessionKey, Contact contact);
 	}
 	
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using QRyptoWire.Service.Data;
+using Telerik.OpenAccess;
 
 namespace QRyptoWire.Service.Core
 {
@@ -10,13 +11,13 @@ namespace QRyptoWire.Service.Core
 		{
 
 			var dbContext = DbContextFactory.GetContext();
-			var onHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
+			var oneHourAgo = DateTime.Now.Subtract(new TimeSpan(0, 1, 0, 0));
 			return (
 				dbContext.Sessions
 				.Count(p
 					=> p.SessionKey == sessionKey
-					   && p.StarTime > onHourAgo
-				) != 1
+					  // && p.StarTime > oneHourAgo
+				) == 1
 			);
 		}
 
@@ -49,6 +50,10 @@ namespace QRyptoWire.Service.Core
 						 && p.DeviceId == deviceId);
 
 			string sessionKey = SessionKeyGenerator.GetUniqueKey();
+
+			dbContext.Sessions.Where(s => s.User == user).DeleteAll();
+
+			dbContext.SaveChanges();
 			var newSession = new Session
 			{
 				User = user,

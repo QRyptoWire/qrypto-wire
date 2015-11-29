@@ -22,6 +22,7 @@ namespace QRyptoWire.Service.Data
 				message.SenderId,
 				message.RecipientId,
 				message.Signature,
+				message.SessionKey,
 				message.SentTime
 			}).ToTable("Messages");
 			messageMapping
@@ -58,7 +59,8 @@ namespace QRyptoWire.Service.Data
 			.MapType(contact => new
 			{
 				ID = contact.Id,
-				contact.Content,
+				contact.Name,
+				contact.PublicKey,
 				contact.SenderId,
 				contact.RecipientId
 			}).ToTable("Contacts");
@@ -86,7 +88,8 @@ namespace QRyptoWire.Service.Data
 
 			sessionMapping
 				.HasAssociation(s => s.User)
-				.ToColumn("UserId");
+				.ToColumn("UserId")
+				.HasConstraint((m, u) => m.UserId == u.Id);
 
 			//add configs
 			configurations.Add(messageMapping);

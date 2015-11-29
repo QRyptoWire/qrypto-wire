@@ -17,7 +17,7 @@ namespace QRyptoWire.Service.Api.Models
 
 		private static void EnsureDb(ISchemaHandler schemaHandler)
 		{
-			string script = null;
+			string script;
 			if (schemaHandler.DatabaseExists())
 			{
 				script = schemaHandler.CreateUpdateDDLScript(null);

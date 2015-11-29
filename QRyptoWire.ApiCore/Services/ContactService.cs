@@ -1,54 +1,70 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QRyptoWire.Service.Data;
+using Telerik.OpenAccess;
 
 namespace QRyptoWire.Service.Core
 {
 	public class ContactService : IContactService
 	{
-		public IQueryable<Shared.Dto.Message> FetchContacts(string sessionKey)
+		public List<Shared.Dto.Contact> FetchContacts(string sessionKey)
 		{
 			var dbContext = DbContextFactory.GetContext();
-			//TODO: delete
+
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
 			if (user == null) return null;
 
-			var messages = dbContext.Contacts
-				.Where(m => m.Recipient.Id == user.Id)
-				.Select(e => new Shared.Dto.Message
+			var contacts = dbContext.Contacts
+				.Where(m => m.Recipient.Id == user.Id);
+
+				var dtoContacts = contacts
+				.Select(e => new Shared.Dto.Contact
 				{
-					Body = e.Content,
+					Name = e.Name,
+					PublicKey = e.PublicKey,
 					ReceiverId = e.Recipient.Id,
 					SenderId = e.Sender.Id
-				});
-			return messages;
+				}).ToList();
+
+			contacts.DeleteAll();
+			dbContext.SaveChanges();
+			return dtoContacts;
 		}
 
-		public bool SendContact(string sessionKey,int recipientId, string msg)
+		public bool SendContact(string sessionKey, Shared.Dto.Contact contact)
 		{
 			var dbContext = DbContextFactory.GetContext();
 
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
-			if (user == null)
+			if (user == null) return false;
+
+
+			User recipient;
+			try
+			{
+				recipient =
+					dbContext.Users.Single(u => u.Id == contact.ReceiverId);
+			}
+			catch (Exception)
 			{
 				return false;
 			}
 
-			var recipient =
-				dbContext.Users.Single(u => u.Id == recipientId);
-
 			var newContact = new Contact
 			{
-				Content = msg,
+				PublicKey = contact.PublicKey,
+				Name = contact.Name,
 				Sender = user,
 				Recipient = recipient
 			};
+
 			dbContext.Add(newContact);
 			dbContext.SaveChanges();
 
 			return true;
-
 		}
 	}
 }
