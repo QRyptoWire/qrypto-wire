@@ -16,9 +16,9 @@
 			return _serviceClient.Login(password);
 		}
 
-		public void Register(string password)
+		public bool Register(string password)
 		{
-			_serviceClient.Register(password);
+			return _serviceClient.Register(password);
 		}
 
 		public bool GetPushSettings()

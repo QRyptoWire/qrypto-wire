@@ -45,27 +45,5 @@ namespace QRyptoWire.Core.ViewModels
 			Working = false;
 			ResetEvent.Set();
 		}
-
-		public async void MakeApiCallAsyncSafe(Action call, Action<bool> callback)
-		{
-			ResetEvent.Reset();
-			Working = true;
-
-			try
-			{
-				await Task.Run(call);
-
-				callback?.Invoke(true);
-			}
-			catch (Exception)
-			{
-				callback?.Invoke(false);
-			}
-			finally
-			{
-				Working = false;
-				ResetEvent.Set();
-			}
-		}
 	}
 }

@@ -30,12 +30,12 @@ namespace QRyptoWire.Core.Services
 			return _sessionId != null;
 		}
 
-		public void Register(string password)
+		public bool Register(string password)
 		{
 			var request = new RestRequest("api/Register", HttpMethod.Post);
 			request.AddParameter("DeviceId", _deviceId);
 			request.AddParameter("Password", password);
-			Execute(request);
+			return TryExecute(request);
 		}
 
 		public void RegisterPushToken(string channelUri)

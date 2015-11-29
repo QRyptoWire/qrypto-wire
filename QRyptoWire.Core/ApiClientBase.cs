@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using QRyptoWire.Shared;
@@ -9,7 +8,7 @@ namespace QRyptoWire.Core
 {
 	public abstract class ApiClientBase
 	{
-		public void Execute(IRestRequest request)
+		protected void Execute(IRestRequest request)
 		{
 			var client = new RestClient(ApiUris.Base);
 			try
@@ -21,19 +20,14 @@ namespace QRyptoWire.Core
 				{
 					return;
 				}
-				if (response.Result.StatusCode == HttpStatusCode.NotFound)
-				{
-					throw new HttpRequestException("404");
-				}
-				throw new HttpRequestException("Something went terribly wrong");
+				throw new HttpRequestException("Request to service failed");
 			}
 			catch (Exception ex)
 			{
-				// ignored
 			}
 		}
 
-		public TRet Execute<TRet>(IRestRequest request)
+		protected TRet Execute<TRet>(IRestRequest request)
 		{
 			var client = new RestClient(ApiUris.Base);
 			try
@@ -45,18 +39,34 @@ namespace QRyptoWire.Core
 				{
 					return response.Result.Data;
 				}
-				if (response.Result.StatusCode == HttpStatusCode.NotFound)
+				throw new HttpRequestException("Request to service failed");
+			}
+			catch (Exception ex)
+			{
+			}
+
+			return default(TRet);
+		}
+
+		protected bool TryExecute(IRestRequest request)
+		{
+			var client = new RestClient(ApiUris.Base);
+			try
+			{
+				var response = Task.Run(async () => await client.Execute(request));
+				response.Wait();
+
+				if (response.Result.IsSuccess)
 				{
-					throw new HttpRequestException("404");
+					return true;
 				}
 				throw new HttpRequestException("Request to service failed");
 			}
 			catch (Exception ex)
 			{
-				// ignored
 			}
 
-			return default(TRet);
+			return false;
 		}
 	}
 }
