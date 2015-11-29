@@ -82,7 +82,9 @@ namespace QRyptoWire.Service.Api.Controllers
 		{
 			var contactService = new ContactService();
 			var contacts = contactService.FetchContacts(sessionKey);
-			return Ok(contacts);
+			return contacts != null ? 
+				(IHttpActionResult) Ok(contacts) 
+				: NotFound();
 		}
 
 		[Route("api/GetUserId/{sessionKey}")]
