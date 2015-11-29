@@ -90,7 +90,7 @@ namespace QRyptoWire.Service.Core
 				.ForEndpointUri(new Uri(user.PushToken))
 				.ForOSVersion(WindowsPhoneDeviceOSVersion.MangoSevenPointFive)
 				.WithBatchingInterval(BatchingInterval.Immediate)
-				.WithNavigatePath("/LoginView.xaml")
+				.WithNavigatePath("Views/LoginView.xaml")
 				.WithText1("PushSharp")
 				.WithText2(message));
 			push.StopAllServices();
