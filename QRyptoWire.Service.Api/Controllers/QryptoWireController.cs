@@ -112,9 +112,9 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/RegisterPushTalken/{sessionKey}")]
+		[Route("api/RegisterPushToken/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
+		public IHttpActionResult RegisterPushToken([FromUri]string sessionKey, [FromBody]string pushToken)
 		{
 			var userService = new UserService();
 			var ok = userService.RegisterPushToken(sessionKey, pushToken);
