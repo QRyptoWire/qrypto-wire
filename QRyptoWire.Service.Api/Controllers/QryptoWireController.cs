@@ -113,7 +113,7 @@ namespace QRyptoWire.Service.Api.Controllers
 		}
 
 		[Route("api/RegisterPushToken/{sessionKey}")]
-		[HttpGet, HttpPost]
+		[HttpPost]
 		public IHttpActionResult RegisterPushToken([FromUri]string sessionKey, [FromBody]string pushToken)
 		{
 			var userService = new UserService();
@@ -123,14 +123,14 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AllowPushes/{sessionKey}")]
-		[HttpGet, HttpPost]
-		public IHttpActionResult UnRegisterPush(string sessionKey, bool unregister)
+		[Route("api/UnRegisterPushToken/{sessionKey}")]
+		[HttpGet]
+		public IHttpActionResult UnRegisterPush(string sessionKey)
 		{
 			var userService = new UserService();
-			//var ok = userService.UnRegisterPushToken(sessionKey, unregister);
+			var ok = userService.UnRegisterPushToken(sessionKey);
 
-			//if (ok) return Ok();
+			if (ok) return Ok();
 			return NotFound();
 		}
 

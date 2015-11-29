@@ -80,6 +80,19 @@ namespace QRyptoWire.Service.Core
 			return true;
 		}
 
+		public bool UnRegisterPushToken(string sessionKey)
+		{
+			var dbContext = DbContextFactory.GetContext();
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			if (user == null) return false;
+			user.PushToken = null;
+
+			dbContext.SaveChanges();
+
+			return true;
+		}
+
 		public bool Push(int recieverId, string message)
 		{
 			//todo: fix that shit
