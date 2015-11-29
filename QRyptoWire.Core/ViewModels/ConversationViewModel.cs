@@ -15,19 +15,23 @@ namespace QRyptoWire.Core.ViewModels
 	{
 		private readonly IStorageService _storageService;
 		private readonly IMessageService _messageService;
-		private readonly IMvxMessenger _messenger;
 		private int _contactId;
 		private string _messageBody;
 		private MvxSubscriptionToken _token;
 
-		public ConversationViewModel(IStorageService storageService, IMessageService messageService, IMvxMessenger messenger)
+		public ConversationViewModel(IStorageService storageService, IMessageService messageService, IMvxMessenger messenger, IPopupHelper helper) : base(messenger, helper)
 		{
 			_storageService = storageService;
 			_messageService = messageService;
-			_messenger = messenger;
 
-			_token = _messenger.Subscribe<NotificationReceivedMessage>(OnNotificationReceived);
+			_token = _messenger.Subscribe<NotificationReceivedMessage>(OnNotificationReceived, MvxReference.Strong);
 			SendMessageCommand = new MvxCommand(SendMessageCommandAction, () => !string.IsNullOrWhiteSpace(MessageBody));
+
+			CleaningUp += () =>
+			{
+				_token.Dispose();
+				_token = null;
+			};
 		}
 
 		private async void OnNotificationReceived(object sender)
@@ -45,10 +49,6 @@ namespace QRyptoWire.Core.ViewModels
 
 			foreach (var message in newMessages)
 				Messages.Add(message);
-
-			_token.Dispose();
-			_token = _messenger.Subscribe<NotificationReceivedMessage>(OnNotificationReceived);
-
 		}
 
 		public string ContactName { get; set; }

@@ -4,6 +4,7 @@ using Cirrious.MvvmCross.ViewModels;
 using Cirrious.MvvmCross.WindowsPhone.Platform;
 using Microsoft.Phone.Controls;
 using QRyptoWire.App.WPhone.PhoneImplementations;
+using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.App.WPhone
@@ -25,6 +26,7 @@ namespace QRyptoWire.App.WPhone
             Mvx.RegisterType<IPhoneService, PhoneService>();
             Mvx.RegisterType<IQrService, QrService>();
             Mvx.RegisterType<IStorageService, StorageService>();
+			Mvx.RegisterType<IPopupHelper, PopupHelper>();
         }
 
         protected override IMvxTrace CreateDebugTrace()

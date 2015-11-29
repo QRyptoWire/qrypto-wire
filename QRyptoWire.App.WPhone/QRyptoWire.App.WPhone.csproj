@@ -107,6 +107,7 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\ContactModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="Utilities\PopupHelper.cs" />
     <Compile Include="Utilities\QryptoDb.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="PhoneImplementations\PhoneService.cs" />

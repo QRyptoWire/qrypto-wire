@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
@@ -13,7 +14,8 @@ namespace QRyptoWire.Core.ViewModels
 		private bool _allowPushes;
 		private string _contactName;
 
-		public SettingsViewModel(IUserService userService, IStorageService storageService, IQrService qrService)
+		public SettingsViewModel(IUserService userService, IStorageService storageService, IQrService qrService,
+			 IMvxMessenger messenger, IPopupHelper helper) : base(messenger, helper)
 		{
 			_userService = userService;
 			_storageService = storageService;

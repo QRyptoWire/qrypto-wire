@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 using RestSharp.Portable;
@@ -13,6 +14,10 @@ namespace QRyptoWire.Core.Services
 	{
 		private string _sessionId;
 		private string _deviceId;
+
+		public QryptoWireServiceClient(IMvxMessenger messenger) : base(messenger)
+		{
+		}
 
 		public void SetDeviceId(string id)
 		{

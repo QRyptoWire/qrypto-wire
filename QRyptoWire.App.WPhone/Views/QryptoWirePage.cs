@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using Cirrious.MvvmCross.WindowsPhone.Views;
 using Microsoft.Phone.Shell;
 using QRyptoWire.Core.ViewModels;
@@ -10,7 +11,6 @@ namespace QRyptoWire.App.WPhone.Views
 	{
 		protected QryptoWirePage()
 		{
-			
             Loaded += (sender, args) =>
             {
                 SystemTray.IsVisible = false;
@@ -37,6 +37,15 @@ namespace QRyptoWire.App.WPhone.Views
 					rootGrid.Children.Add(overlay);
 				}
 			};
+		}
+
+		protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		{
+			var dc = DataContext as QryptoViewModel;
+			if(dc == null)
+				return;
+			dc.OnCleanup();
+			base.OnNavigatingFrom(e);
 		}
 	}
 }

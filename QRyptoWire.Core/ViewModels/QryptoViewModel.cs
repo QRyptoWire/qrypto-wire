@@ -1,14 +1,57 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using Cirrious.MvvmCross.ViewModels;
+using QRyptoWire.Core.Messages;
+using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
 {
 	public abstract class QryptoViewModel : MvxViewModel
 	{
+		protected readonly IMvxMessenger _messenger;
+		private readonly IPopupHelper _helper;
+		private MvxSubscriptionToken _token;
+
+		protected delegate void CleaningUpEventHandler();
+		protected event CleaningUpEventHandler CleaningUp;
+
+		protected QryptoViewModel(IMvxMessenger messenger, IPopupHelper helper)
+		{
+			_helper = helper;
+			_messenger = messenger;
+			_token = _messenger.Subscribe<RequestFailedMessage>(OnRequestFailed, MvxReference.Strong);
+			CleaningUp += () =>
+			{
+				_token.Dispose();
+				_token = null;
+			};
+		}
+
+		public void OnCleanup()
+		{
+			CleaningUp?.Invoke();
+		}
+
+		public bool RequestFailed
+		{
+			get { return _requestFailed; }
+			set
+			{
+				_requestFailed = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public void OnRequestFailed(RequestFailedMessage message)
+		{
+			Dispatcher.RequestMainThreadAction(() =>_helper.ShowRequestFailedPopup());
+		}
+
 		protected ManualResetEvent ResetEvent = new ManualResetEvent(false);
 		private bool _working;
+		private bool _requestFailed;
 
 		public bool Working
 		{

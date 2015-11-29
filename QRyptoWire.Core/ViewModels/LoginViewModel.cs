@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Services;
@@ -15,7 +16,8 @@ namespace QRyptoWire.Core.ViewModels
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService, IMessageService messageService)
+		public LoginViewModel(IStorageService storageService, IUserService userService, IPhoneService phoneService, 
+			IMessageService messageService, IMvxMessenger messenger, IPopupHelper helper) : base(messenger, helper)
 		{
 			_storageService = storageService;
 			_userService = userService;
