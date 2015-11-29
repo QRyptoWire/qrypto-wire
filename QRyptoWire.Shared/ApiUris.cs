@@ -10,7 +10,7 @@
 
 		public static readonly string Login = "api/Login";
 		public static readonly string Register = "api/Register";
-		public static readonly string SendMessage = "api/AddMessage/";
+		public static readonly string SendMessage = "api/SendMessage/";
 		public static readonly string FetchMessages = "api/FetchMessages/";
 		public static readonly string AddContact = "api/AddContact/";
 		public static readonly string FetchContacts = "api/FetchContacts/";
