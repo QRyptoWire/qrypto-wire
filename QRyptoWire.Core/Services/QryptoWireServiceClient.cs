@@ -16,7 +16,7 @@ namespace QRyptoWire.Core.Services
 
 		public void SetDeviceId(string id)
 		{
-			if(!string.IsNullOrWhiteSpace(_deviceId))
+			if (!string.IsNullOrWhiteSpace(_deviceId))
 				throw new InvalidOperationException("Device id should be set only on startup!");
 			_deviceId = id;
 		}
@@ -25,7 +25,7 @@ namespace QRyptoWire.Core.Services
 		{
 			var request = new RestRequest(ApiUris.Login, HttpMethod.Post);
 			request.AddParameter("DeviceId", _deviceId);
-            request.AddParameter("Password", password);
+			request.AddParameter("Password", password);
 			_sessionId = Execute<string>(request);
 			return _sessionId != null;
 		}
@@ -45,24 +45,36 @@ namespace QRyptoWire.Core.Services
 
 		public IEnumerable<Contact> FetchContacts()
 		{
-			var res = Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}"));
+			var res = Execute<IEnumerable<Contact>>(new RestRequest($"{ApiUris.FetchContacts}{_sessionId}", HttpMethod.Get));
 			return res ?? Enumerable.Empty<Contact>();
 		}
 
 		public IEnumerable<Message> FetchMessages()
 		{
-			var res = Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}"));
+			var res = Execute<IEnumerable<Message>>(new RestRequest($"{ApiUris.FetchMessages}{_sessionId}", HttpMethod.Get));
 			return res ?? Enumerable.Empty<Message>();
 		}
 
 		public void AddContact(Contact contact)
 		{
-			Execute(new RestRequest($"{ApiUris.AddContact}{_sessionId}").AddBody(contact));
+			Execute(
+				new RestRequest(
+					$"{ApiUris.AddContact}{_sessionId}",
+					HttpMethod.Post
+				)
+				.AddJsonBody(contact)
+			);
 		}
 
 		public void SendMessage(Message message)
 		{
-			Execute(new RestRequest($"{ApiUris.SendMessage}{_sessionId}").AddBody(message));
+			Execute(
+				new RestRequest(
+					$"{ApiUris.SendMessage}{_sessionId}", 
+					HttpMethod.Post
+				)
+				.AddJsonBody(message)
+			);
 		}
 
 		public int GetUserId()
