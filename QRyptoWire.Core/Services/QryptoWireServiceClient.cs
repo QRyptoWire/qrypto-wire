@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 using RestSharp.Portable;
@@ -13,6 +14,10 @@ namespace QRyptoWire.Core.Services
 	{
 		private string _sessionId;
 		private string _deviceId;
+
+		public QryptoWireServiceClient(IMvxMessenger messenger) : base(messenger)
+		{
+		}
 
 		public void SetDeviceId(string id)
 		{
@@ -30,12 +35,12 @@ namespace QRyptoWire.Core.Services
 			return _sessionId != null;
 		}
 
-		public void Register(string password)
+		public bool Register(string password)
 		{
 			var request = new RestRequest("api/Register", HttpMethod.Post);
 			request.AddParameter("DeviceId", _deviceId);
 			request.AddParameter("Password", password);
-			Execute(request);
+			return TryExecute(request);
 		}
 
 		public void RegisterPushToken(string channelUri)
@@ -75,9 +80,9 @@ namespace QRyptoWire.Core.Services
 			return Execute<bool>(new RestRequest($"{ApiUris.GetPushesAllowed}{_sessionId}"));
 		}
 
-		public void AllowPushes(bool allow)
+		public bool AllowPushes(bool allow)
 		{
-			Execute(new RestRequest($"{ApiUris.AllowPushes}{_sessionId}").AddBody(allow));
+			return TryExecute(new RestRequest($"{ApiUris.AllowPushes}{_sessionId}").AddBody(allow));
 		}
 	}
 }

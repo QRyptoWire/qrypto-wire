@@ -7,7 +7,7 @@ namespace QRyptoWire.Core.Services
 	{
 		void SetDeviceId(string id);
 		bool Login(string password);
-		void Register(string password);
+		bool Register(string password);
 		void RegisterPushToken(string channelUri);
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();
@@ -15,6 +15,6 @@ namespace QRyptoWire.Core.Services
 		void SendMessage(Message message);
 		int GetUserId();
 		bool PushesAllowed();
-		void AllowPushes(bool allow);
+		bool AllowPushes(bool allow);
 	}
 }

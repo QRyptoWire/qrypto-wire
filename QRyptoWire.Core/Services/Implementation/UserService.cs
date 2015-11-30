@@ -16,9 +16,9 @@
 			return _serviceClient.Login(password);
 		}
 
-		public void Register(string password)
+		public bool Register(string password)
 		{
-			_serviceClient.Register(password);
+			return _serviceClient.Register(password);
 		}
 
 		public bool GetPushSettings()
@@ -28,8 +28,9 @@
 
 		public void SetPushSettings(bool pushesAllowed)
 		{
-			_storageService.SetPushSettings(pushesAllowed);
-			_serviceClient.AllowPushes(pushesAllowed);
+			var result = _serviceClient.AllowPushes(pushesAllowed);
+			if(result)
+				_storageService.SetPushSettings(pushesAllowed);
 		}
 	}
 }

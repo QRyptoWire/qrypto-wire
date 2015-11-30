@@ -8,9 +8,9 @@
 			return true;
 		}
 
-		public void Register(string password)
+		public bool Register(string password)
 		{
-			throw new System.NotImplementedException();
+			return true;
 		}
 
 		public bool GetPushSettings()

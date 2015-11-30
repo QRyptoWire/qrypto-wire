@@ -22,8 +22,8 @@
         </Grid.RowDefinitions>
         <Image Margin="30" Source="../Assets/QRWireLogo.png"/>
         <StackPanel HorizontalAlignment="Center" 
-				Grid.Row="1" Width="250">
-            <PasswordBox BorderBrush="Red" 
+				Grid.Row="1">
+            <PasswordBox BorderBrush="Red" Width="250"
 				Password="{Binding Password, Mode=TwoWay}"
 				utilities:Helpers.DynamicPasswordBox="true"/>
             <Button Background="Red"
@@ -31,6 +31,8 @@
 				Command="{Binding ProceedCommand}"
 				Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
 				HorizontalAlignment="Center"/>
+            <TextBlock Text="Your password should consist of at least 8 characters" 
+			TextWrapping="Wrap" Margin="10" Visibility="{Binding Registering}"/>
             <TextBlock HorizontalAlignment="Center" 
 				FontSize="20"
 				Text="{Binding ErrorMessage}"/>
