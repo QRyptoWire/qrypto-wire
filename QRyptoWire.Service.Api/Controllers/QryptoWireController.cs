@@ -104,8 +104,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			var userService = new UserService();
 			var sessionService = new SessionService();
 			var ok = userService.Push(
-				sessionService.GetUser(sessionKey).Id, 
-				message
+				sessionService.GetUser(sessionKey).PushToken
 				);
 
 			if (ok) return Ok();

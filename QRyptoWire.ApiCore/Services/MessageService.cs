@@ -64,6 +64,10 @@ namespace QRyptoWire.Service.Core
 				Signature = msg.Signature,
 				SessionKey = msg.SessionKey
 			};
+
+			var userService = new UserService();
+			userService.Push(recipient.PushToken);
+
 			dbContext.Add(newMsg);
 			dbContext.SaveChanges();
 
