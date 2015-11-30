@@ -21,7 +21,7 @@ namespace QRyptoWire.Core.Services.Implementation
 			_storageService.SaveMessages(new[] {new MessageItem
 			{
 				Body = message.Body,
-				Date = message.Time,
+				Date = message.DateSent,
 				ReceiverId = message.ReceiverId,
 				SenderId = message.SenderId
 			} });
@@ -35,7 +35,7 @@ namespace QRyptoWire.Core.Services.Implementation
 				_storageService.SaveMessages(messages.Select(e => new MessageItem
 				{
 					Body = e.Body,
-					Date = e.Time,
+					Date = e.DateSent,
 					ReceiverId = e.ReceiverId,
 					SenderId = e.SenderId,
 					IsNew = true
@@ -47,7 +47,7 @@ namespace QRyptoWire.Core.Services.Implementation
 		{
 			_storageService.SaveContacts(new[] { new ContactItem
 			{
-				Id = contact.Id,
+				Id = contact.UserId,
 				PublicKey = contact.PublicKey,
 				IsNew = true,
 				Name = contact.Name
@@ -61,7 +61,7 @@ namespace QRyptoWire.Core.Services.Implementation
 			if(contacts.Any())
 				_storageService.SaveContacts(contacts.Select(e => new ContactItem
 				{
-					Id = e.Id,
+					Id = e.SenderId,
 					IsNew = true,
 					Name = e.Name,
 					PublicKey = e.PublicKey

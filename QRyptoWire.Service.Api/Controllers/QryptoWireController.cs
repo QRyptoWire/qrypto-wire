@@ -135,10 +135,10 @@ namespace QRyptoWire.Service.Api.Controllers
 		}
 
 		[Route("api/test")]
-		[HttpGet, HttpPost]
-		public IHttpActionResult Test([FromBody]string deviceId)
+		[HttpGet]
+		public IHttpActionResult Test()
 		{
-			 return Ok("Supcio!" + deviceId + " : " );
+			 return Ok("Working like a boss!");
 		}
 
 
