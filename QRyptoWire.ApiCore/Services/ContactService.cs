@@ -22,7 +22,7 @@ namespace QRyptoWire.Service.Core
 				var dtoContacts = contacts
 				.Select(e => new Shared.Dto.Contact
 				{
-					UserId = e.SenderId,
+					SenderId = e.SenderId,
 					Name = e.Name,
 					PublicKey = e.PublicKey
 				}).ToList();
@@ -45,7 +45,7 @@ namespace QRyptoWire.Service.Core
 			try
 			{
 				recipient =
-					dbContext.Users.Single(u => u.Id == contact.UserId);
+					dbContext.Users.Single(u => u.Id == contact.ReceiverId);
 			}
 			catch (Exception)
 			{

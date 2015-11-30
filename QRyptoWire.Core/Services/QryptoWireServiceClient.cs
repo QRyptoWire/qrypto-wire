@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
 using RestSharp.Portable;
@@ -55,14 +56,21 @@ namespace QRyptoWire.Core.Services
 			return res ?? Enumerable.Empty<Message>();
 		}
 
-		public void AddContact(Contact contact)
+		public void AddContact(QrContact contact)
 		{
 			Execute(
 				new RestRequest(
 					$"{ApiUris.AddContact}{_sessionId}",
 					HttpMethod.Post
 				)
-				.AddJsonBody(contact)
+				.AddJsonBody(
+					new Contact()
+					{
+						Name = contact.Name,
+						PublicKey = contact.PublicKey,
+						ReceiverId = contact.UserId
+					}
+				)
 			);
 		}
 

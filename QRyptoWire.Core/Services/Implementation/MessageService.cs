@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using QRyptoWire.Core.DbItems;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services.Implementation
@@ -43,7 +44,7 @@ namespace QRyptoWire.Core.Services.Implementation
 			return messages;
 		}
 
-		public void AddContact(Contact contact)
+		public void AddContact(QrContact contact)
 		{
 			_storageService.SaveContacts(new[] { new ContactItem
 			{
