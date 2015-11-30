@@ -80,19 +80,30 @@ namespace QRyptoWire.Service.Core
 			return true;
 		}
 
-		public bool Push(int recieverId, string message)
+		public bool UnRegisterPushToken(string sessionKey)
 		{
-			//todo: fix that shit
+			var dbContext = DbContextFactory.GetContext();
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			if (user == null) return false;
+			user.PushToken = null;
+
+			dbContext.SaveChanges();
+
+			return true;
+		}
+
+		public bool Push(string pushToken)
+		{
 			var push = PushBrokerFactory.GetBroker();
-			var user = GetUserById(recieverId);
-			if (user?.PushToken == null) return false;
+			if (string.IsNullOrWhiteSpace(pushToken)) return false;
 			push.QueueNotification(new WindowsPhoneToastNotification()
-				.ForEndpointUri(new Uri(user.PushToken))
+				.ForEndpointUri(new Uri(pushToken))
 				.ForOSVersion(WindowsPhoneDeviceOSVersion.MangoSevenPointFive)
 				.WithBatchingInterval(BatchingInterval.Immediate)
-				.WithNavigatePath("/LoginView.xaml")
-				.WithText1("PushSharp")
-				.WithText2(message));
+				.WithNavigatePath("Views/LoginView.xaml")
+				.WithText1("Hey there!")
+				.WithText2("You have new messages."));
 			push.StopAllServices();
 			return true;
 		}

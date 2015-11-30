@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services
@@ -11,7 +12,7 @@ namespace QRyptoWire.Core.Services
 		void RegisterPushToken(string channelUri);
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();
-		void AddContact(Contact contact);
+		void AddContact(QrContact contact);
 		void SendMessage(Message message);
 		int GetUserId();
 		bool PushesAllowed();

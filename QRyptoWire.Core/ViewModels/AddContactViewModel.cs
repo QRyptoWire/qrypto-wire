@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
 
@@ -11,7 +12,7 @@ namespace QRyptoWire.Core.ViewModels
         private readonly IQrService _qrService;
 	    private readonly IMessageService _messageService;
 	    private string _contactName;
-	    private Contact _contact;
+	    private QrContact _contact;
 
         public AddContactViewModel(IQrService qrService, IMessageService messageService)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.Services
@@ -12,12 +13,12 @@ namespace QRyptoWire.Core.Services
         /// <returns>Task</returns>
         Task GenerateQrCode(string contactName);
 
-        /// <summary>
-        /// Parse QR code data into Contact object.
-        /// </summary>
-        /// <param name="qrData">QR code content</param>
-        /// <param name="contact">Contact object to load parsed data into</param>
-        /// <returns>Indication whether the parse succeded</returns>
-        bool ParseQrCode(string qrData, out Contact contact);
+	    /// <summary>
+	    /// Parse QR code data into Contact object.
+	    /// </summary>
+	    /// <param name="qrData">QR code content</param>
+	    /// <param name="contact">Contact object to load parsed data into</param>
+	    /// <returns>Indication whether the parse succeded</returns>
+	    bool ParseQrCode(string qrData, out QrContact contact);
     }
 }

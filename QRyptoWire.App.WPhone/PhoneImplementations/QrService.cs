@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.ModelsAbstraction;
+using QRyptoWire.Core.Objects;
 using QRyptoWire.Core.Services;
 using QRyptoWire.Shared.Dto;
 using ZXing;
@@ -49,7 +50,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             await PictureLibraryTools.SaveWriteableBitmap(wb, string.Format(QrCodeFileName, contactName));
         }
 
-        public bool ParseQrCode(string qrData, out Contact contact)
+        public bool ParseQrCode(string qrData, out QrContact contact)
         {
             contact = null;
 
@@ -70,7 +71,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             if (!_encryptionService.ComposePublicKey(modulus, exponent, out publicKey))
                 return false;
 
-            contact = new Contact() { Name = name, PublicKey = publicKey, Id = userId };
+            contact = new QrContact() { Name = name, PublicKey = publicKey, UserId = userId };
             return true;
         }
 

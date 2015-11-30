@@ -40,7 +40,7 @@ namespace QRyptoWire.Service.Api.Controllers
 
 		[Route("api/SendMessage/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult SendMessage(string sessionKey, Shared.Dto.Message msg)
+		public IHttpActionResult SendMessage([FromUri]string sessionKey, Shared.Dto.Message msg)
 		{
 			var messageService = new MessageService();
 			if (messageService.SendMessage(sessionKey, msg))
@@ -64,13 +64,12 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AddContact/{sessionKey}/{recipientId}")]
+		[Route("api/AddContact/{sessionKey}")]
 		[HttpGet, HttpPost]
-		public IHttpActionResult AddContact(string sessionKey, int recipientId, string contact)
+		public IHttpActionResult AddContact([FromUri]string sessionKey,Shared.Dto.Contact contact)
 		{
-		//TODO: dto.contact
 			var contactService = new ContactService();
-			if (contactService.SendContact(sessionKey, recipientId, contact))
+			if (contactService.SendContact(sessionKey, contact))
 			{
 				return Ok();
 			}
@@ -83,11 +82,9 @@ namespace QRyptoWire.Service.Api.Controllers
 		{
 			var contactService = new ContactService();
 			var contacts = contactService.FetchContacts(sessionKey);
-			if (contacts != null)
-			{
-				return Ok(contacts);
-			}
-			return NotFound();
+			return contacts != null ? 
+				(IHttpActionResult) Ok(contacts) 
+				: NotFound();
 		}
 
 		[Route("api/GetUserId/{sessionKey}")]
@@ -107,17 +104,16 @@ namespace QRyptoWire.Service.Api.Controllers
 			var userService = new UserService();
 			var sessionService = new SessionService();
 			var ok = userService.Push(
-				sessionService.GetUser(sessionKey).Id, 
-				message
+				sessionService.GetUser(sessionKey).PushToken
 				);
 
 			if (ok) return Ok();
 			return NotFound();
 		}
 
-		[Route("api/RegisterPushTalken/{sessionKey}")]
-		[HttpGet, HttpPost]
-		public IHttpActionResult RegisterPush(string sessionKey, string pushToken)
+		[Route("api/RegisterPushToken/{sessionKey}")]
+		[HttpPost]
+		public IHttpActionResult RegisterPushToken([FromUri]string sessionKey, [FromBody]string pushToken)
 		{
 			var userService = new UserService();
 			var ok = userService.RegisterPushToken(sessionKey, pushToken);
@@ -126,22 +122,22 @@ namespace QRyptoWire.Service.Api.Controllers
 			return NotFound();
 		}
 
-		[Route("api/AllowPushes/{sessionKey}")]
-		[HttpGet, HttpPost]
-		public IHttpActionResult UnRegisterPush(string sessionKey, bool unregister)
+		[Route("api/UnRegisterPushToken/{sessionKey}")]
+		[HttpGet]
+		public IHttpActionResult UnRegisterPush(string sessionKey)
 		{
 			var userService = new UserService();
-			//var ok = userService.UnRegisterPushToken(sessionKey, unregister);
+			var ok = userService.UnRegisterPushToken(sessionKey);
 
-			//if (ok) return Ok();
+			if (ok) return Ok();
 			return NotFound();
 		}
 
 		[Route("api/test")]
-		[HttpGet, HttpPost]
-		public IHttpActionResult Test([FromBody]string deviceId)
+		[HttpGet]
+		public IHttpActionResult Test()
 		{
-			 return Ok("Supcio!" + deviceId + " : " );
+			 return Ok("Working like a boss!");
 		}
 
 
