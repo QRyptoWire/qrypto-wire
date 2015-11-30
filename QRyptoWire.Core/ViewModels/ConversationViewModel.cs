@@ -73,7 +73,7 @@ namespace QRyptoWire.Core.ViewModels
 				Date = e.Date,
 				Sent = e.SenderId != _contactId
 			}));
-			ContactName = _storageService.GetContactsWithNewMessageCount().First(e => e.Item1.Id == _contactId).Item1.Name;
+		    ContactName = _storageService.GetContacts().First(e => e.Id == _contactId).Name;
 			RaisePropertyChanged(() => ContactName);
 			RaisePropertyChanged(() => Messages);
 		}

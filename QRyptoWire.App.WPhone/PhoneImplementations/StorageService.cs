@@ -75,6 +75,14 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
         }
 
+        public IEnumerable<IContactModel> GetContacts()
+        {
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                return db.Contacts.ToList();
+            }
+        } 
+
         public IEnumerable<Tuple<IContactModel, int>> GetContactsWithNewMessageCount()
         {
             using (QRyptoDb db = QryptoDbFactory.GetDb())
