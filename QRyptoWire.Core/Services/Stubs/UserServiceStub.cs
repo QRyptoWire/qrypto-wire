@@ -13,6 +13,11 @@
 			return true;
 		}
 
+		public int GetUserId()
+		{
+			return 0;
+		}
+
 		public bool GetPushSettings()
 		{
 			return settings;

@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <views:QryptoWirePage.Resources>
         <converters:BoolToButtonTextConverter x:Key="BoolToButtonTextConverter"/>
+		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </views:QryptoWirePage.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +33,8 @@
 				Content="{Binding Registering, Converter={StaticResource BoolToButtonTextConverter}}"
 				HorizontalAlignment="Center"/>
             <TextBlock Text="Your password should consist of at least 8 characters" 
-			TextWrapping="Wrap" Margin="10" Visibility="{Binding Registering}"/>
+				TextWrapping="Wrap" Margin="10" 
+				Visibility="{Binding Registering, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <TextBlock HorizontalAlignment="Center" 
 				FontSize="20"
 				Text="{Binding ErrorMessage}"/>

@@ -21,6 +21,11 @@
 			return _serviceClient.Register(password);
 		}
 
+		public int GetUserId()
+		{
+			return _serviceClient.GetUserId();
+		}
+
 		public bool GetPushSettings()
 		{
 			return _serviceClient.PushesAllowed();
