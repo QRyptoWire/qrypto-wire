@@ -39,7 +39,10 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                if (db.Users.Count() == 1) return;
+                if (db.Users.Count() == 1)
+                {
+                    throw new Exception("User already exists");
+                }
 
                 db.Users.InsertOnSubmit(new UserModel()
                 {
