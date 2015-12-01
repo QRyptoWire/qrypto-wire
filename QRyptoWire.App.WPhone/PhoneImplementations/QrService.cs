@@ -6,12 +6,11 @@ using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.ModelsAbstraction;
 using QRyptoWire.Core.Objects;
 using QRyptoWire.Core.Services;
-using QRyptoWire.Shared.Dto;
 using ZXing;
 
 namespace QRyptoWire.App.WPhone.PhoneImplementations
 {
-	public class QrService : IQrService
+    public class QrService : IQrService
     {
         private static class QrElements
         {

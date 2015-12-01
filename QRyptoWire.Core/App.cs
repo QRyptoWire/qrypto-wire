@@ -1,6 +1,7 @@
 using Cirrious.CrossCore;
 using Cirrious.CrossCore.IoC;
 using QRyptoWire.Core.Services;
+using QRyptoWire.Core.Services.Implementation;
 using QRyptoWire.Core.Services.Stubs;
 using QRyptoWire.Core.ViewModels;
 
@@ -15,8 +16,6 @@ namespace QRyptoWire.Core
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
 				
-            //Mvx.RegisterType<IStorageService, StorageServiceStub>();
-            //Mvx.RegisterType<IUserService, UserServiceStub>();
             Mvx.RegisterType<IEncryptionService, EncryptionServiceStub>();
 
             Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();

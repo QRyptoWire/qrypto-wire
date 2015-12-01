@@ -29,5 +29,10 @@ namespace QRyptoWire.Core.Services.Stubs
         {
             return string.Empty;
         }
+
+        public string GetKeyPair()
+        {
+            return "wertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty";
+        }
     }
 }
