@@ -29,6 +29,8 @@ namespace QRyptoWire.Core.ViewModels
 
 			CleaningUp += () =>
 			{
+				if (_token == null)
+					return;
 				_token.Dispose();
 				_token = null;
 			};
@@ -38,17 +40,22 @@ namespace QRyptoWire.Core.ViewModels
 		{
 			var newMessages = await Task.Run(() =>
 			{
-				return _messageService.FetchMessages().Where(e => e.SenderId == _contactId)
-				.Select(e => new StoredMessage
+				var received = _storageService.GetMessages(_contactId).Where(e => e.Date > Messages.Max(m => m.Date))
+					.OrderByDescending(e => e.Date).ToList();
+
+				return received.Select(e => new StoredMessage
 				{
 					Body = e.Body,
-					Date = e.DateSent,
+					Date = e.Date,
 					Sent = e.ReceiverId == _contactId
-				}).ToList();
+				});
 			});
 
-			foreach (var message in newMessages)
-				Messages.Add(message);
+			Dispatcher.RequestMainThreadAction(() =>
+			{
+				foreach (var message in newMessages.ToList())
+					Messages.Add(message);
+			});
 		}
 
 		public string ContactName { get; set; }
