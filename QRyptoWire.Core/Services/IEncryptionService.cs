@@ -1,11 +1,12 @@
 ﻿using System;
+using QRyptoWire.Core.Objects;
 
 namespace QRyptoWire.Core.Services
 {
     public interface IEncryptionService
     {
-        string Encrypt(string message, int recieverUUID);
-        string Decrypt(string message, int senderUUID);
+        EncryptedMessage Encrypt(string messageText, int recieverId);
+        bool Decrypt(EncryptedMessage encryptedMessage, int senderId, out string messageText);
         bool ComposePublicKey(string modulus, string exponent, out string publicKey);
         Tuple<string, string> DecomposePublicKey(string publicKey);
         string ExtractPublicKey(string keyPair);

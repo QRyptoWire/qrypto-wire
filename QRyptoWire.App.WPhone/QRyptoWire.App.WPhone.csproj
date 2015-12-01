@@ -107,6 +107,9 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\ContactModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="PhoneImplementations\EncryptionService.cs" />
+    <Compile Include="Utilities\AesCipher.cs" />
+    <Compile Include="Utilities\FormatConverter.cs" />
     <Compile Include="Utilities\PopupHelper.cs" />
     <Compile Include="Utilities\QryptoDb.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="Utilities\QrTools.cs" />
     <Compile Include="Utilities\QryptoDbFactory.cs" />
     <Compile Include="Utilities\QryptoDbSecurity.cs" />
+    <Compile Include="Utilities\RsaCipher.cs" />
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
     </Compile>

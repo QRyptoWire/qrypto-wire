@@ -1,17 +1,18 @@
 ﻿using System;
+using QRyptoWire.Core.Objects;
 
 namespace QRyptoWire.Core.Services.Stubs
 {
     class EncryptionServiceStub : IEncryptionService
     {
-        public string Encrypt(string message, int recieverUUID)
+        public bool Decrypt(EncryptedMessage encryptedMessage, int senderId, out string messageText)
         {
-            return string.Empty;
+            throw new NotImplementedException();
         }
 
-        public string Decrypt(string message, int senderUUID)
+        EncryptedMessage IEncryptionService.Encrypt(string messageText, int recieverId)
         {
-            return string.Empty;
+            throw new NotImplementedException();
         }
 
         public bool ComposePublicKey(string modulus, string exponent, out string publicKey)

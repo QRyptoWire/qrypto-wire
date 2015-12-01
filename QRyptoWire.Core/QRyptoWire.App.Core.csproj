@@ -54,6 +54,7 @@
     <Compile Include="ModelsAbstraction\IUserModel.cs" />
     <Compile Include="DbItems\MessageItem.cs" />
     <Compile Include="DbItems\UserItem.cs" />
+    <Compile Include="Objects\EncryptedMessage.cs" />
     <Compile Include="Objects\QrContact.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IEncryptionService.cs" />
