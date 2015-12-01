@@ -16,7 +16,7 @@
 			return _serviceClient.Login(password);
 		}
 
-		public bool Register(string password)
+		public int Register(string password)
 		{
 			return _serviceClient.Register(password);
 		}

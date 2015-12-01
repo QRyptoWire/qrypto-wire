@@ -1,9 +1,12 @@
-﻿namespace QRyptoWire.Core.Services
+﻿using System;
+
+namespace QRyptoWire.Core.Services
 {
 	public interface IUserService
 	{
 		bool Login(string password);
-		bool Register(string password);
+		int Register(string password);
+		[Obsolete]
 		int GetUserId();
 		bool GetPushSettings();
 		void SetPushSettings(bool pushesAllowed);

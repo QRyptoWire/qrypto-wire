@@ -2,7 +2,7 @@
 {
 	public interface IPopupHelper
 	{
-		void ShowRequestFailedPopup();
+		void ShowRequestFailedPopup(string messageBody);
 		void ShowSuccessPopup(string messageBody);
 	}
 }

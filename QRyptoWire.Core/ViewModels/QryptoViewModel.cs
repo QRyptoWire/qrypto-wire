@@ -38,7 +38,7 @@ namespace QRyptoWire.Core.ViewModels
 
 		public void OnRequestFailed(RequestFailedMessage message)
 		{
-			Dispatcher.RequestMainThreadAction(() =>_helper.ShowRequestFailedPopup());
+			Dispatcher.RequestMainThreadAction(() =>_helper.ShowRequestFailedPopup(message.MessageBody));
 		}
 
 		protected ManualResetEvent ResetEvent = new ManualResetEvent(false);

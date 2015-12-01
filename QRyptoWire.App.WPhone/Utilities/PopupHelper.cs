@@ -5,9 +5,9 @@ namespace QRyptoWire.App.WPhone.Utilities
 {
 	public class PopupHelper : IPopupHelper
 	{
-		public void ShowRequestFailedPopup()
+		public void ShowRequestFailedPopup(string messageBody)
 		{
-			MessageBox.Show("Request to service failed. Make sure you have a stable internet connection", "Error",
+			MessageBox.Show(messageBody, "Error",
 				MessageBoxButton.OK);
 		}
 

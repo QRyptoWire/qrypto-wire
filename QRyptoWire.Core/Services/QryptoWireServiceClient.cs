@@ -22,8 +22,6 @@ namespace QRyptoWire.Core.Services
 
 		public void SetDeviceId(string id)
 		{
-			if (!string.IsNullOrWhiteSpace(_deviceId))
-				throw new InvalidOperationException("Device id should be set only on startup!");
 			_deviceId = id;
 		}
 
@@ -36,12 +34,12 @@ namespace QRyptoWire.Core.Services
 			return _sessionId != null;
 		}
 
-		public bool Register(string password)
+		public int Register(string password)
 		{
 			var request = new RestRequest("api/Register", HttpMethod.Post);
 			request.AddParameter("DeviceId", _deviceId);
 			request.AddParameter("Password", password);
-			return TryExecute(request);
+			return Execute<int>(request);
 		}
 
 		public void RegisterPushToken(string channelUri)
