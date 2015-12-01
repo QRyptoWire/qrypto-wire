@@ -46,6 +46,7 @@ namespace QRyptoWire.Core.Services.Implementation
 
 		public void AddContact(QrContact contact)
 		{
+			_client.AddContact(contact);
 			_storageService.SaveContacts(new[] { new ContactItem
 			{
 				Id = contact.UserId,
@@ -53,7 +54,6 @@ namespace QRyptoWire.Core.Services.Implementation
 				IsNew = true,
 				Name = contact.Name
 			} });
-			_client.AddContact(contact);
 		}
 
 		public void FetchContacts()

@@ -67,16 +67,16 @@ namespace QRyptoWire.Core.Services
 				new RestRequest(
 					$"{ApiUris.AddContact}{_sessionId}",
 					HttpMethod.Post
-				)
-				.AddJsonBody(
-					new Contact()
-		{
-						Name = contact.Name,
-						PublicKey = contact.PublicKey,
-						ReceiverId = contact.UserId
-					}
-				)
-			);
+					)
+					.AddJsonBody(
+						new Contact()
+						{
+							Name = contact.Name,
+							PublicKey = contact.PublicKey,
+							ReceiverId = contact.UserId
+						}
+					)
+				);
 		}
 
 		public void SendMessage(Message message)

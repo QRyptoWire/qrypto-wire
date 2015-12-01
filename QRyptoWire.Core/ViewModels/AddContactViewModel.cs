@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Cirrious.MvvmCross.Plugins.Messenger;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.Enums;
 using QRyptoWire.Core.Objects;
@@ -7,14 +8,14 @@ using QRyptoWire.Shared.Dto;
 
 namespace QRyptoWire.Core.ViewModels
 {
-    public class AddContactViewModel : MvxViewModel
+    public class AddContactViewModel : QryptoViewModel
     {
         private readonly IQrService _qrService;
 	    private readonly IMessageService _messageService;
 	    private string _contactName;
 	    private QrContact _contact;
 
-        public AddContactViewModel(IQrService qrService, IMessageService messageService)
+        public AddContactViewModel(IQrService qrService, IMessageService messageService, IMvxMessenger messenger, IPopupHelper helper) : base(messenger, helper)
         {
             _qrService = qrService;
 	        _messageService = messageService;
@@ -25,14 +26,12 @@ namespace QRyptoWire.Core.ViewModels
         public string ContactName
         {
             get { return _contactName; }
-            set
-            {
-                if (_qrService.ParseQrCode(value, out _contact))
-                {
-                    _contactName = _contact.Name;
-                    RaisePropertyChanged();
-                }
-            }
+	        set
+	        {
+		        _contactName = value;
+		        RaisePropertyChanged();
+				AddContactCommand.RaiseCanExecuteChanged();
+	        }
         }
 
         public bool CodeDetected { get; set; }
@@ -43,14 +42,15 @@ namespace QRyptoWire.Core.ViewModels
         {
             CodeDetected = true;
             RaisePropertyChanged(() => CodeDetected);
-            ContactName = content;
-        }
+			if (_qrService.ParseQrCode(content, out _contact))
+				ContactName = _contact.Name;
+		}
 
-        public ICommand AddContactCommand { get; private set; }
+        public IMvxCommand AddContactCommand { get; private set; }
 
         private void AddContactCommandAction()
         {
-            _messageService.AddContact(_contact);
+            MakeApiCallAsync(() =>_messageService.AddContact(_contact));
         }
 
         private bool AddContactCanExecute()
