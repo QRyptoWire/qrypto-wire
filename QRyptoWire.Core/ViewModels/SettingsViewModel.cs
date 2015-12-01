@@ -57,9 +57,13 @@ namespace QRyptoWire.Core.ViewModels
 
 		public IMvxCommand GenerateCodeCommand { get; private set; }
 
-		private void GenerateCodeAction()
+		private async void GenerateCodeAction()
 		{
-			_qrService.GenerateQrCode(ContactName);
+			Working = true;
+			await _qrService.GenerateQrCode(ContactName);
+			Working = false;
+			Dispatcher.RequestMainThreadAction(() =>
+				_helper.ShowSuccessPopup("Your code has been saved to your phone's Pictures directory"));
 		}
 
 		public ICommand ClearCommand { get; private set; }
