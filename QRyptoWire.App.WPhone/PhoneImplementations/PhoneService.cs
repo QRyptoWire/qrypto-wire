@@ -25,7 +25,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
 	    private const string ChannelName = "QryptoWirePushChannel";
 
-	    private void AcquireToken()
+	    private async void AcquireToken()
 	    {
 	        var currentChannel = HttpNotificationChannel.Find(ChannelName);
 		    if (currentChannel == null)
@@ -38,8 +38,12 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 					RegisterToken(currentChannel.ChannelUri.AbsoluteUri);
 				};
 
-				if (currentChannel.ChannelUri == null)
-				    return;
+			    if (currentChannel.ChannelUri == null)
+			    {
+				    await Task.Delay(200);
+					if(currentChannel.ChannelUri == null)
+						return;
+			    }
 
 			    RegisterToken(currentChannel.ChannelUri.AbsoluteUri);
 		    }
