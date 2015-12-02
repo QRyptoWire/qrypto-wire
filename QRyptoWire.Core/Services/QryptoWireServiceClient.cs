@@ -67,9 +67,9 @@ namespace QRyptoWire.Core.Services
 				);
 		}
 
-		public void SendMessage(Message message)
+		public bool TrySendMessage(Message message)
 		{
-			Execute(
+			return TryExecute(
 				new RestRequest(
 					$"{ApiUris.SendMessage}{_sessionId}", 
 					HttpMethod.Post

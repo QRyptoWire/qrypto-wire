@@ -14,7 +14,7 @@ namespace QRyptoWire.Core.Services
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();
 		void AddContact(Contact contact);
-		void SendMessage(Message message);
+		bool TrySendMessage(Message message);
 		[Obsolete]
 		int GetUserId();
 		bool PushesAllowed();

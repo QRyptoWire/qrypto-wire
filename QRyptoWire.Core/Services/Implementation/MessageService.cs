@@ -19,28 +19,29 @@ namespace QRyptoWire.Core.Services.Implementation
 	        _encryptionService = encryptionService;
 		}
 
-		public void SendMessage(Message message)
+		public bool TrySendMessage(Message message)
 		{
-			_storageService.SaveMessages(new[] {new MessageItem
+			var encMsg = _encryptionService.Encrypt(message.Body, message.ReceiverId);
+			var success = _client.TrySendMessage(new Message
 			{
-				Body = message.Body,
-				Date = message.DateSent,
+				Body = encMsg.Body,
+				DateSent = message.DateSent,
+				Iv = encMsg.Iv,
+				SenderId = message.SenderId,
 				ReceiverId = message.ReceiverId,
-				SenderId = message.SenderId
-			} });
-
-            var encMsg = _encryptionService.Encrypt(message.Body, message.ReceiverId);
-            _client.SendMessage(new Message
-            {
-                Body = encMsg.Body,
-                DateSent = message.DateSent,
-                Iv = encMsg.Iv,
-                SenderId = message.SenderId,
-                ReceiverId = message.ReceiverId,
-                SymmetricKey = encMsg.SymmetricKey,
-                DigitalSignature = encMsg.DigitalSignature
-            });
-        }
+				SymmetricKey = encMsg.SymmetricKey,
+				DigitalSignature = encMsg.DigitalSignature
+			});
+			if(success)
+				_storageService.SaveMessages(new[] {new MessageItem
+				{
+					Body = message.Body,
+					Date = message.DateSent,
+					ReceiverId = message.ReceiverId,
+					SenderId = message.SenderId
+				} });
+			return success;
+		}
 
 		public bool FetchMessages()
 		{

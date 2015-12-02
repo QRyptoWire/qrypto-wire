@@ -97,8 +97,13 @@ namespace QRyptoWire.Core.ViewModels
 				ReceiverId = _contactId,
 				DateSent = QryptoTime.GetTime
 			};
-			MakeApiCallAsync(() => _messageService.SendMessage(message), () =>
+			MakeApiCallAsync(() => _messageService.TrySendMessage(message), success =>
 			{
+				if (!success)
+				{
+					_helper.ShowRequestFailedPopup("Something went wrong when message was being sent. Please try again later");
+					return;
+				}
 				MessageBody = string.Empty;
 				Messages.Add(new StoredMessage
 				{

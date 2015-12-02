@@ -5,7 +5,7 @@ namespace QRyptoWire.Core.Services
 {
 	public interface IMessageService
 	{
-		void SendMessage(Message message);
+		bool TrySendMessage(Message message);
 		bool FetchMessages();
 		void AddContact(QrContact contact);
 		bool FetchContacts();
