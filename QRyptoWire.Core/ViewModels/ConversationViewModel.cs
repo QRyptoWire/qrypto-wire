@@ -24,7 +24,7 @@ namespace QRyptoWire.Core.ViewModels
 			_storageService = storageService;
 			_messageService = messageService;
 
-			_token = _messenger.Subscribe<NotificationReceivedMessage>(OnNotificationReceived, MvxReference.Strong);
+			_token = _messenger.Subscribe<ContentReceivedMessage>(OnNotificationReceived, MvxReference.Strong);
 			SendMessageCommand = new MvxCommand(SendMessageCommandAction, () => !string.IsNullOrWhiteSpace(MessageBody));
 
 			CleaningUp += () =>
@@ -41,7 +41,7 @@ namespace QRyptoWire.Core.ViewModels
 			var newMessages = await Task.Run(() =>
 			{
 				var received = _storageService.GetMessages(_contactId).Where(e => e.Date > Messages.Max(m => m.Date))
-					.OrderByDescending(e => e.Date).ToList();
+					.OrderBy(e => e.Date).ToList();
 
 				return received.Select(e => new StoredMessage
 				{
@@ -79,7 +79,7 @@ namespace QRyptoWire.Core.ViewModels
 				Body = e.Body,
 				Date = e.Date,
 				Sent = e.SenderId != _contactId
-			}));
+			}).OrderBy(e => e.Date).ToList());
 		    ContactName = _storageService.GetContacts().First(e => e.Id == _contactId).Name;
 			RaisePropertyChanged(() => ContactName);
 			RaisePropertyChanged(() => Messages);

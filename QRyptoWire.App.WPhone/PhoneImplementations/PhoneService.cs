@@ -80,7 +80,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 			    _messageService.FetchMessages();
 				_messageService.FetchContacts();
 			});
-            _messenger.Publish(new NotificationReceivedMessage(this));
+            _messenger.Publish(new ContentReceivedMessage(this));
         }
 
 	    public void AddPushToken()

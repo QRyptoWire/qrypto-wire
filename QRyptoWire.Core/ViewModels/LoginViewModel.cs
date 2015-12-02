@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Cirrious.MvvmCross.Plugins.Messenger;
 using Cirrious.MvvmCross.ViewModels;
 using QRyptoWire.Core.DbItems;
 using QRyptoWire.Core.Enums;
+using QRyptoWire.Core.Messages;
 using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
@@ -80,6 +82,17 @@ namespace QRyptoWire.Core.ViewModels
 		private async void InitSynchronizationTasks()
 		{
 			await Task.Run(() => _phoneService.AddPushToken());
+			await Task.Run(async () =>
+			{
+				while (true)
+				{
+					await Task.Delay(10000);
+					var didReceiveMessages = _messageService.FetchMessages();
+					var didReceiveContacts = _messageService.FetchContacts();
+					if(didReceiveContacts || didReceiveMessages)
+						_messenger.Publish(new ContentReceivedMessage(this));
+				}
+			}).ConfigureAwait(false);
 		}
 
 		public IMvxCommand ProceedCommand { get; private set; }
@@ -96,15 +109,17 @@ namespace QRyptoWire.Core.ViewModels
 		            return userId;
 		        }, ret =>
 		        {
-		            if (ret != 0)
-		                ShowViewModel<RegistrationViewModel>();
+			        if (ret != 0)
+				        ShowViewModel<RegistrationViewModel>();
+			        else
+				        ErrorMessage = "Oops! Someone already registered with this device";
 		        });
 		    else
 		    {
                 MakeApiCallAsync(() =>
 		        {
 		            var loggedIn = _userService.Login(Password);
-		            if (loggedIn)
+					if (loggedIn)
 		            {
 						_messageService.FetchMessages();
 		                _messageService.FetchContacts();

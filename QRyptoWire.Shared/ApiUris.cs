@@ -18,6 +18,6 @@
 		public static readonly string GetUserId = "api/GetUserId/";
 
 		public static readonly string GetPushesAllowed = "api/PushesAllowed/";
-		public static readonly string AllowPushes = "api/AllowPushes/";
+		public static readonly string AllowPushes = "api/SetPushAllowed/";
 	}
 }

@@ -46,7 +46,7 @@
     <Compile Include="CustomExceptions\CameraNotFoundException.cs" />
     <Compile Include="CustomExceptions\UserNotFoundException.cs" />
     <Compile Include="Enums\MenuMode.cs" />
-    <Compile Include="Messages\NotificationReceivedMessage.cs" />
+    <Compile Include="Messages\ContentReceivedMessage.cs" />
     <Compile Include="DbItems\ContactItem.cs" />
     <Compile Include="Messages\RequestFailedMessage.cs" />
     <Compile Include="ModelsAbstraction\IContactModel.cs" />

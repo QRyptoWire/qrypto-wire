@@ -41,7 +41,7 @@ namespace QRyptoWire.Core
 			}
 			catch (Exception ex)
 			{
-				_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
 			}
 		}
 
@@ -65,7 +65,7 @@ namespace QRyptoWire.Core
 			}
 			catch (Exception ex)
 			{
-				_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
 			}
 
 			return default(TRet);
@@ -91,7 +91,7 @@ namespace QRyptoWire.Core
 			}
 			catch (Exception ex)
 			{
-				_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
 			}
 
 			return false;

@@ -15,7 +15,7 @@ namespace QRyptoWire.Core.ViewModels
 			if(mode != MenuMode.AtHome)
 			{
 				var messenger = Mvx.Resolve<IMvxMessenger>();
-				_token = messenger.Subscribe<NotificationReceivedMessage>(message =>
+				_token = messenger.Subscribe<ContentReceivedMessage>(message =>
 				{
 					HasReceivedNotifications = true;
 					RaisePropertyChanged(() => HasReceivedNotifications);
