@@ -52,8 +52,7 @@ namespace QRyptoWire.Service.Core
 			var dbContext = DbContextFactory.GetContext();
 			if (dbContext.Users
 							.Any(p
-								=> p.PasswordHash == password
-								   && p.DeviceId == deviceId))
+								=> p.DeviceId == deviceId))
 				return 0;
 
 			var newUsr = new User

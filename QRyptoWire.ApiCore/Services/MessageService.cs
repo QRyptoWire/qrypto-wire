@@ -26,6 +26,7 @@ namespace QRyptoWire.Service.Core
 				SenderId = e.SenderId,
 				DateSent = e.SentTime,
 				SessionKey = e.SessionKey,
+				InitVector = e.InitVector,
 				Signature = e.Signature
 			}).ToList();
 			messages.DeleteAll();
