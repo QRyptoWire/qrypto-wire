@@ -88,17 +88,15 @@ namespace QRyptoWire.Core.ViewModels
             if (Registering)
 		        MakeApiCallAsync(() =>
 		        {
-		            var success = _userService.Register(Password);
-		            var userId = 0;
-		            if (success)
+		            var userId = _userService.Register(Password);
+		            if (userId != 0)
 		            {
-		                userId = _userService.GetUserId();
 		                _storageService.SaveUser(new UserItem {Id = userId, KeyPair = _encryptionService.GenerateKeyPair()});
 		            }
-		            return new {success, userId};
+		            return userId;
 		        }, ret =>
 		        {
-		            if (ret.success)
+		            if (ret != 0)
 		                ShowViewModel<RegistrationViewModel>();
 		        });
 		    else
@@ -108,7 +106,7 @@ namespace QRyptoWire.Core.ViewModels
 		            var loggedIn = _userService.Login(Password);
 		            if (loggedIn)
 		            {
-                        _messageService.FetchMessages();
+						_messageService.FetchMessages();
 		                _messageService.FetchContacts();
 		            }
 		            return loggedIn;

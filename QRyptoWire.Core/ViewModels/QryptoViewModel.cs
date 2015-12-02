@@ -11,7 +11,7 @@ namespace QRyptoWire.Core.ViewModels
 	public abstract class QryptoViewModel : MvxViewModel
 	{
 		protected readonly IMvxMessenger _messenger;
-		private readonly IPopupHelper _helper;
+		protected readonly IPopupHelper _helper;
 		private MvxSubscriptionToken _token;
 
 		protected delegate void CleaningUpEventHandler();
@@ -24,6 +24,8 @@ namespace QRyptoWire.Core.ViewModels
 			_token = _messenger.Subscribe<RequestFailedMessage>(OnRequestFailed, MvxReference.Strong);
 			CleaningUp += () =>
 			{
+				if (_token == null)
+					return;
 				_token.Dispose();
 				_token = null;
 			};
@@ -34,24 +36,13 @@ namespace QRyptoWire.Core.ViewModels
 			CleaningUp?.Invoke();
 		}
 
-		public bool RequestFailed
-		{
-			get { return _requestFailed; }
-			set
-			{
-				_requestFailed = value;
-				RaisePropertyChanged();
-			}
-		}
-
 		public void OnRequestFailed(RequestFailedMessage message)
 		{
-			Dispatcher.RequestMainThreadAction(() =>_helper.ShowRequestFailedPopup());
+			Dispatcher.RequestMainThreadAction(() =>_helper.ShowRequestFailedPopup(message.MessageBody));
 		}
 
 		protected ManualResetEvent ResetEvent = new ManualResetEvent(false);
 		private bool _working;
-		private bool _requestFailed;
 
 		public bool Working
 		{

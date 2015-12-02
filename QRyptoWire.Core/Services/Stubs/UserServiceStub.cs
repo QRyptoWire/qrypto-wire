@@ -8,9 +8,9 @@
 			return true;
 		}
 
-		public bool Register(string password)
+		public int Register(string password)
 		{
-			return true;
+			return 1;
 		}
 
 		public int GetUserId()

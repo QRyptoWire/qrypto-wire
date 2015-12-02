@@ -4,8 +4,11 @@ namespace QRyptoWire.Core.Messages
 {
 	public class RequestFailedMessage : MvxMessage
 	{
-		public RequestFailedMessage(object sender) : base(sender)
+		public string MessageBody { get; set; }
+
+		public RequestFailedMessage(object sender, string messageBody) : base(sender)
 		{
+			MessageBody = messageBody;
 		}
 	}
 }
