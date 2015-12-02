@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+using Windows.Security.Cryptography.Certificates;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.ModelsAbstraction;
 using QRyptoWire.Core.Objects;
@@ -23,7 +26,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 throw new ArgumentException("Message text cannot be null");
             }
 
-            IContactModel receiverContact = _storageService.GetContacts().FirstOrDefault(c => c.Id == recieverId);        
+            IContactModel receiverContact = _storageService.GetContacts().FirstOrDefault(c => c.Id == recieverId);
             if (receiverContact == null)
             {
                 throw new ArgumentException("Contact with id of receiverId does not exist");
@@ -33,7 +36,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             AesCipher aes = new AesCipher();
 
             // set initiazlization vector
-            encMsg.IV = FormatConverter.BytesToString64(aes.IV); 
+            encMsg.IV = FormatConverter.BytesToString64(aes.IV);
 
             // enccrypt message text symmetrically
             byte[] messageBytes = FormatConverter.StringToBytes(messageText);
@@ -62,7 +65,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 throw new ArgumentException("Encrypted message cannot be null");
             }
 
-            if (encryptedMessage.Body == null || encryptedMessage.DigitalSignature == null || encryptedMessage.SymmetricKey == null || encryptedMessage.IV == null)
+            if (encryptedMessage.Body == null || encryptedMessage.DigitalSignature == null ||
+                encryptedMessage.SymmetricKey == null || encryptedMessage.IV == null)
             {
                 throw new ArgumentException("Not all encrypted message fields are initialized");
             }
@@ -106,24 +110,9 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
         }
 
-        public bool ComposePublicKey(string modulus, string exponent, out string publicKey)
+        public string GenerateKeyPair()
         {
-            throw new NotImplementedException();
-        }
-
-        public Tuple<string, string> DecomposePublicKey(string publicKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ExtractPublicKey(string keyPair)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetKeyPair()
-        {
-            throw new NotImplementedException();
+            return RsaCipher.GenerateKeyPair();
         }
     }
 }

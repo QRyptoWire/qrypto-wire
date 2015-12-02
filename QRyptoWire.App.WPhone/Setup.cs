@@ -27,6 +27,7 @@ namespace QRyptoWire.App.WPhone
             Mvx.RegisterType<IQrService, QrService>();
             Mvx.RegisterType<IStorageService, StorageService>();
 			Mvx.RegisterType<IPopupHelper, PopupHelper>();
+            Mvx.RegisterType<IEncryptionService, EncryptionService>();
         }
 
         protected override IMvxTrace CreateDebugTrace()

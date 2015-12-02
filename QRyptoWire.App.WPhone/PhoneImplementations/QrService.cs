@@ -23,21 +23,18 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         }
 
         private const string QrCodeFileName = "{0}.jpeg";
-
-        private readonly IEncryptionService _encryptionService;
         private readonly IStorageService _storageService;
 
-        public QrService(IEncryptionService encryptionService, IStorageService storageService)
+        public QrService(IStorageService storageService)
         {
-            _encryptionService = encryptionService;
             _storageService = storageService;
         }
 
         public async Task GenerateQrCode(string contactName)
         {
             IUserModel user = _storageService.GetUser();
-            string publicKey = _encryptionService.ExtractPublicKey(user.KeyPair);
-            Tuple<string, string> pkElements = _encryptionService.DecomposePublicKey(publicKey);
+            string publicKey = RsaKeyTools.ExtractPublicKey(user.KeyPair);
+            Tuple<string, string> pkElements = RsaKeyTools.DecomposePublicKey(publicKey);
 
             string contents = ComposeQrData(user.Id, contactName, pkElements.Item1, pkElements.Item2);
 
@@ -67,7 +64,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             string exponent = elements[QrElements.ExponentIndex];
 
             string publicKey;
-            if (!_encryptionService.ComposePublicKey(modulus, exponent, out publicKey))
+            if (!RsaKeyTools.ComposePublicKey(modulus, exponent, out publicKey))
                 return false;
 
             contact = new QrContact() { Name = name, PublicKey = publicKey, UserId = userId };

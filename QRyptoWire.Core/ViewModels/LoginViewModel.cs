@@ -93,7 +93,7 @@ namespace QRyptoWire.Core.ViewModels
 		            if (success)
 		            {
 		                userId = _userService.GetUserId();
-		                _storageService.SaveUser(new UserItem {Id = userId, KeyPair = _encryptionService.GetKeyPair()});
+		                _storageService.SaveUser(new UserItem {Id = userId, KeyPair = _encryptionService.GenerateKeyPair()});
 		            }
 		            return new {success, userId};
 		        }, ret =>

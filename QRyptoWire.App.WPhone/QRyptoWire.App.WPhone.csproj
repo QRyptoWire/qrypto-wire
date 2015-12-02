@@ -142,6 +142,7 @@
     <Compile Include="Utilities\QryptoDbFactory.cs" />
     <Compile Include="Utilities\QryptoDbSecurity.cs" />
     <Compile Include="Utilities\RsaCipher.cs" />
+    <Compile Include="Utilities\RsaKeyTools.cs" />
     <Compile Include="Views\AddContactView.xaml.cs">
       <DependentUpon>AddContactView.xaml</DependentUpon>
     </Compile>

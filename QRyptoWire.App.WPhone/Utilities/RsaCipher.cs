@@ -1,14 +1,11 @@
 ﻿using System.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
 
 namespace QRyptoWire.App.WPhone.Utilities
 {
     public class RsaCipher
     {
-        private const int KeySize = 384;
+        public const int KeySize = 384;
         private readonly RSACryptoServiceProvider _rsa;
-
-        public string KeyPair => _rsa.ToXmlString(true);
 
         public RsaCipher()
         {
@@ -17,7 +14,7 @@ namespace QRyptoWire.App.WPhone.Utilities
 
         public RsaCipher(string key)
         {
-            _rsa = new RSACryptoServiceProvider(KeySize);
+            _rsa = new RSACryptoServiceProvider();
             _rsa.FromXmlString(key);
         }
 
@@ -39,6 +36,12 @@ namespace QRyptoWire.App.WPhone.Utilities
         public bool VerifyDigitalSignature(byte[] data, byte[] signature)
         {
             return _rsa.VerifyData(data, new SHA1Managed(), signature);
+        }
+
+        public static string GenerateKeyPair()
+        {
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KeySize);
+            return rsa.ToXmlString(true);
         }
     }
 }

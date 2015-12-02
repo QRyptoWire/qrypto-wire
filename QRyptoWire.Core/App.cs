@@ -16,9 +16,7 @@ namespace QRyptoWire.Core
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
 				
-            Mvx.RegisterType<IEncryptionService, EncryptionServiceStub>();
-
-            Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>();
+            Mvx.LazyConstructAndRegisterSingleton<IQryptoWireServiceClient, QryptoWireServiceClient>(); // is this needed?
             RegisterAppStart<LoginViewModel>();
         }
     }

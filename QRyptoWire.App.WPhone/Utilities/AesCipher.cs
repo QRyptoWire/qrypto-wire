@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 
 namespace QRyptoWire.App.WPhone.Utilities
@@ -19,7 +18,7 @@ namespace QRyptoWire.App.WPhone.Utilities
 
         public AesCipher(byte[] key, byte[] iv)
         {
-            _aes = new AesManaged {KeySize = KeySize, Key = key, IV = iv};
+            _aes = new AesManaged {Key = key, IV = iv};
         }
 
         public byte[] Encrypt(byte[] data)
