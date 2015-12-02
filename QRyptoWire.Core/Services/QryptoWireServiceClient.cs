@@ -90,7 +90,9 @@ namespace QRyptoWire.Core.Services
 
 		public bool AllowPushes(bool allow)
 		{
-			return TryExecute(new RestRequest($"{ApiUris.AllowPushes}{_sessionId}").AddBody(allow));
+			var request = new RestRequest($"{ApiUris.AllowPushes}{_sessionId}", HttpMethod.Post);
+			request.AddParameter("isAllowed", allow);
+            return TryExecute(request);
 		}
 	}
 }
