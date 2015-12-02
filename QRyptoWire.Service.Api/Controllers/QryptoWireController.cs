@@ -33,7 +33,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			{
 				return Ok(sessionKey);
 			}
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/SendMessage/{sessionKey}")]
@@ -45,7 +45,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			{
 				return Ok("Message " + msg.Body + " added.");
 			}
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/FetchMessages/{sessionKey}")]
@@ -59,7 +59,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			{
 				return Ok(messages);
 			}
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/AddContact/{sessionKey}")]
@@ -71,7 +71,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			{
 				return Ok();
 			}
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/FetchContacts/{sessionKey}")]
@@ -82,7 +82,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			var contacts = contactService.FetchContacts(sessionKey);
 			return contacts != null ?
 				(IHttpActionResult)Ok(contacts)
-				: NotFound();
+				: Unauthorized();
 		}
 
 		[Route("api/GetUserId/{sessionKey}")]
@@ -92,7 +92,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
 			if (user != null) return Ok(user.Id);
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/RegisterPushToken/{sessionKey}")]
@@ -103,7 +103,7 @@ namespace QRyptoWire.Service.Api.Controllers
 			var ok = userService.RegisterPushToken(sessionKey, pushToken);
 
 			if (ok) return Ok();
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/SetPushAllowed/{sessionKey}")]
@@ -114,13 +114,14 @@ namespace QRyptoWire.Service.Api.Controllers
 			var ok = userService.SetPushAllowed(sessionKey, isAllowed);
 
 			if (ok) return Ok();
-			return NotFound();
+			return Unauthorized();
 		}
 
 		[Route("api/IsPushAllowed/{sessionKey}")]
 		[HttpGet]
 		public IHttpActionResult SetPushAllowed([FromUri]string sessionKey)
 		{
+			if (!new SessionService().ValidateSession(sessionKey)) return Unauthorized();
 			var userService = new UserService();
 			var isAllowed = userService.IsPushAllowed(sessionKey);
 			return Ok(isAllowed);

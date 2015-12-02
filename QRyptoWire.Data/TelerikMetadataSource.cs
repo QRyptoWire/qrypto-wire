@@ -22,6 +22,7 @@ namespace QRyptoWire.Service.Data
 				message.SenderId,
 				message.RecipientId,
 				message.Signature,
+				message.InitVector,
 				message.SessionKey,
 				message.SentTime
 			}).ToTable("Messages");

@@ -62,7 +62,9 @@ namespace QRyptoWire.Service.Core
 				Recipient = recipient,
 				SentTime = msg.DateSent,
 				Signature = msg.Signature,
-				SessionKey = msg.SessionKey
+				SessionKey = msg.SessionKey,
+				InitVector = msg.InitVector
+
 			};
 
 			var userService = new UserService();
