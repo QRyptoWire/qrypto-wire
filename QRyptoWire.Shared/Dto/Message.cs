@@ -10,5 +10,6 @@ namespace QRyptoWire.Shared.Dto
 		public int SenderId { get; set; }
 		public int ReceiverId { get; set; }
 		public DateTime DateSent { get; set; }
+		public string InitVector { get; set; }
 	}
 }
