@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using PushSharp;
 using PushSharp.WindowsPhone;
 using QRyptoWire.Service.Data;
@@ -45,7 +46,7 @@ namespace QRyptoWire.Service.Core
 
 		}
 
-		public bool Register(string deviceId, string password)
+		public int Register(string deviceId, string password)
 		{
 
 			var dbContext = DbContextFactory.GetContext();
@@ -53,17 +54,18 @@ namespace QRyptoWire.Service.Core
 							.Any(p
 								=> p.PasswordHash == password
 								   && p.DeviceId == deviceId))
-				return false;
+				return 0;
 
 			var newUsr = new User
 			{
 				PasswordHash = password,
-				DeviceId = deviceId
+				DeviceId = deviceId,
+				AllowPush = true
 			};
 			dbContext.Add(newUsr);
 			dbContext.SaveChanges();
 
-			return true;
+			return newUsr.Id;
 		}
 
 		public bool RegisterPushToken(string sessionKey, string pushToken)
@@ -80,16 +82,21 @@ namespace QRyptoWire.Service.Core
 			return true;
 		}
 
-		public bool UnRegisterPushToken(string sessionKey)
+		public bool IsPushAllowed(string sessionKey)
+		{
+			var sessionService = new SessionService();
+			var user = sessionService.GetUser(sessionKey);
+			return user.AllowPush;
+		}
+
+		public bool SetPushAllowed(string sessionKey, bool isPushAllowed)
 		{
 			var dbContext = DbContextFactory.GetContext();
 			var sessionService = new SessionService();
 			var user = sessionService.GetUser(sessionKey);
 			if (user == null) return false;
-			user.PushToken = null;
-
+			user.AllowPush = isPushAllowed;
 			dbContext.SaveChanges();
-
 			return true;
 		}
 
@@ -104,7 +111,6 @@ namespace QRyptoWire.Service.Core
 				.WithNavigatePath("Views/LoginView.xaml")
 				.WithText1("Hey there!")
 				.WithText2("You have new messages."));
-			push.StopAllServices();
 			return true;
 		}
 	}

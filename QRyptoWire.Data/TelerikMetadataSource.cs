@@ -36,7 +36,8 @@ namespace QRyptoWire.Service.Data
 				ID = user.Id,
 				user.PasswordHash,
 				user.PushToken,
-				user.DeviceId
+				user.DeviceId,
+				user.AllowPush
 			}).ToTable("Users");
 			userMapping
 			.HasProperty(e => e.Id)
