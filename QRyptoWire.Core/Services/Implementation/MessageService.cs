@@ -42,7 +42,7 @@ namespace QRyptoWire.Core.Services.Implementation
             });
         }
 
-		public void FetchMessages()
+		public bool FetchMessages()
 		{
 			var messages = _client.FetchMessages().ToList();
 		    var verfiedMessages = new List<MessageItem>();
@@ -68,6 +68,7 @@ namespace QRyptoWire.Core.Services.Implementation
             }
 
             _storageService.SaveMessages(verfiedMessages);
+			return messages.Any();
 		}
 
 		public void AddContact(QrContact contact)
@@ -89,10 +90,11 @@ namespace QRyptoWire.Core.Services.Implementation
 		    });
 		}
 
-		public void FetchContacts()
+		public bool FetchContacts()
 		{
 			var contacts = _client.FetchContacts().ToList();
 			if(contacts.Any())
+			{
 				_storageService.SaveContacts(contacts.Select(e => new ContactItem
 				{
 					Id = e.SenderId,
@@ -100,6 +102,9 @@ namespace QRyptoWire.Core.Services.Implementation
 					Name = e.Name,
 					PublicKey = e.PublicKey
 				}).ToList());
+				return true;
+			}
+			return false;
 		}
 	}
 }
