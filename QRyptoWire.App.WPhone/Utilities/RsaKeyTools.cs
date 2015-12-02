@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using Microsoft.Phone.Tasks;
 
 namespace QRyptoWire.App.WPhone.Utilities
 {
@@ -16,7 +17,7 @@ namespace QRyptoWire.App.WPhone.Utilities
                     )
                 );
 
-            publicKey = doc.ToString();
+            publicKey = doc.ToString().Replace(" ", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty);
             return VerifyPublicKey(publicKey);
         }
 

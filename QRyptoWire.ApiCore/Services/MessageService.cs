@@ -25,9 +25,9 @@ namespace QRyptoWire.Service.Core
 				ReceiverId = e.RecipientId,
 				SenderId = e.SenderId,
 				DateSent = e.SentTime,
-				SessionKey = e.SessionKey,
-				InitVector = e.InitVector,
-				Signature = e.Signature
+				SymmetricKey = e.SessionKey,
+				Iv = e.InitVector,
+				DigitalSignature = e.Signature
 			}).ToList();
 			messages.DeleteAll();
 			dbContext.SaveChanges();
@@ -62,9 +62,9 @@ namespace QRyptoWire.Service.Core
 				Sender = user,
 				Recipient = recipient,
 				SentTime = msg.DateSent,
-				Signature = msg.Signature,
-				SessionKey = msg.SessionKey,
-				InitVector = msg.InitVector
+				Signature = msg.DigitalSignature,
+				SessionKey = msg.SymmetricKey,
+				InitVector = msg.Iv
 
 			};
 

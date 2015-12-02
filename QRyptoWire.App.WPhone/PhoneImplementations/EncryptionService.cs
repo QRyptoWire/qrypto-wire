@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Xml.Linq;
-using Windows.Security.Cryptography.Certificates;
 using QRyptoWire.App.WPhone.Utilities;
 using QRyptoWire.Core.ModelsAbstraction;
 using QRyptoWire.Core.Objects;
@@ -36,7 +33,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             AesCipher aes = new AesCipher();
 
             // set initiazlization vector
-            encMsg.IV = FormatConverter.BytesToString64(aes.IV);
+            encMsg.Iv = FormatConverter.BytesToString64(aes.IV);
 
             // enccrypt message text symmetrically
             byte[] messageBytes = FormatConverter.StringToBytes(messageText);
@@ -66,7 +63,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             }
 
             if (encryptedMessage.Body == null || encryptedMessage.DigitalSignature == null ||
-                encryptedMessage.SymmetricKey == null || encryptedMessage.IV == null)
+                encryptedMessage.SymmetricKey == null || encryptedMessage.Iv == null)
             {
                 throw new ArgumentException("Not all encrypted message fields are initialized");
             }
@@ -88,7 +85,7 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 byte[] decryptedSymmetricKeyBytes = rsa.Decrypt(encryptedSymmetricKeyBytes);
 
                 // decrypt message text with jsut decrypted symmetric key
-                byte[] ivBytes = FormatConverter.String64ToBytes(encryptedMessage.IV);
+                byte[] ivBytes = FormatConverter.String64ToBytes(encryptedMessage.Iv);
                 AesCipher aes = new AesCipher(decryptedSymmetricKeyBytes, ivBytes);
                 byte[] encryptedMessageBytes = FormatConverter.String64ToBytes(encryptedMessage.Body);
                 byte[] decryptedMessageBytes = aes.Decrypt(encryptedMessageBytes);
@@ -113,6 +110,11 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
         public string GenerateKeyPair()
         {
             return RsaCipher.GenerateKeyPair();
+        }
+
+        public string ExtractPublicKey(string keyPair)
+        {
+            return RsaKeyTools.ExtractPublicKey(keyPair);
         }
     }
 }

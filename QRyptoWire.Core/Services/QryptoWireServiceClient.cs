@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using QRyptoWire.Core.Objects;
 using Cirrious.MvvmCross.Plugins.Messenger;
 using QRyptoWire.Shared;
 using QRyptoWire.Shared.Dto;
@@ -59,21 +56,14 @@ namespace QRyptoWire.Core.Services
 			return res ?? Enumerable.Empty<Message>();
 		}
 
-		public void AddContact(QrContact contact)
+		public void AddContact(Contact contact)
 		{
 			Execute(
 				new RestRequest(
 					$"{ApiUris.AddContact}{_sessionId}",
 					HttpMethod.Post
 					)
-					.AddJsonBody(
-						new Contact()
-						{
-							Name = contact.Name,
-							PublicKey = contact.PublicKey,
-							ReceiverId = contact.UserId
-						}
-					)
+					.AddJsonBody(contact)
 				);
 		}
 

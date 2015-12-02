@@ -10,11 +10,13 @@ namespace QRyptoWire.Core.Services.Implementation
 	{
 		private readonly IStorageService _storageService;
 		private readonly IQryptoWireServiceClient _client;
+	    private readonly IEncryptionService _encryptionService;
 
-		public MessageService(IStorageService storageService, IQryptoWireServiceClient client)
+	    public MessageService(IStorageService storageService, IQryptoWireServiceClient client, IEncryptionService encryptionService)
 		{
 			_storageService = storageService;
 			_client = client;
+	        _encryptionService = encryptionService;
 		}
 
 		public void SendMessage(Message message)
@@ -26,27 +28,50 @@ namespace QRyptoWire.Core.Services.Implementation
 				ReceiverId = message.ReceiverId,
 				SenderId = message.SenderId
 			} });
-			_client.SendMessage(message);
-		}
 
-		public IEnumerable<Message> FetchMessages()
+            var encMsg = _encryptionService.Encrypt(message.Body, message.ReceiverId);
+            _client.SendMessage(new Message
+            {
+                Body = encMsg.Body,
+                DateSent = message.DateSent,
+                Iv = encMsg.Iv,
+                SenderId = message.SenderId,
+                ReceiverId = message.ReceiverId,
+                SymmetricKey = encMsg.SymmetricKey,
+                DigitalSignature = encMsg.DigitalSignature
+            });
+        }
+
+		public void FetchMessages()
 		{
 			var messages = _client.FetchMessages().ToList();
-			if(messages.Any())
-				_storageService.SaveMessages(messages.Select(e => new MessageItem
-				{
-					Body = e.Body,
-					Date = e.DateSent,
-					ReceiverId = e.ReceiverId,
-					SenderId = e.SenderId,
-					IsNew = true
-				}).ToList());
-			return messages;
+		    var verfiedMessages = new List<MessageItem>();
+
+		    foreach (var msg in messages)
+            {
+                string messageText;
+
+                if (_encryptionService.Decrypt(
+                    new EncryptedMessage {Body = msg.Body, DigitalSignature = msg.DigitalSignature, Iv = msg.Iv, SymmetricKey = msg.SymmetricKey},
+                    msg.SenderId, 
+                    out messageText))
+                {
+                    verfiedMessages.Add(new MessageItem
+                    {
+                        Body = messageText,
+                        Date = msg.DateSent,
+                        ReceiverId = msg.ReceiverId,
+                        SenderId = msg.SenderId,
+                        IsNew = true
+                    });
+                }
+            }
+
+            _storageService.SaveMessages(verfiedMessages);
 		}
 
 		public void AddContact(QrContact contact)
 		{
-			_client.AddContact(contact);
 			_storageService.SaveContacts(new[] { new ContactItem
 			{
 				Id = contact.UserId,
@@ -54,6 +79,14 @@ namespace QRyptoWire.Core.Services.Implementation
 				IsNew = true,
 				Name = contact.Name
 			} });
+
+		    _client.AddContact(new Contact
+		    {
+                Name = contact.Name,
+                PublicKey = _encryptionService.ExtractPublicKey(_storageService.GetUser().KeyPair),
+                ReceiverId = contact.UserId,
+                SenderId = _storageService.GetUser().Id
+		    });
 		}
 
 		public void FetchContacts()

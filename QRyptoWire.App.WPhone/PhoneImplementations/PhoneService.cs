@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.UI.Notifications;
 using Cirrious.MvvmCross.Plugins.Messenger;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Notification;

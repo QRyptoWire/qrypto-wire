@@ -13,7 +13,7 @@ namespace QRyptoWire.Core.Services
 		void RegisterPushToken(string channelUri);
 		IEnumerable<Contact> FetchContacts();
 		IEnumerable<Message> FetchMessages();
-		void AddContact(QrContact contact);
+		void AddContact(Contact contact);
 		void SendMessage(Message message);
 		[Obsolete]
 		int GetUserId();

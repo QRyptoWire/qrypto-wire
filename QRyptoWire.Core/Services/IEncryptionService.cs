@@ -7,5 +7,6 @@ namespace QRyptoWire.Core.Services
         EncryptedMessage Encrypt(string messageText, int recieverId);
         bool Decrypt(EncryptedMessage encryptedMessage, int senderId, out string messageText);
         string GenerateKeyPair();
+        string ExtractPublicKey(string keyPair);
     }
 }
