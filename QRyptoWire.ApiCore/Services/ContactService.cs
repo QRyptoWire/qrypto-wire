@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Data;
 using Telerik.OpenAccess;
 
@@ -62,6 +63,9 @@ namespace QRyptoWire.Service.Core
 
 			dbContext.Add(newContact);
 			dbContext.SaveChanges();
+
+			var userService = new PushService();
+			userService.Push(recipient.PushToken, "Recieved new contact!");
 
 			return true;
 		}

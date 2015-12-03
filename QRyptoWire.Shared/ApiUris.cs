@@ -16,8 +16,7 @@
 		public static readonly string FetchContacts = "api/FetchContacts/";
 		public static readonly string AddToken = "api/RegisterPushToken/";
 		public static readonly string GetUserId = "api/GetUserId/";
-
-		public static readonly string GetPushesAllowed = "api/PushesAllowed/";
+		public static readonly string GetPushesAllowed = "api/IsPushAllowed/";
 		public static readonly string AllowPushes = "api/SetPushAllowed/";
 	}
 }

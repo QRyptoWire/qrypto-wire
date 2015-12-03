@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Data;
 using Telerik.OpenAccess;
 
@@ -68,8 +69,8 @@ namespace QRyptoWire.Service.Core
 
 			};
 
-			var userService = new UserService();
-			userService.Push(recipient.PushToken);
+			var userService = new PushService();
+			userService.Push(recipient.PushToken, "You have new message");
 
 			dbContext.Add(newMsg);
 			dbContext.SaveChanges();
