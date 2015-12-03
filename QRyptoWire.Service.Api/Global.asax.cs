@@ -11,5 +11,10 @@ namespace QRyptoWire.Service.Api
             GlobalConfiguration.Configure(WebApiConfig.Register);
 			//UnityConfig.RegisterComponents();
 		}
+        protected void Application_End()
+        {
+			DbContextFactory.Dispose();
+			//UnityConfig.RegisterComponents();
+		}
     }
 }

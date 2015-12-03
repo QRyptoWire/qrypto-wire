@@ -1,10 +1,16 @@
 ﻿using System.Web.Http;
+using PushSharp.Core;
+using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Core;
 
 namespace QRyptoWire.Service.Api.Controllers
 {
 	public class QryptoWireController : ApiController
 	{
+		public class SetPushAllowedRequest
+		{
+			public bool IsAllowed { get; set; }
+		}
 		public class PasswordRequest
 		{
 			public string DeviceId { get; set; }
@@ -99,8 +105,8 @@ namespace QRyptoWire.Service.Api.Controllers
 		[HttpPost]
 		public IHttpActionResult RegisterPushToken([FromUri]string sessionKey, [FromBody]string pushToken)
 		{
-			var userService = new UserService();
-			var ok = userService.RegisterPushToken(sessionKey, pushToken);
+			var pushService = new PushService();
+			var ok = pushService.RegisterPushToken(sessionKey, pushToken);
 
 			if (ok) return Ok();
 			return Unauthorized();
@@ -108,10 +114,10 @@ namespace QRyptoWire.Service.Api.Controllers
 
 		[Route("api/SetPushAllowed/{sessionKey}")]
 		[HttpPost]
-		public IHttpActionResult IsPushAllowed([FromUri]string sessionKey, bool isAllowed)
+		public IHttpActionResult IsPushAllowed([FromUri]string sessionKey, SetPushAllowedRequest request)
 		{
-			var userService = new UserService();
-			var ok = userService.SetPushAllowed(sessionKey, isAllowed);
+			var pushService = new PushService();
+			var ok = pushService.SetPushAllowed(sessionKey, request.IsAllowed);
 
 			if (ok) return Ok();
 			return Unauthorized();
@@ -122,8 +128,8 @@ namespace QRyptoWire.Service.Api.Controllers
 		public IHttpActionResult SetPushAllowed([FromUri]string sessionKey)
 		{
 			if (!new SessionService().ValidateSession(sessionKey)) return Unauthorized();
-			var userService = new UserService();
-			var isAllowed = userService.IsPushAllowed(sessionKey);
+			var pushService = new PushService();
+			var isAllowed = pushService.IsPushAllowed(sessionKey);
 			return Ok(isAllowed);
 		}
 
@@ -138,7 +144,6 @@ namespace QRyptoWire.Service.Api.Controllers
 
 		protected override void Dispose(bool disposing)
 		{
-			//DbContextFactory.Dispose();
 			base.Dispose(disposing);
 		}
 	}
