@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using Newtonsoft.Json;
 using QRyptoWire.Service.Api.Models;
 
 namespace QRyptoWire.Service.Api
@@ -11,7 +12,8 @@ namespace QRyptoWire.Service.Api
 			InitDb.UpdateDatabase();
 
 			var json = config.Formatters.JsonFormatter;
-			json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+			json.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All;
+			json.SerializerSettings.Formatting = Formatting.None;
 			config.Formatters.Remove(config.Formatters.XmlFormatter);
 
 			// Web API routes

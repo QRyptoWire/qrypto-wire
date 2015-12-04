@@ -46,6 +46,7 @@ namespace QRyptoWire.Core.ViewModels
 					NewContact = e.Item1.IsNew,
 					UnreadMessages = e.Item2
 				}).ToList();
+				RaisePropertyChanged(() => Contacts);
 				_storageService.MarkContactsAsNotNew(Contacts.Select(e => e.Id).ToList());
 			});
 			Menu = new MenuViewModel(MenuMode.AtHome);

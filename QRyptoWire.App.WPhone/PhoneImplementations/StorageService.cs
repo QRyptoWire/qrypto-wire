@@ -128,7 +128,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
 
             using (QRyptoDb db = QryptoDbFactory.GetDb())
             {
-                db.Contacts.InsertAllOnSubmit(contacts.Select(c => new ContactModel()
+	            var filtered = contacts.Where(e => !db.Contacts.Any(c => c.Id == e.Id)).ToList();
+                db.Contacts.InsertAllOnSubmit(filtered.Select(c => new ContactModel()
                 {
                     Id = c.Id,
                     Name = c.Name,
