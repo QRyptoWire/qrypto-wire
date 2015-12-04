@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2014/deployment" AppPlatformVersion="8.1">
-  <DefaultLanguage xmlns="" code="en-US"/>
-  <App xmlns="" ProductID="{5620a791-f72b-4d9e-9aa9-2ab5f20a9cc3}" Title="QRyptoWire.App.WPhone" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="QRyptoWire.App.WPhone author" Description="Sample description" SDOptOut ="false" BackUpOptOut ="false" Publisher="QRyptoWire.App.WPhone" PublisherID="{8eb29af5-c402-4897-a534-56362e38a5c3}">
+  <DefaultLanguage xmlns="" code="en-US" />
+  <App xmlns="" ProductID="{5620a791-f72b-4d9e-9aa9-2ab5f20a9cc3}" Title="QRyptoWire" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="QRyptoWire.App.WPhone author" Description="Secure messanging app that uses assymetric encryption and QR codes as a way of distributing contact informations." SDOptOut="false" BackUpOptOut="false" Publisher="QRyptoWire.App.WPhone" PublisherID="{8eb29af5-c402-4897-a534-56362e38a5c3}">
     <IconPath IsRelative="true" IsResource="false">Assets\QRWireLogo-44.png</IconPath>
     <Capabilities>
-      <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
-      <Capability Name="ID_CAP_NETWORKING"/>
-      <Capability Name="ID_CAP_MEDIALIB_AUDIO"/>
-      <Capability Name="ID_CAP_MEDIALIB_PLAYBACK"/>
-      <Capability Name="ID_CAP_SENSORS"/>
-      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT"/>
-      <Capability Name="ID_CAP_ISV_CAMERA"/>
-      <Capability Name="ID_CAP_MEDIALIB_PHOTO"/>
-	    <Capability Name="ID_CAP_IDENTITY_DEVICE"/>
+      <Capability Name="ID_CAP_PUSH_NOTIFICATION" />
+      <Capability Name="ID_CAP_NETWORKING" />
+      <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
+      <Capability Name="ID_CAP_MEDIALIB_PLAYBACK" />
+      <Capability Name="ID_CAP_SENSORS" />
+      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
+      <Capability Name="ID_CAP_ISV_CAMERA" />
+      <Capability Name="ID_CAP_MEDIALIB_PHOTO" />
+      <Capability Name="ID_CAP_IDENTITY_DEVICE" />
     </Capabilities>
     <Tasks>
-      <DefaultTask Name ="_default" NavigationPage="MainPage.xaml" ActivationPolicy="Resume"/>
+      <DefaultTask Name="_default" NavigationPage="MainPage.xaml" ActivationPolicy="Resume" />
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="QRyptoWire.App.WPhoneToken" TaskName="_default">
@@ -24,19 +23,24 @@
           <SmallImageURI IsRelative="true" IsResource="false">Assets\QRWireLogo-71.png</SmallImageURI>
           <Count>0</Count>
           <BackgroundImageURI IsRelative="true" IsResource="false">Assets\QRWireLogo-150.png</BackgroundImageURI>
-          <Title>QRyptoWire.App.WPhone</Title>
-          <BackContent></BackContent>
-          <BackBackgroundImageURI></BackBackgroundImageURI>
-          <BackTitle></BackTitle>
-          <DeviceLockImageURI></DeviceLockImageURI>
-          <HasLarge></HasLarge>
+          <Title>QRyptoWire</Title>
+          <BackContent>
+          </BackContent>
+          <BackBackgroundImageURI>
+          </BackBackgroundImageURI>
+          <BackTitle>
+          </BackTitle>
+          <DeviceLockImageURI>
+          </DeviceLockImageURI>
+          <HasLarge>
+          </HasLarge>
         </TemplateFlip>
       </PrimaryToken>
     </Tokens>
     <ScreenResolutions>
-      <ScreenResolution Name="ID_RESOLUTION_WVGA"/>
-      <ScreenResolution Name="ID_RESOLUTION_WXGA"/>
-      <ScreenResolution Name="ID_RESOLUTION_HD720P"/>
+      <ScreenResolution Name="ID_RESOLUTION_WVGA" />
+      <ScreenResolution Name="ID_RESOLUTION_WXGA" />
+      <ScreenResolution Name="ID_RESOLUTION_HD720P" />
     </ScreenResolutions>
   </App>
 </Deployment>
