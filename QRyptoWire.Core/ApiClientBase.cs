@@ -12,6 +12,7 @@ namespace QRyptoWire.Core
 	public abstract class ApiClientBase
 	{
 		private readonly IMvxMessenger _messenger;
+		private static readonly object SyncObject = new object();
 
 		protected ApiClientBase(IMvxMessenger messenger)
 		{
@@ -25,76 +26,85 @@ namespace QRyptoWire.Core
 
 		protected void Execute(IRestRequest request)
 		{
-			var client = new RestClient(ApiUris.Base);
-			client.IgnoreResponseStatusCode = true;
-			try
+			lock (SyncObject)
 			{
-				var response = Task.Run(async () => await client.Execute(request));
-				response.Wait();
-
-				if (!response.Result.IsSuccess)
+				var client = new RestClient(ApiUris.Base);
+				client.IgnoreResponseStatusCode = true;
+				try
 				{
-					_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
-						? new RequestFailedMessage(this, SessionExpiredMessageText)
-						: new RequestFailedMessage(this, RequestFailedMessageText));
+					var response = Task.Run(async () => await client.Execute(request));
+					response.Wait();
+
+					if (!response.Result.IsSuccess)
+					{
+						_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
+							? new RequestFailedMessage(this, SessionExpiredMessageText)
+							: new RequestFailedMessage(this, RequestFailedMessageText));
+					}
 				}
-			}
-			catch (Exception ex)
-			{
-				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				catch (Exception ex)
+				{
+					//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				}
 			}
 		}
 
 		protected TRet Execute<TRet>(IRestRequest request)
 		{
-			var client = new RestClient(ApiUris.Base);
-			client.IgnoreResponseStatusCode = true;
-			try
+			lock (SyncObject)
 			{
-				var response = Task.Run(async () => await client.Execute<TRet>(request));
-				response.Wait();
-
-				if (response.Result.IsSuccess)
-					return response.Result.Data;
-				else
+				var client = new RestClient(ApiUris.Base);
+				client.IgnoreResponseStatusCode = true;
+				try
 				{
-					_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
-						? new RequestFailedMessage(this, SessionExpiredMessageText)
-						: new RequestFailedMessage(this, RequestFailedMessageText));
-				}
-			}
-			catch (Exception ex)
-			{
-				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
-			}
+					var response = Task.Run(async () => await client.Execute<TRet>(request));
+					response.Wait();
 
-			return default(TRet);
+					if (response.Result.IsSuccess)
+						return response.Result.Data;
+					else
+					{
+						_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
+							? new RequestFailedMessage(this, SessionExpiredMessageText)
+							: new RequestFailedMessage(this, RequestFailedMessageText));
+					}
+				}
+				catch (Exception ex)
+				{
+					//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				}
+
+				return default(TRet);
+			}
 		}
 
 		protected bool TryExecute(IRestRequest request)
 		{
-			var client = new RestClient(ApiUris.Base);
-			client.IgnoreResponseStatusCode = true;
-			try
+			lock (SyncObject)
 			{
-				var response = Task.Run(async () => await client.Execute(request));
-				response.Wait();
-
-				if (response.Result.IsSuccess)
-					return true;
-				else
+				var client = new RestClient(ApiUris.Base);
+				client.IgnoreResponseStatusCode = true;
+				try
 				{
-					_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
-						? new RequestFailedMessage(this, SessionExpiredMessageText)
-						: new RequestFailedMessage(this, RequestFailedMessageText));
-				}
-			}
-			catch (Exception ex)
-			{
-				//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
-			}
+					var response = Task.Run(async () => await client.Execute(request));
+					response.Wait();
 
-			return false;
+					if (response.Result.IsSuccess)
+						return true;
+					else
+					{
+						_messenger.Publish(response.Result.StatusCode == HttpStatusCode.Unauthorized
+							? new RequestFailedMessage(this, SessionExpiredMessageText)
+							: new RequestFailedMessage(this, RequestFailedMessageText));
+					}
+				}
+				catch (Exception ex)
+				{
+					//_messenger.Publish(new RequestFailedMessage(this, RequestFailedMessageText));
+				}
+
+				return false;
+			}
 		}
 	}
 }
