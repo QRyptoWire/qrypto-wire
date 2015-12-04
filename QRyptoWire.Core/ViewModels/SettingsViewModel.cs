@@ -63,7 +63,7 @@ namespace QRyptoWire.Core.ViewModels
 			await _qrService.GenerateQrCode(ContactName);
 			Working = false;
 			Dispatcher.RequestMainThreadAction(() =>
-				_helper.ShowSuccessPopup("Your code has been saved to your phone's Pictures directory"));
+				_helper.ShowSuccessPopup("Your code has been saved to your phone's Photos directory"));
 		}
 
 		public ICommand ClearCommand { get; private set; }
