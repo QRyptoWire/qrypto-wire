@@ -47,7 +47,8 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 db.Users.InsertOnSubmit(new UserModel()
                 {
                     Id = user.Id,
-                    KeyPair = user.KeyPair
+                    KeyPair = user.KeyPair,
+                    Name = user.Name
                 });
 
                 db.SubmitChanges();
@@ -66,6 +67,20 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
                 }
 
                 return user;
+            }
+        }
+
+        public void SetUserName(string name)
+        {
+            using (QRyptoDb db = QryptoDbFactory.GetDb())
+            {
+                UserModel user = db.Users.FirstOrDefault();
+
+                if (user == null)
+                    throw new UserNotFoundException("User does not exist");
+
+                user.Name = name;
+                db.SubmitChanges();
             }
         }
 

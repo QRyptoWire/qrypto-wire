@@ -4,5 +4,6 @@
     {
         public int Id { get; set; }
         public string KeyPair { get; set; }
+        public string Name { get; set; }
     }
 }

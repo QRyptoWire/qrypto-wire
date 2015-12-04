@@ -11,6 +11,7 @@ namespace QRyptoWire.Core.Services
 		void SetPushSettings(bool enable);
 	    void SaveUser(UserItem user);
 	    IUserModel GetUser();
+        void SetUserName(string name);
         bool UserExists();
 	    IEnumerable<IContactModel> GetContacts();
         IEnumerable<Tuple<IContactModel, int>> GetContactsWithNewMessageCount();

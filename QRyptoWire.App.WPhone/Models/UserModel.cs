@@ -11,5 +11,8 @@ namespace QRyptoWire.App.WPhone.Models
 
         [Column(CanBeNull = false)]
         public string KeyPair { get; set; }
+
+        [Column(CanBeNull = true)]
+        public string Name { get; set; }
     }
 }
