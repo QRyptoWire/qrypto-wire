@@ -82,12 +82,13 @@ namespace QRyptoWire.Core.Services.Implementation
 				Name = contact.Name
 			} });
 
+			var me = _storageService.GetUser();
 		    _client.AddContact(new Contact
 		    {
-                Name = contact.Name,
-                PublicKey = _encryptionService.ExtractPublicKey(_storageService.GetUser().KeyPair),
+                Name = me.Name ?? string.Empty,
+                PublicKey = _encryptionService.ExtractPublicKey(me.KeyPair),
                 ReceiverId = contact.UserId,
-                SenderId = _storageService.GetUser().Id
+                SenderId = me.Id
 		    });
 		}
 

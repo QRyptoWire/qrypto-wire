@@ -13,6 +13,7 @@ namespace QRyptoWire.Core.ViewModels
 		private readonly IQrService _qrService;
 		private bool _allowPushes;
 		private string _contactName;
+		private string _oldName;
 
 		public SettingsViewModel(IUserService userService, IStorageService storageService, IQrService qrService,
 			 IMvxMessenger messenger, IPopupHelper helper) : base(messenger, helper)
@@ -49,7 +50,9 @@ namespace QRyptoWire.Core.ViewModels
 
 		public MenuViewModel Menu { get; private set; }
 		public override void Start()
-		{			
+		{
+			ContactName = _storageService.GetUser().Name;
+			_oldName = ContactName;
 			_allowPushes = _storageService.IsPushEnabled();
 			RaisePropertyChanged(() => AllowPushes);
 			Menu = new MenuViewModel(MenuMode.AtSettings);
@@ -60,10 +63,11 @@ namespace QRyptoWire.Core.ViewModels
 		private async void GenerateCodeAction()
 		{
 			Working = true;
+			if(_oldName != ContactName)
+				_storageService.SetUserName(ContactName);
 			await _qrService.GenerateQrCode(ContactName);
 			Working = false;
-			Dispatcher.RequestMainThreadAction(() =>
-				_helper.ShowSuccessPopup("Your code has been saved to your phone's Photos directory"));
+			_helper.ShowSuccessPopup("Your code has been saved to your phone's Photos directory");
 		}
 
 		public ICommand ClearCommand { get; private set; }

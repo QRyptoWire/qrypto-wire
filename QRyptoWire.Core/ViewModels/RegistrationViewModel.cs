@@ -1,15 +1,36 @@
-﻿using System.Windows.Input;
-using Cirrious.MvvmCross.ViewModels;
+﻿using Cirrious.MvvmCross.ViewModels;
+using QRyptoWire.Core.Services;
 
 namespace QRyptoWire.Core.ViewModels
 {
 	public class RegistrationViewModel : MvxViewModel
 	{
-		public RegistrationViewModel()
+		private readonly IStorageService _storageService;
+		private string _myName;
+
+		public RegistrationViewModel(IStorageService storageService)
 		{
-			GoCommand = new MvxCommand(() => ShowViewModel<LoginViewModel>());
+			_storageService = storageService;
+
+			GoCommand = new MvxCommand(GoCommandAction, () => !string.IsNullOrWhiteSpace(MyName));
 		}
 
-		public ICommand GoCommand { get; private set; }
+		public string MyName
+		{
+			get { return _myName; }
+			set
+			{
+				_myName = value;
+				RaisePropertyChanged();
+				GoCommand.RaiseCanExecuteChanged();
+			}
+		}
+
+		public IMvxCommand GoCommand { get; private set; }
+		private void GoCommandAction()
+		{
+			_storageService.SetUserName(MyName);
+			ShowViewModel<LoginViewModel>(MyName);
+		}
 	}
 }

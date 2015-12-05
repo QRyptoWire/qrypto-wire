@@ -24,10 +24,14 @@
         </StackPanel>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-			<Image Source="../Assets/QRWireLogo.png" Opacity="0.3"/>
-			<TextBlock TextWrapping="Wrap" Margin="5 40 5 0"
-				Text="Your account has been created and you cant start using the app! If you want to generate your own QR code to share with your friends, head over to Settings menu after logging in"/>
-			<Button VerticalAlignment="Center" Content="Let's go!" Command="{Binding GoCommand}"/>
+            <Image Source="../Assets/QRWireLogo.png" Opacity="0.3"/>
+			<StackPanel>
+				<TextBlock TextWrapping="Wrap" Margin="5 40 5 0"
+					Text="Your account has been created and you can start using the app! If you want to generate your own QR code to share with your friends, head over to Settings menu after logging in"/>
+				<TextBlock Margin="5 30 5 0" Text="This will be your default contact name"/>
+				<TextBox Text="{Binding MyName, Mode=TwoWay}"/>
+                <Button Margin="5 100 5 0" VerticalAlignment="Center" Content="Let's go!" Command="{Binding GoCommand}"/>
+            </StackPanel>
         </Grid>
     </Grid>
 
