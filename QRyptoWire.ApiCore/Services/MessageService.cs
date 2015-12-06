@@ -70,7 +70,7 @@ namespace QRyptoWire.Service.Core
 			};
 
 			var userService = new PushService();
-			userService.Push(recipient.PushToken, "You have new message");
+			userService.Push(recipient, "You have new message");
 
 			dbContext.Add(newMsg);
 			dbContext.SaveChanges();

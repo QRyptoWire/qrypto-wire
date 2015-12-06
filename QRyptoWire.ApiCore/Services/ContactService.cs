@@ -65,7 +65,7 @@ namespace QRyptoWire.Service.Core
 			dbContext.SaveChanges();
 
 			var userService = new PushService();
-			userService.Push(recipient.PushToken, "Recieved new contact!");
+			userService.Push(recipient, "Recieved new contact!");
 
 			return true;
 		}
