@@ -1,8 +1,6 @@
 using Cirrious.CrossCore;
 using Cirrious.CrossCore.IoC;
 using QRyptoWire.Core.Services;
-using QRyptoWire.Core.Services.Implementation;
-using QRyptoWire.Core.Services.Stubs;
 using QRyptoWire.Core.ViewModels;
 
 namespace QRyptoWire.Core
