@@ -98,6 +98,11 @@ namespace QRyptoWire.Core.ViewModels
 		public IMvxCommand ProceedCommand { get; private set; }
 		private void ProceedCommandAction()
 		{
+			if (Password.Contains(";"))
+			{
+				ErrorMessage = "Password cannot contain semicolon ';' character";
+				return;
+			}
             if (Registering)
 		        MakeApiCallAsync(() =>
 		        {

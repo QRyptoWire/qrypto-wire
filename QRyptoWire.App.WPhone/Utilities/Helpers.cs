@@ -17,6 +17,8 @@ namespace QRyptoWire.App.WPhone.Utilities
 			var tbox = (TextBox) obj;
 			tbox.TextChanged += (sender, eventArgs) =>
 			{
+				if (tbox.Text.Length >= 20)
+					return;
 				tbox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 			};
 		}
