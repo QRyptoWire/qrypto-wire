@@ -59,6 +59,9 @@ namespace QRyptoWire.App.WPhone.PhoneImplementations
             if (!Int32.TryParse(elements[QrElements.IdIndex], NumberStyles.None, CultureInfo.InvariantCulture, out userId))
                 return false;
 
+            if (userId == _storageService.GetUser().Id)
+                return false;
+
             string name = elements[QrElements.NameIndex];
             string modulus = elements[QrElements.ModulusIndex];
             string exponent = elements[QrElements.ExponentIndex];

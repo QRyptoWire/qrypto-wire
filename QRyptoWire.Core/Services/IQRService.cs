@@ -14,7 +14,7 @@ namespace QRyptoWire.Core.Services
         Task GenerateQrCode(string contactName);
 
 	    /// <summary>
-	    /// Parse QR code data into Contact object.
+	    /// Parse QR code data into QrContact object.
 	    /// </summary>
 	    /// <param name="qrData">QR code content</param>
 	    /// <param name="contact">Contact object to load parsed data into</param>
