@@ -6,6 +6,6 @@ namespace QRyptoWire.Service.Core
 	{
 		bool ValidateSession(string sessionKey);
 		User GetUser(string sessionKey);
-		string CreateSession(string deviceId, string password);
+		string CreateSession(User user);
 	}
 }

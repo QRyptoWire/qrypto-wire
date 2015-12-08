@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using PushSharp;
 using PushSharp.WindowsPhone;
+using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.Service.Core
@@ -41,8 +42,19 @@ namespace QRyptoWire.Service.Core
 
 		public string Login(string deviceId, string password)
 		{
+			var dbContext = DbContextFactory.GetContext();
 			var sessionService = new SessionService();
-			return sessionService.CreateSession(deviceId, password);
+			var user = dbContext.Users.SingleOrDefault(u => u.DeviceId == deviceId);
+
+			if (user != null
+			    && CryptoService.ValidatePassword(user.PasswordHash, password))
+			{
+				return sessionService.CreateSession(user);
+			}
+			else
+			{
+				return null;
+			}
 
 		}
 
@@ -57,7 +69,7 @@ namespace QRyptoWire.Service.Core
 
 			var newUsr = new User
 			{
-				PasswordHash = password,
+				PasswordHash = CryptoService.CreatePasswordHash(password),
 				DeviceId = deviceId,
 				AllowPush = true
 			};

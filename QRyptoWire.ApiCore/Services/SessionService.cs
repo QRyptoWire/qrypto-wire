@@ -34,20 +34,10 @@ namespace QRyptoWire.Service.Core
 			return session.User;
 		}
 
-		public string CreateSession(string deviceId, string password)
+		public string CreateSession(User user)
 		{
 
 			var dbContext = DbContextFactory.GetContext();
-			if (dbContext.Users
-					.Count(p
-						=> p.PasswordHash == password
-						   && p.DeviceId == deviceId) != 1)
-				return null;
-
-			var user =
-				dbContext.Users.Single(
-					p => p.PasswordHash == password
-						 && p.DeviceId == deviceId);
 
 			string sessionKey = SessionKeyGenerator.GetUniqueKey();
 
