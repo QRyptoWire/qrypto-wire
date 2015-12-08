@@ -94,7 +94,6 @@
     <Compile Include="Services\PushService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\SessionService.cs" />
-    <Compile Include="SessionKeyGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QRyptoWire.Data\QRyptoWire.Service.Data.csproj">

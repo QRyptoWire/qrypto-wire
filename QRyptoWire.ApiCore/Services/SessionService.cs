@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Data;
 using Telerik.OpenAccess;
 
@@ -39,7 +40,7 @@ namespace QRyptoWire.Service.Core
 
 			var dbContext = DbContextFactory.GetContext();
 
-			string sessionKey = SessionKeyGenerator.GetUniqueKey();
+			string sessionKey = CryptoService.CreateSessionKey();
 
 			dbContext.Sessions.Where(s => s.User == user).DeleteAll();
 
