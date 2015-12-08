@@ -4,7 +4,7 @@ namespace QRyptoWire.App.WPhone.Utilities
 {
     public class RsaCipher
     {
-        public const int KeySize = 384;
+        public const int KeySize = 1024;
         private readonly RSACryptoServiceProvider _rsa;
 
         public RsaCipher()
