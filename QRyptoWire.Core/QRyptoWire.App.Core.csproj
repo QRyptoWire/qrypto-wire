@@ -68,7 +68,6 @@
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\Implementation\MessageService.cs" />
     <Compile Include="Services\QryptoWireServiceClient.cs" />
-    <Compile Include="Services\Stubs\UserServiceStub.cs" />
     <Compile Include="StoredMessage.cs" />
     <Compile Include="ViewModels\AddContactViewModel.cs" />
     <Compile Include="ViewModels\ContactListItem.cs" />
