@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Telerik.OpenAccess.Metadata;
 using Telerik.OpenAccess.Metadata.Fluent;
 

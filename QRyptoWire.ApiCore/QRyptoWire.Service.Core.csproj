@@ -81,7 +81,9 @@
   <ItemGroup>
     <Compile Include="DbContextFactory.cs" />
     <Compile Include="PushBrokerFactory.cs" />
+    <Compile Include="Services\CryptoService.cs" />
     <Compile Include="Services\IContactService.cs" />
+    <Compile Include="Services\ICryptoService.cs" />
     <Compile Include="Services\IMessageService.cs" />
     <Compile Include="Services\ContactService.cs" />
     <Compile Include="Services\IPushService.cs" />
@@ -92,7 +94,6 @@
     <Compile Include="Services\PushService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\SessionService.cs" />
-    <Compile Include="SessionKeyGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QRyptoWire.Data\QRyptoWire.Service.Data.csproj">

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PushSharp;
 using PushSharp.WindowsPhone;
 using QRyptoWire.Service.Core;
+using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.ApiCore.Services
 {
@@ -43,14 +40,15 @@ namespace QRyptoWire.ApiCore.Services
 			return true;
 		}
 
-		public bool Push(string pushToken, string message)
+		public bool Push(User user, string message)
 		{
 			var push = PushBrokerFactory.GetBroker();
-			if (string.IsNullOrWhiteSpace(pushToken)) return false;
+			if (string.IsNullOrWhiteSpace(user.PushToken)
+			|| ! user.AllowPush) return false;
 			try
 			{
 				push.QueueNotification(new WindowsPhoneToastNotification()
-					.ForEndpointUri(new Uri(pushToken))
+					.ForEndpointUri(new Uri(user.PushToken))
 					.ForOSVersion(WindowsPhoneDeviceOSVersion.MangoSevenPointFive)
 					.WithBatchingInterval(BatchingInterval.Immediate)
 					.WithNavigatePath("Views/LoginView.xaml")
