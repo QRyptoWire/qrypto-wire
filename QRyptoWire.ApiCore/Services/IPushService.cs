@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QRyptoWire.Service.Data;
+﻿using QRyptoWire.Service.Data;
 
 namespace QRyptoWire.ApiCore.Services
 {

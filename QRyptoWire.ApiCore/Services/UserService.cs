@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.UI.WebControls;
-using PushSharp;
-using PushSharp.WindowsPhone;
 using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Data;
 

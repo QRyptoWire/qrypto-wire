@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QRyptoWire.ApiCore.Services
+﻿namespace QRyptoWire.ApiCore.Services
 {
-	class ICryptoService
+	internal interface ICryptoService
 	{
+		string CreateSessionKey();
+		string CreateSalt();
+		string CreatePasswordHash(string password);
+		bool ValidatePassword(string hash, string password);
 	}
+
 }

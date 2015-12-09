@@ -1,5 +1,4 @@
 ﻿using System.Web.Http;
-using PushSharp.Core;
 using QRyptoWire.ApiCore.Services;
 using QRyptoWire.Service.Core;
 

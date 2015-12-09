@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -49,7 +47,7 @@ namespace QRyptoWire.ApiCore.Services
 			return false;
 		}
 
-		public static string GenerateRandomString(int keyLength)
+		private static string GenerateRandomString(int keyLength)
 		{
 			var rng = new RNGCryptoServiceProvider();
 			var buff = new byte[keyLength];
