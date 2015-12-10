@@ -1,0 +1,46 @@
+API:
+/Register
+Params:
+- UDID
+- pass
+Return
+- Response code only
+
+/Login
+Params:
+- UDID
+- Password (MD5)
+Return
+- Session key (string, 16/32)
+
+/SendMessage
+Params
+- session key
+- msg object
+Return
+- Response code only
+
+/FetchMessages
+Params
+- session key
+Return
+- message collection
+
+/AddContact
+Params
+- session key
+- uuid
+- self name (str)
+- self key pub
+
+/FetchContacts
+Params
+- session key
+Return
+- contact collection ([name, pkub, uuid])
+
+/GetUUID
+Params
+- session key
+Return
+- UUID
